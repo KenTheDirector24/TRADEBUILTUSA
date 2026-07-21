@@ -46,7 +46,7 @@
     }
 
     var isSamePage = url.pathname === window.location.pathname && url.search === window.location.search;
-    if (isSamePage && url.hash) {
+    if (isSamePage) {
       return;
     }
 
