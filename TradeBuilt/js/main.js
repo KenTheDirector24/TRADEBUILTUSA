@@ -3,6 +3,60 @@
 
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  var LEAVE_DURATION = 180;
+
+  document.body.classList.add('is-ready');
+
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) {
+      document.body.classList.remove('is-leaving');
+      document.body.classList.add('is-ready');
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    if (prefersReducedMotion || e.defaultPrevented || e.button !== 0) {
+      return;
+    }
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+      return;
+    }
+
+    var link = e.target.closest('a[href]');
+    if (!link) {
+      return;
+    }
+
+    if (link.target && link.target !== '' && link.target !== '_self') {
+      return;
+    }
+    if (link.hasAttribute('download')) {
+      return;
+    }
+
+    var url;
+    try {
+      url = new URL(link.href, window.location.href);
+    } catch (err) {
+      return;
+    }
+
+    if (url.origin !== window.location.origin) {
+      return;
+    }
+
+    var isSamePage = url.pathname === window.location.pathname && url.search === window.location.search;
+    if (isSamePage && url.hash) {
+      return;
+    }
+
+    e.preventDefault();
+    document.body.classList.add('is-leaving');
+    window.setTimeout(function () {
+      window.location.href = link.href;
+    }, LEAVE_DURATION);
+  });
+
   var footer = document.querySelector('.site-footer__legal');
 
   if (footer) {
@@ -117,6 +171,7 @@
     };
 
     var tetherActive = false;
+    var pointerActive = false;
 
     var showTethers = function () {
       positionTethers();
@@ -147,10 +202,22 @@
       });
     };
 
-    bag.addEventListener('mouseenter', showTethers);
-    bag.addEventListener('mouseleave', hideTethers);
-    bag.addEventListener('focus', showTethers);
-    bag.addEventListener('blur', hideTethers);
+    bag.addEventListener('mouseenter', function () {
+      pointerActive = true;
+      showTethers();
+    });
+    bag.addEventListener('mouseleave', function () {
+      pointerActive = false;
+      hideTethers();
+    });
+    bag.addEventListener('focus', function () {
+      pointerActive = true;
+      showTethers();
+    });
+    bag.addEventListener('blur', function () {
+      pointerActive = false;
+      hideTethers();
+    });
 
     var tetherResizeRaf = null;
     window.addEventListener('resize', function () {
@@ -166,5 +233,17 @@
     });
 
     positionTethers();
+
+    window.setTimeout(function () {
+      if (pointerActive) {
+        return;
+      }
+      showTethers();
+      window.setTimeout(function () {
+        if (!pointerActive) {
+          hideTethers();
+        }
+      }, 2200);
+    }, 700);
   }
 })();
