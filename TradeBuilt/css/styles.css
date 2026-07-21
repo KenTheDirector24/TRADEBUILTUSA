@@ -802,18 +802,6 @@ button:focus-visible {
   margin: 0;
 }
 
-#hvacr-codex .hub__header {
-  margin-bottom: var(--space-6);
-}
-
-#hvacr-codex-heading {
-  font-size: var(--text-xl);
-  margin-bottom: var(--space-2);
-}
-
-#hvacr-codex .hub__subhead {
-  font-size: var(--text-sm);
-}
 
 .hub__grid {
   display: flex;
@@ -828,6 +816,7 @@ button:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-5);
+  min-height: 110px;
   padding: var(--space-4) var(--space-6);
   background: var(--color-surface);
   border: 1px solid var(--color-line);
@@ -875,8 +864,8 @@ button:focus-visible {
 
 .hub-card__thumb {
   flex: 0 0 auto;
-  width: 140px;
-  height: 140px;
+  width: 72px;
+  height: 76px;
   object-fit: cover;
   border-radius: var(--radius-sm);
   background: var(--color-paper);
@@ -1259,6 +1248,49 @@ button:focus-visible {
 
 .site-footer__veteran {
   white-space: nowrap;
+}
+
+/* Bag hero tethers */
+.tether-layer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 55;
+  overflow: visible;
+}
+
+.hero__content.is-tethering {
+  z-index: 56;
+}
+
+.tether-line {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0;
+  filter: drop-shadow(0 0 4px rgba(255, 107, 26, 0.55));
+  transition: stroke-dashoffset 0.7s var(--ease-premium), opacity 0.25s ease;
+}
+
+.tether-layer.is-active .tether-line {
+  opacity: 0.85;
+}
+
+.tether-dot {
+  fill: var(--color-accent-gold);
+  opacity: 0;
+  filter: drop-shadow(0 0 4px rgba(255, 176, 32, 0.8));
+  transition: opacity 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tether-line,
+  .tether-dot {
+    transition: none;
+  }
 }
 
 /* 7. Animations */
