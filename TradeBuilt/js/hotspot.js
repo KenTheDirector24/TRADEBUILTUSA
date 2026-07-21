@@ -3,7 +3,7 @@
 
   var CHECK_ICON = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-  document.querySelectorAll('[data-hotspot]').forEach(function (root) {
+  document.querySelectorAll('[data-hotspot]').forEach(function (root, rootIndex) {
     var markers = root.querySelectorAll('.hotspot__marker');
     var hint = root.querySelector('[data-hotspot-hint]');
     var content = root.querySelector('[data-hotspot-content]');
@@ -15,7 +15,26 @@
     var panel = root.querySelector('[data-hotspot-panel]');
 
     var total = markers.length;
-    var found = new Set();
+
+    var STORAGE_KEY = 'tb:hotspot-progress:' + window.location.pathname + ':' + (root.getAttribute('data-part') || rootIndex);
+
+    var readSavedFound = function () {
+      try {
+        var raw = window.localStorage.getItem(STORAGE_KEY);
+        var parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    };
+
+    var saveFound = function () {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(found)));
+      } catch (e) {}
+    };
+
+    var found = new Set(readSavedFound());
 
     var progress = document.createElement('p');
     progress.className = 'hotspot__progress';
@@ -58,6 +77,10 @@
         badge.appendChild(check);
       }
 
+      if (found.has(marker.getAttribute('data-hotspot-id'))) {
+        marker.classList.add('is-found');
+      }
+
       marker.addEventListener('click', function () {
         markers.forEach(function (m) {
           m.setAttribute('aria-pressed', m === marker ? 'true' : 'false');
@@ -74,6 +97,7 @@
         if (!found.has(id)) {
           found.add(id);
           marker.classList.add('is-found');
+          saveFound();
           updateProgressText();
         }
       });

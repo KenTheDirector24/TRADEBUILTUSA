@@ -50,6 +50,7 @@ a {
   --color-accent-strong: #C7431A;
   --color-accent-gold: #FFB020;
   --color-accent-tint: #FFE9DC;
+  --color-success: #2E8B57;
 
   --font-heading: 'Oswald', system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -1374,6 +1375,10 @@ body.is-leaving #main {
 
 .hotspot__marker[aria-pressed="true"] .hotspot__marker-badge {
   background: var(--color-ink);
+}
+
+.hotspot__marker.is-found .hotspot__marker-badge {
+  background: var(--color-success);
 }
 
 .hotspot__panel {

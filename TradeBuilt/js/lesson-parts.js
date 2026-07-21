@@ -14,7 +14,28 @@
   dividers.forEach(function (divider) {
     divider.hidden = true;
   });
-  var current = startBtn ? -1 : 0;
+
+  var PROGRESS_KEY = 'tb:lesson-progress:' + window.location.pathname;
+
+  var readSavedProgress = function () {
+    try {
+      var raw = window.localStorage.getItem(PROGRESS_KEY);
+      var parsed = raw === null ? NaN : parseInt(raw, 10);
+      if (!isNaN(parsed) && parsed >= 0 && parsed < parts.length) {
+        return parsed;
+      }
+    } catch (e) {}
+    return null;
+  };
+
+  var saveProgress = function (index) {
+    try {
+      window.localStorage.setItem(PROGRESS_KEY, String(index));
+    } catch (e) {}
+  };
+
+  var savedCurrent = readSavedProgress();
+  var current = savedCurrent !== null ? savedCurrent : (startBtn ? -1 : 0);
   var animating = false;
 
   var TRANSITION_MS = 280;
@@ -164,6 +185,7 @@
         oldPart.hidden = true;
       }
       current = index;
+      saveProgress(current);
       newPart.hidden = false;
       syncChrome();
       updateNav();
@@ -174,6 +196,7 @@
 
     var finishReveal = function () {
       current = index;
+      saveProgress(current);
       syncChrome();
       updateNav();
 
