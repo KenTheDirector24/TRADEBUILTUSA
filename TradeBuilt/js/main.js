@@ -70,12 +70,21 @@
     var tethers = Array.prototype.map.call(tetherTargets, function (target) {
       var path = document.createElementNS(svgNS, 'path');
       path.setAttribute('class', 'tether-line');
+      var pulse = document.createElementNS(svgNS, 'circle');
+      pulse.setAttribute('class', 'tether-pulse');
+      pulse.setAttribute('r', 3.5);
       var dot = document.createElementNS(svgNS, 'circle');
       dot.setAttribute('class', 'tether-dot');
       dot.setAttribute('r', 3.5);
+      dot.addEventListener('transitionend', function (e) {
+        if (e.propertyName === 'opacity' && dot.style.opacity === '1') {
+          pulse.classList.add('is-pulsing');
+        }
+      });
       tetherSvg.appendChild(path);
+      tetherSvg.appendChild(pulse);
       tetherSvg.appendChild(dot);
-      return { target: target, path: path, dot: dot, length: 0 };
+      return { target: target, path: path, dot: dot, pulse: pulse, length: 0 };
     });
 
     var curvePath = function (x1, y1, x2, y2) {
@@ -97,6 +106,8 @@
         t.path.setAttribute('d', curvePath(startX, startY, endX, endY));
         t.dot.setAttribute('cx', endX);
         t.dot.setAttribute('cy', endY);
+        t.pulse.setAttribute('cx', endX);
+        t.pulse.setAttribute('cy', endY);
         t.length = t.path.getTotalLength();
         t.path.style.strokeDasharray = t.length;
         if (!tetherSvg.classList.contains('is-active')) {
@@ -131,6 +142,7 @@
         t.path.style.transitionDelay = (i * 40) + 'ms';
         t.dot.style.transitionDelay = '0ms';
         t.path.style.strokeDashoffset = t.length;
+        t.pulse.classList.remove('is-pulsing');
         t.dot.style.opacity = '0';
       });
     };

@@ -1286,10 +1286,39 @@ button:focus-visible {
   transition: opacity 0.25s ease;
 }
 
+.tether-pulse {
+  fill: none;
+  stroke: var(--color-accent-gold);
+  stroke-width: 1.5;
+  opacity: 0;
+}
+
+.tether-pulse.is-pulsing {
+  animation: tether-pulse 1.6s ease-out infinite;
+}
+
+@keyframes tether-pulse {
+  0% {
+    r: 3.5px;
+    opacity: 0.65;
+  }
+  70% {
+    opacity: 0.05;
+  }
+  100% {
+    r: 11px;
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tether-line,
   .tether-dot {
     transition: none;
+  }
+
+  .tether-pulse.is-pulsing {
+    animation: none;
   }
 }
 
