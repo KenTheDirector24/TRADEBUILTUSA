@@ -11,6 +11,9 @@
   var startBtn = document.querySelector('[data-lesson-start]');
   var heroHeader = document.querySelector('.hub__header');
   var dividers = Array.prototype.slice.call(document.querySelectorAll('.section-divider'));
+  dividers.forEach(function (divider) {
+    divider.hidden = true;
+  });
   var current = startBtn ? -1 : 0;
   var animating = false;
 
@@ -95,9 +98,22 @@
   var firstPart = parts[0];
   firstPart.parentNode.insertBefore(progress, firstPart);
 
+  var isPartComplete = function (part) {
+    var hotspots = Array.prototype.slice.call(part.querySelectorAll('[data-hotspot]'));
+    if (part.hasAttribute('data-hotspot')) {
+      hotspots.push(part);
+    }
+    return hotspots.every(function (h) {
+      return h.getAttribute('data-hotspot-complete') === 'true';
+    });
+  };
+
   var updateNav = function () {
     prevBtn.disabled = current <= 0;
-    nextBtn.disabled = current < 0 || current >= parts.length - 1;
+    var atBoundary = current < 0 || current >= parts.length - 1;
+    var incomplete = current > -1 && !isPartComplete(parts[current]);
+    nextBtn.disabled = atBoundary || incomplete;
+    nextBtn.title = incomplete ? 'Find all parts to continue' : '';
   };
 
   var updateProgress = function () {
@@ -123,9 +139,6 @@
     if (heroHeader) {
       heroHeader.hidden = active;
     }
-    dividers.forEach(function (divider) {
-      divider.hidden = active;
-    });
     if (active) {
       updateProgress();
     }
@@ -194,6 +207,8 @@
   showOnly(current);
   syncChrome();
   updateNav();
+
+  document.addEventListener('hotspot:complete', updateNav);
 
   if (startBtn) {
     startBtn.addEventListener('click', function () {
