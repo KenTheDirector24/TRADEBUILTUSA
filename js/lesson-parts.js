@@ -34,6 +34,23 @@
     } catch (e) {}
   };
 
+  var clearSavedProgress = function () {
+    try {
+      var lessonKey = PROGRESS_KEY;
+      var hotspotPrefix = 'tb:hotspot-progress:' + window.location.pathname + ':';
+      var keysToRemove = [];
+      for (var i = 0; i < window.localStorage.length; i++) {
+        var key = window.localStorage.key(i);
+        if (key === lessonKey || key.indexOf(hotspotPrefix) === 0) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(function (key) {
+        window.localStorage.removeItem(key);
+      });
+    } catch (e) {}
+  };
+
   var savedCurrent = readSavedProgress();
   var current = savedCurrent !== null ? savedCurrent : (startBtn ? -1 : 0);
   var animating = false;
@@ -66,6 +83,17 @@
   nav.appendChild(prevBtn);
   nav.appendChild(nextBtn);
   document.body.appendChild(nav);
+
+  var resetBtn = document.createElement('button');
+  resetBtn.type = 'button';
+  resetBtn.className = 'lesson-dev-reset';
+  resetBtn.textContent = 'Reset lesson (dev)';
+  resetBtn.title = 'Dev tool: clears saved progress for this lesson and reloads';
+  resetBtn.addEventListener('click', function () {
+    clearSavedProgress();
+    window.location.reload();
+  });
+  document.body.appendChild(resetBtn);
 
   var progress = document.createElement('div');
   progress.className = 'lesson-progress';
@@ -116,8 +144,13 @@
 
   progress.appendChild(progressSteps);
 
-  var firstPart = parts[0];
-  firstPart.parentNode.insertBefore(progress, firstPart);
+  var topbar = document.querySelector('.lesson-topbar');
+  if (topbar) {
+    topbar.appendChild(progress);
+  } else {
+    var firstPart = parts[0];
+    firstPart.parentNode.insertBefore(progress, firstPart);
+  }
 
   var isPartComplete = function (part) {
     var hotspots = Array.prototype.slice.call(part.querySelectorAll('[data-hotspot]'));
