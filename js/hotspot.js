@@ -222,8 +222,20 @@
 
       if (nextBtn) {
         var hasNext = activeIndex > -1 && activeIndex < thumbsArr.length - 1;
+        nextBtn.hidden = !hasNext;
         nextBtn.disabled = !(activeView && hasNext && isViewComplete(activeView));
       }
+    };
+
+    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var switchView = function (target) {
+      views.forEach(function (view) {
+        view.hidden = view.getAttribute('data-hotspot-view') !== target;
+      });
+
+      resetPanel();
+      updateNextButton();
     };
 
     var activateView = function (thumb) {
@@ -233,12 +245,33 @@
         t.classList.toggle('is-active', t === thumb);
       });
 
-      views.forEach(function (view) {
-        view.hidden = view.getAttribute('data-hotspot-view') !== target;
-      });
+      var currentView = Array.prototype.filter.call(views, function (v) {
+        return !v.hidden;
+      })[0];
 
-      resetPanel();
-      updateNextButton();
+      if (reducedMotion || !currentView || currentView.getAttribute('data-hotspot-view') === target) {
+        switchView(target);
+        return;
+      }
+
+      currentView.classList.add('is-fading');
+
+      var onFadeOut = function (e) {
+        if (e.target !== currentView || e.propertyName !== 'opacity') return;
+        currentView.removeEventListener('transitionend', onFadeOut);
+        currentView.classList.remove('is-fading');
+
+        switchView(target);
+
+        var nextView = viewByTarget[target];
+        if (nextView) {
+          nextView.classList.add('is-fading');
+          // Force reflow so the entering state transitions instead of jumping.
+          void nextView.offsetWidth;
+          nextView.classList.remove('is-fading');
+        }
+      };
+      currentView.addEventListener('transitionend', onFadeOut);
     };
 
     updateNextButton();

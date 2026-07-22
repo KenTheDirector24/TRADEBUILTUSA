@@ -1323,6 +1323,14 @@ body.is-leaving #main {
 .hotspot__figure {
   position: relative;
   margin: 0;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.hotspot__figure.is-fading {
+  opacity: 0;
+  transform: translateY(6px) scale(0.99);
 }
 
 .hotspot__figure img {
@@ -1475,6 +1483,9 @@ body.is-leaving #main {
   .hotspot__thumb-check {
     transition: none;
   }
+  .hotspot__figure {
+    transition: none;
+  }
 }
 
 .hotspot__panel-hint {
@@ -1547,7 +1558,8 @@ body.is-leaving #main {
   transform: translateY(-2px);
 }
 
-.hotspot__panel-prev[hidden] {
+.hotspot__panel-prev[hidden],
+.hotspot__panel-next[hidden] {
   display: none;
 }
 
