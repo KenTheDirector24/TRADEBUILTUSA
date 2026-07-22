@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz Builder — TradeBuilt Dev Tools</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    body.quiz-builder {
+      background: var(--color-paper);
+      padding: var(--space-8) 0 var(--space-16);
+      min-height: 100vh;
+    }
+
+    .qb-shell {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 var(--space-5);
+    }
+
+    .qb-banner {
+      background: var(--color-navy);
+      color: #fff;
+      padding: var(--space-3) var(--space-5);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-6);
+      font-size: var(--text-sm);
+      line-height: 1.5;
+    }
+
+    .qb-shell h1 {
+      margin-bottom: var(--space-2);
+    }
+
+    .qb-shell h2 {
+      margin: var(--space-6) 0 var(--space-3);
+    }
+
+    .qb-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      margin-bottom: var(--space-4);
+    }
+
+    .qb-field label {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-slate);
+    }
+
+    .qb-field input[type="text"],
+    .qb-field textarea {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      color: var(--color-ink);
+      width: 100%;
+    }
+
+    .qb-field textarea {
+      resize: vertical;
+      min-height: 3.2em;
+      font-family: var(--font-body);
+    }
+
+    .qb-thumb-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
+
+    .qb-thumb-row .qb-field {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .qb-thumb-row input[type="file"] {
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--color-ink);
+    }
+
+    #qb-thumb-remove {
+      align-self: flex-start;
+      margin-top: var(--space-2);
+    }
+
+    .qb-thumb-preview {
+      flex: 0 0 auto;
+      width: 90px;
+      height: 135px;
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface) center / cover no-repeat;
+      display: none;
+    }
+
+    .qb-thumb-preview.is-visible {
+      display: block;
+    }
+
+    .qb-question {
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-5);
+      background: var(--color-surface);
+    }
+
+    .qb-question__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-3);
+    }
+
+    .qb-question__head h3 {
+      margin: 0;
+      font-family: var(--font-heading);
+      font-size: var(--text-lg);
+    }
+
+    .qb-option-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-2);
+    }
+
+    .qb-option-row input[type="radio"] {
+      flex: 0 0 auto;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--color-success);
+    }
+
+    .qb-option-row input[type="text"] {
+      flex: 1;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-sm);
+      background: var(--color-paper);
+      color: var(--color-ink);
+    }
+
+    .qb-hint {
+      font-size: var(--text-xs);
+      color: var(--color-slate);
+      margin: 0 0 var(--space-3);
+    }
+
+    .qb-remove-btn,
+    .qb-small-btn {
+      background: none;
+      border: 1px solid var(--color-line);
+      color: var(--color-slate);
+      padding: 0.3rem 0.7rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .qb-remove-btn:hover,
+    .qb-small-btn:hover {
+      border-color: var(--color-accent-strong);
+      color: var(--color-accent-strong);
+    }
+
+    .qb-actions-bar {
+      position: sticky;
+      bottom: 0;
+      background: var(--color-paper);
+      padding: var(--space-4) 0;
+      border-top: 1px solid var(--color-line);
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: var(--space-6);
+    }
+
+    .qb-danger-btn {
+      color: var(--color-accent-strong);
+      background: none;
+      border: 1px solid var(--color-accent-strong);
+      padding: 0.6rem 1.15rem;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .qb-status {
+      font-size: var(--text-sm);
+      color: var(--color-success);
+      min-height: 1.4em;
+    }
+
+    .qb-status.is-error {
+      color: var(--color-accent-strong);
+    }
+
+    .qb-snippet {
+      width: 100%;
+      min-height: 8em;
+      font-family: 'SFMono-Regular', Menlo, monospace;
+      font-size: 0.78rem;
+      padding: var(--space-3);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      color: var(--color-ink);
+    }
+
+  </style>
+</head>
+<body class="quiz-builder">
+  <div class="qb-shell">
+    <div class="qb-banner">
+      Internal dev tool
+    </div>
+
+    <h1>Quiz Builder</h1>
+    <p class="qb-hint">Your draft autosaves to this browser as you type.</p>
+
+    <h2>New Quiz</h2>
+
+    <div class="qb-field">
+      <label for="qb-title">Quiz title</label>
+      <input type="text" id="qb-title" placeholder="e.g. Impact Drivers Quiz">
+    </div>
+
+    <div class="qb-field">
+      <label for="qb-description">Quiz description</label>
+      <textarea id="qb-description" placeholder="One or two sentences shown under the title on the quiz page."></textarea>
+    </div>
+
+    <div class="qb-thumb-row">
+      <div class="qb-field">
+        <label for="qb-thumb">Card image</label>
+        <input type="file" id="qb-thumb" accept="image/*">
+        <button type="button" class="qb-small-btn" id="qb-thumb-remove" hidden>Remove Image</button>
+      </div>
+      <div class="qb-thumb-preview" id="qb-thumb-preview"></div>
+    </div>
+    <p class="qb-hint">Browse for an image from this device to use on the quizzes hub card. It's saved alongside the quiz files when you export. Leave blank to use the default quiz artwork.</p>
+
+    <h2>Questions</h2>
+    <div id="qb-questions"></div>
+    <button type="button" class="btn btn-light" id="qb-add-question">+ Add Question</button>
+
+    <div class="qb-actions-bar">
+      <button type="button" class="btn btn-primary" id="qb-download">Export Quiz</button>
+      <button type="button" class="btn btn-light" id="qb-preview">Preview</button>
+      <button type="button" class="qb-danger-btn" id="qb-clear">Clear All</button>
+      <span class="qb-status" id="qb-status"></span>
+    </div>
+    <p class="qb-hint">Export asks where to save, then writes <code>&lt;slug&gt;.html</code> and <code>quizzes.json</code> there — pick the project's <code>/quizzes</code> folder. In browsers that don't support choosing a folder, it downloads both files instead.</p>
+  </div>
+
+  <script src="quiz-builder.js"></script>
+</body>
+</html>

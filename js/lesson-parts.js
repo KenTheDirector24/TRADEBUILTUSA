@@ -60,6 +60,8 @@
   var savedCurrent = readSavedProgress();
   var current = savedCurrent !== null ? savedCurrent : (startBtn ? -1 : 0);
   var animating = false;
+  var isQuiz = document.querySelector('[data-quiz-question]') !== null;
+  var completeLabel = isQuiz ? 'Finish Quiz' : 'Complete Lesson';
 
   var TRANSITION_MS = 280;
 
@@ -107,8 +109,8 @@
   var resetBtn = document.createElement('button');
   resetBtn.type = 'button';
   resetBtn.className = 'lesson-dev-reset';
-  resetBtn.textContent = 'Reset lesson (dev)';
-  resetBtn.title = 'Dev tool: clears saved progress for this lesson and reloads';
+  resetBtn.textContent = isQuiz ? 'Reset quiz (dev)' : 'Reset lesson (dev)';
+  resetBtn.title = 'Dev tool: clears saved progress for this ' + (isQuiz ? 'quiz' : 'lesson') + ' and reloads';
   resetBtn.addEventListener('click', function () {
     clearSavedProgress();
     window.location.reload();
@@ -173,12 +175,15 @@
   }
 
   var isPartComplete = function (part) {
-    var hotspots = Array.prototype.slice.call(part.querySelectorAll('[data-hotspot]'));
-    if (part.hasAttribute('data-hotspot')) {
-      hotspots.push(part);
+    var gated = Array.prototype.slice.call(part.querySelectorAll('[data-hotspot], [data-quiz-question]'));
+    if (part.hasAttribute('data-hotspot') || part.hasAttribute('data-quiz-question')) {
+      gated.push(part);
     }
-    return hotspots.every(function (h) {
-      return h.getAttribute('data-hotspot-complete') === 'true';
+    return gated.every(function (el) {
+      if (el.hasAttribute('data-quiz-question')) {
+        return el.getAttribute('data-quiz-complete') === 'true';
+      }
+      return el.getAttribute('data-hotspot-complete') === 'true';
     });
   };
 
@@ -200,7 +205,7 @@
     var isLastPart = current > -1 && current === parts.length - 1;
     var incomplete = current > -1 && !isPartComplete(parts[current]);
     nextBtn.disabled = current < 0 || incomplete;
-    nextBtn.innerHTML = isLastPart ? '<span>Complete Lesson</span>' : '<span>Next</span>' + ICON_NEXT;
+    nextBtn.innerHTML = isLastPart ? '<span>' + completeLabel + '</span>' : '<span>Next</span>' + ICON_NEXT;
     nextHint.hidden = !incomplete;
     syncStatus(incomplete);
   };
@@ -300,6 +305,7 @@
   updateNav();
 
   document.addEventListener('hotspot:complete', updateNav);
+  document.addEventListener('quiz:answered', updateNav);
 
   if (startBtn) {
     startBtn.addEventListener('click', function () {
