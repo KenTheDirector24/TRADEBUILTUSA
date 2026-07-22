@@ -80,8 +80,18 @@
     animateTo(current + 1);
   });
 
+  var nextHint = document.createElement('span');
+  nextHint.className = 'part-nav__hint';
+  nextHint.textContent = 'Complete the task above to continue';
+  nextHint.hidden = true;
+
+  var nextWrap = document.createElement('div');
+  nextWrap.className = 'part-nav__next-wrap';
+  nextWrap.appendChild(nextHint);
+  nextWrap.appendChild(nextBtn);
+
   nav.appendChild(prevBtn);
-  nav.appendChild(nextBtn);
+  nav.appendChild(nextWrap);
   document.body.appendChild(nav);
 
   var resetBtn = document.createElement('button');
@@ -164,10 +174,11 @@
 
   var updateNav = function () {
     prevBtn.disabled = current <= 0;
+    prevBtn.classList.toggle('is-invisible', current <= 0);
     var atBoundary = current < 0 || current >= parts.length - 1;
     var incomplete = current > -1 && !isPartComplete(parts[current]);
     nextBtn.disabled = atBoundary || incomplete;
-    nextBtn.title = incomplete ? 'Find all parts to continue' : '';
+    nextHint.hidden = !incomplete;
   };
 
   var updateProgress = function () {

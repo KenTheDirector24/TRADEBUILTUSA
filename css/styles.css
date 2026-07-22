@@ -1507,15 +1507,114 @@ body.is-leaving #main {
   margin: 0;
 }
 
+.hotspot__panel-next {
+  position: absolute;
+  right: var(--space-8);
+  bottom: var(--space-5);
+  padding: 0.5rem 1rem;
+  background: var(--color-accent-strong);
+  color: #fff;
+  border-color: var(--color-accent-strong);
+  box-shadow: 0 2px 10px rgba(199, 67, 26, 0.35);
+  transition: opacity 0.2s var(--ease-premium), transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hotspot__panel-next:hover,
+.hotspot__panel-next:focus-visible {
+  background: #a8360f;
+  border-color: #a8360f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(199, 67, 26, 0.45);
+}
+
+.hotspot__panel-prev {
+  position: absolute;
+  left: var(--space-8);
+  bottom: var(--space-5);
+  padding: 0.5rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border-color: var(--color-line);
+  transition: opacity 0.2s var(--ease-premium), transform 0.15s ease, border-color 0.15s ease;
+}
+
+.hotspot__panel-prev:hover,
+.hotspot__panel-prev:focus-visible {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.hotspot__panel-prev[hidden] {
+  display: none;
+}
+
+.hotspot__panel-next:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.hotspot__panel-next:disabled:hover {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hotspot__panel-next,
+  .hotspot__panel-prev {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .hotspot__panel-next {
+    right: var(--space-5);
+    bottom: var(--space-4);
+  }
+
+  .hotspot__panel-prev {
+    left: var(--space-5);
+    bottom: var(--space-4);
+  }
+}
+
 .hotspot__thumbs {
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: var(--space-3);
   margin-top: var(--space-4);
 }
 
+.hotspot__thumb-connector {
+  flex: 0 0 24px;
+  align-self: center;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--color-line);
+  overflow: hidden;
+}
+
+.hotspot__thumb-connector::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: var(--radius-full);
+  background: var(--color-success);
+  transition: width 0.4s var(--ease-premium);
+}
+
+.hotspot__thumb-connector.is-complete::after {
+  width: 100%;
+}
+
 .hotspot__thumb {
   position: relative;
+  display: block;
   flex: 0 0 auto;
   width: 64px;
   padding: 0;
@@ -1523,7 +1622,6 @@ body.is-leaving #main {
   border-radius: var(--radius-sm);
   background: var(--color-surface);
   overflow: visible;
-  cursor: pointer;
   transition: border-color 0.15s ease;
 }
 
@@ -1558,13 +1656,13 @@ body.is-leaving #main {
   border-radius: calc(var(--radius-sm) - 2px);
 }
 
-.hotspot__thumb:hover,
-.hotspot__thumb:focus-visible {
-  border-color: var(--color-accent);
-}
-
 .hotspot__thumb.is-active {
   border-color: var(--color-accent-strong);
+}
+
+.hotspot__thumb.is-locked {
+  opacity: 0.4;
+  filter: grayscale(0.4);
 }
 
 @media (max-width: 640px) {
@@ -1858,6 +1956,61 @@ body.is-lesson-active .lesson-part[hidden] {
   cursor: default;
   transform: none;
   box-shadow: none;
+}
+
+.part-nav__btn.is-invisible {
+  visibility: hidden;
+}
+
+.part-nav__next-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.part-nav__hint {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-slate);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+  animation: hotspot-hint-float 2.4s ease-in-out infinite;
+}
+
+.part-nav__hint[hidden] {
+  display: none;
+}
+
+@keyframes hotspot-hint-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .part-nav__hint {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .part-nav__hint {
+    white-space: normal;
+    text-align: right;
+    max-width: 42vw;
+  }
 }
 
 .lesson-dev-reset {
