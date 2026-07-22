@@ -117,6 +117,55 @@
     });
   }
 
+  var hubCards = document.querySelectorAll('.hub-card[href]');
+
+  if (hubCards.length) {
+    var STATUS_PREFIX = 'tb:lesson-status:';
+    var normalizeStatusPath = function (pathname) {
+      return pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+    };
+
+    hubCards.forEach(function (card) {
+      var url;
+      try {
+        url = new URL(card.getAttribute('href'), window.location.href);
+      } catch (e) {
+        return;
+      }
+      if (url.origin !== window.location.origin) {
+        return;
+      }
+
+      var status;
+      try {
+        status = window.localStorage.getItem(STATUS_PREFIX + normalizeStatusPath(url.pathname));
+      } catch (e) {
+        status = null;
+      }
+      if (status !== 'in-progress' && status !== 'complete') {
+        return;
+      }
+
+      var cta = card.querySelector('.hub-card__cta');
+      if (!cta) {
+        return;
+      }
+
+      var ctaLabel = status === 'complete' ? 'Review lesson' : 'Continue lesson';
+      var ctaTextNode = Array.prototype.filter.call(cta.childNodes, function (n) {
+        return n.nodeType === Node.TEXT_NODE && n.textContent.trim() === 'Start lesson';
+      })[0];
+      if (ctaTextNode) {
+        ctaTextNode.textContent = ctaTextNode.textContent.replace('Start lesson', ctaLabel);
+      }
+
+      var badge = document.createElement('span');
+      badge.className = 'hub-card__status hub-card__status--' + status;
+      badge.textContent = status === 'complete' ? 'Completed' : 'In Progress';
+      card.appendChild(badge);
+    });
+  }
+
   var bag = document.querySelector('.hero__bag');
   var heroContent = document.querySelector('.hero__content');
   var tetherTargets = document.querySelectorAll('[data-tether-target]');

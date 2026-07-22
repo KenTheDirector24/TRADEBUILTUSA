@@ -10,12 +10,18 @@
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var startBtn = document.querySelector('[data-lesson-start]');
   var heroHeader = document.querySelector('.hub__header');
+  var backLink = document.querySelector('.back-link');
   var dividers = Array.prototype.slice.call(document.querySelectorAll('.section-divider'));
   dividers.forEach(function (divider) {
     divider.hidden = true;
   });
 
+  var normalizePath = function (pathname) {
+    return pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+  };
+
   var PROGRESS_KEY = 'tb:lesson-progress:' + window.location.pathname;
+  var STATUS_KEY = 'tb:lesson-status:' + normalizePath(window.location.pathname);
 
   var readSavedProgress = function () {
     try {
@@ -41,7 +47,7 @@
       var keysToRemove = [];
       for (var i = 0; i < window.localStorage.length; i++) {
         var key = window.localStorage.key(i);
-        if (key === lessonKey || key.indexOf(hotspotPrefix) === 0) {
+        if (key === lessonKey || key === STATUS_KEY || key.indexOf(hotspotPrefix) === 0) {
           keysToRemove.push(key);
         }
       }
@@ -77,6 +83,10 @@
   nextBtn.className = 'btn btn-sm part-nav__btn part-nav__btn--next';
   nextBtn.innerHTML = '<span>Next</span>' + ICON_NEXT;
   nextBtn.addEventListener('click', function () {
+    if (current === parts.length - 1) {
+      window.location.href = backLink ? backLink.href : document.referrer || window.location.href;
+      return;
+    }
     animateTo(current + 1);
   });
 
@@ -172,13 +182,27 @@
     });
   };
 
+  var syncStatus = function (incomplete) {
+    try {
+      if (current < 0) {
+        window.localStorage.removeItem(STATUS_KEY);
+      } else if (current === parts.length - 1 && !incomplete) {
+        window.localStorage.setItem(STATUS_KEY, 'complete');
+      } else {
+        window.localStorage.setItem(STATUS_KEY, 'in-progress');
+      }
+    } catch (e) {}
+  };
+
   var updateNav = function () {
     prevBtn.disabled = current <= 0;
     prevBtn.classList.toggle('is-invisible', current <= 0);
-    var atBoundary = current < 0 || current >= parts.length - 1;
+    var isLastPart = current > -1 && current === parts.length - 1;
     var incomplete = current > -1 && !isPartComplete(parts[current]);
-    nextBtn.disabled = atBoundary || incomplete;
+    nextBtn.disabled = current < 0 || incomplete;
+    nextBtn.innerHTML = isLastPart ? '<span>Complete Lesson</span>' : '<span>Next</span>' + ICON_NEXT;
     nextHint.hidden = !incomplete;
+    syncStatus(incomplete);
   };
 
   var updateProgress = function () {
