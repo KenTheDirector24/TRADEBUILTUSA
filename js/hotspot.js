@@ -46,14 +46,14 @@
 
     var updateProgressText = function () {
       if (total && found.size >= total) {
-        progress.textContent = 'All ' + total + ' parts found — nice work.';
+        progress.textContent = 'All ' + total + ' functions found — nice work.';
         progress.classList.add('is-complete');
         if (root.getAttribute('data-hotspot-complete') !== 'true') {
           root.setAttribute('data-hotspot-complete', 'true');
           root.dispatchEvent(new CustomEvent('hotspot:complete', { bubbles: true }));
         }
       } else {
-        progress.textContent = found.size + ' of ' + total + ' parts found';
+        progress.textContent = found.size + ' of ' + total + ' functions found';
       }
     };
 
@@ -86,7 +86,7 @@
           m.setAttribute('aria-pressed', m === marker ? 'true' : 'false');
         });
 
-        number.textContent = 'Part ' + marker.getAttribute('data-hotspot-id');
+        number.textContent = 'Function ' + marker.getAttribute('data-hotspot-id');
         title.textContent = marker.getAttribute('data-title');
         body.textContent = marker.getAttribute('data-body');
 
@@ -99,9 +99,34 @@
           marker.classList.add('is-found');
           saveFound();
           updateProgressText();
+          updateThumbComplete(marker.closest('[data-hotspot-view]'));
         }
       });
     });
+
+    var thumbByView = {};
+    thumbs.forEach(function (thumb) {
+      thumbByView[thumb.getAttribute('data-hotspot-thumb')] = thumb;
+
+      var check = document.createElement('span');
+      check.className = 'hotspot__thumb-check';
+      check.setAttribute('aria-hidden', 'true');
+      check.innerHTML = CHECK_ICON;
+      thumb.appendChild(check);
+    });
+
+    var updateThumbComplete = function (view) {
+      if (!view) return;
+      var thumb = thumbByView[view.getAttribute('data-hotspot-view')];
+      if (!thumb) return;
+      var viewMarkers = view.querySelectorAll('.hotspot__marker');
+      var allFound = viewMarkers.length > 0 && Array.prototype.every.call(viewMarkers, function (m) {
+        return found.has(m.getAttribute('data-hotspot-id'));
+      });
+      thumb.classList.toggle('is-complete', allFound);
+    };
+
+    views.forEach(updateThumbComplete);
 
     thumbs.forEach(function (thumb) {
       thumb.addEventListener('click', function () {

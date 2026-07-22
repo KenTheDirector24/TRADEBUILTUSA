@@ -1472,6 +1472,9 @@ body.is-leaving #main {
   .hotspot__marker-check {
     transition: none;
   }
+  .hotspot__thumb-check {
+    transition: none;
+  }
 }
 
 .hotspot__panel-hint {
@@ -1512,21 +1515,47 @@ body.is-leaving #main {
 }
 
 .hotspot__thumb {
+  position: relative;
   flex: 0 0 auto;
   width: 64px;
   padding: 0;
   border: 2px solid var(--color-line);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
-  overflow: hidden;
+  overflow: visible;
   cursor: pointer;
   transition: border-color 0.15s ease;
+}
+
+.hotspot__thumb-check {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-surface);
+  background: var(--color-success);
+  color: var(--color-surface);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.2s var(--ease-premium), transform 0.2s var(--ease-premium);
+  z-index: 1;
+}
+
+.hotspot__thumb.is-complete .hotspot__thumb-check {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .hotspot__thumb img {
   display: block;
   width: 100%;
   height: auto;
+  border-radius: calc(var(--radius-sm) - 2px);
 }
 
 .hotspot__thumb:hover,
