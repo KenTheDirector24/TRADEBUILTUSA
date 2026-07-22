@@ -104,6 +104,13 @@
       staggerCounts.set(parent, i + 1);
       revealObserver.observe(el);
     });
+
+    window.setTimeout(function () {
+      revealEls.forEach(function (el) {
+        el.classList.add('is-visible');
+      });
+      revealObserver.disconnect();
+    }, 2000);
   } else {
     revealEls.forEach(function (el) {
       el.classList.add('is-visible');
