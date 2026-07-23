@@ -41,13 +41,13 @@ async function signOutEverywhere() {
 const SIGNED_IN_HINT_KEY = "tb_signed_in_hint";
 
 function renderHeaderSignedIn(signInBtn, signUpBtn) {
-  signUpBtn.hidden = true;
+  signUpBtn.style.display = "none";
   signInBtn.textContent = "Sign Out";
   signInBtn.onclick = () => signOutEverywhere();
 }
 
 function renderHeaderSignedOut(signInBtn, signUpBtn) {
-  signUpBtn.hidden = false;
+  signUpBtn.style.display = "";
   signInBtn.textContent = "Sign In";
   const next = safeNextPath(window.location.pathname);
   signInBtn.onclick = () => {

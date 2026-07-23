@@ -48,6 +48,20 @@
         <button type="button" class="btn btn-sm header-actions__signin">Sign In</button>
         <button type="button" class="btn btn-sm header-actions__signup">Sign Up</button>
       </div>
+      <script>
+        (function () {
+          try {
+            if (localStorage.getItem("tb_signed_in_hint") === "1") {
+              var signInBtn = document.querySelector(".header-actions__signin");
+              var signUpBtn = document.querySelector(".header-actions__signup");
+              if (signInBtn && signUpBtn) {
+                signUpBtn.style.display = "none";
+                signInBtn.textContent = "Sign Out";
+              }
+            }
+          } catch (e) {}
+        })();
+      </script>
       <div class="updates-badge">
         <img src="../assets/img/Updates.png" alt="New updates weekly">
       </div>
