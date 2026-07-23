@@ -29,6 +29,19 @@ svg {
   max-width: 100%;
 }
 
+#main.js-nav-fade {
+  transition: opacity 0.28s var(--ease-premium), transform 0.28s var(--ease-premium);
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #main.js-nav-fade {
+    transition: none;
+    transform: none;
+  }
+}
+
 ul {
   list-style: none;
   padding: 0;

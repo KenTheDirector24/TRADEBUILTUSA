@@ -13,6 +13,22 @@
   <link rel="stylesheet" href="css/styles.css">
 
   <style>
+    #main.js-anim {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.4s var(--ease-premium, ease), transform 0.4s var(--ease-premium, ease);
+    }
+    #main.js-anim.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #main.js-anim {
+        transition: none;
+        opacity: 1;
+        transform: none;
+      }
+    }
     .auth-shell {
       max-width: 420px;
       margin: 0 auto;
@@ -24,11 +40,19 @@
       border-radius: var(--radius-md, 12px);
       padding: 2rem;
       box-shadow: var(--shadow-sm);
-      transition: opacity 0.18s ease, transform 0.18s ease;
+      transition: opacity 0.22s var(--ease-premium, ease), transform 0.22s var(--ease-premium, ease);
     }
     .auth-card.is-switching {
       opacity: 0;
-      transform: translateY(6px);
+      transform: translateY(8px);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .auth-card {
+        transition: none;
+      }
+      .auth-card.is-switching {
+        transform: none;
+      }
     }
     .auth-card h1 {
       margin: 0 0 0.35rem;
@@ -218,6 +242,19 @@
     </div>
   </main>
 
+  <script>
+    (function () {
+      var main = document.getElementById("main");
+      if (!main) return;
+      main.classList.add("js-anim");
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          main.classList.add("is-visible");
+        });
+      });
+    })();
+  </script>
+
   <script src="js/main.js"></script>
   <script type="module">
     import {
@@ -273,6 +310,14 @@
     applyMode();
 
     toggleBtn.addEventListener("click", () => {
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduceMotion) {
+        mode = mode === "signup" ? "signin" : "signup";
+        errorBox.classList.remove("is-visible", "is-success");
+        applyMode();
+        emailInput.focus();
+        return;
+      }
       card.classList.add("is-switching");
       window.setTimeout(() => {
         mode = mode === "signup" ? "signin" : "signup";
@@ -280,7 +325,7 @@
         applyMode();
         card.classList.remove("is-switching");
         emailInput.focus();
-      }, 180);
+      }, 220);
     });
 
     function showError(message) {

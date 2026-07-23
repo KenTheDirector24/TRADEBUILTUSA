@@ -50,15 +50,28 @@ function renderHeaderSignedIn(signInBtn, signUpBtn) {
   signInBtn.onclick = () => signOutEverywhere();
 }
 
+function navigateWithFade(url) {
+  const main = document.getElementById("main");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion || !main) {
+    window.location.href = url;
+    return;
+  }
+  main.classList.add("js-nav-fade");
+  window.setTimeout(() => {
+    window.location.href = url;
+  }, 280);
+}
+
 function renderHeaderSignedOut(signInBtn, signUpBtn) {
   signUpBtn.style.display = "";
   signInBtn.textContent = "Sign In";
   const next = safeNextPath(window.location.pathname);
   signInBtn.onclick = () => {
-    window.location.href = `/login.html?next=${encodeURIComponent(next)}`;
+    navigateWithFade(`/login.html?next=${encodeURIComponent(next)}`);
   };
   signUpBtn.onclick = () => {
-    window.location.href = `/login.html?mode=signup&next=${encodeURIComponent(next)}`;
+    navigateWithFade(`/login.html?mode=signup&next=${encodeURIComponent(next)}`);
   };
 }
 
