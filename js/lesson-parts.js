@@ -25,7 +25,7 @@
 
   var isQuiz = document.querySelector('[data-quiz-question]') !== null;
   var cloudKind = isQuiz ? 'quizzes' : 'lessons';
-  var cloudPageId = normalizePath(window.location.pathname).replace(/^\//, '') || 'index';
+  var cloudPageId = normalizePath(window.location.pathname).replace(/^\//, '').replace(/\//g, '-') || 'index';
 
   var readSavedProgress = function () {
     try {

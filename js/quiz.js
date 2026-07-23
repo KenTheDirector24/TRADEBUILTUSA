@@ -13,7 +13,7 @@
 
   var SCORE_KEY = 'tb:quiz-score:' + window.location.pathname;
   var ANSWERS_KEY = 'tb:quiz-answers:' + window.location.pathname;
-  var cloudPageId = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '').replace(/\/$/, '') || 'index';
+  var cloudPageId = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '').replace(/^\//, '').replace(/\//g, '-') || 'index';
 
   var readSavedAnswers = function () {
     try {

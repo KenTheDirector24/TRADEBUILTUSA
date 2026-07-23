@@ -133,17 +133,17 @@ function cloudDocRef(kind, pageId) {
 }
 
 async function saveCloudProgress(kind, pageId, data) {
-  const ref = cloudDocRef(kind, pageId);
-  if (!ref) return;
   try {
+    const ref = cloudDocRef(kind, pageId);
+    if (!ref) return;
     await setDoc(ref, { ...data, updatedAt: Date.now() }, { merge: true });
   } catch (e) {}
 }
 
 async function loadCloudProgress(kind, pageId) {
-  const ref = cloudDocRef(kind, pageId);
-  if (!ref) return null;
   try {
+    const ref = cloudDocRef(kind, pageId);
+    if (!ref) return null;
     const snap = await getDoc(ref);
     return snap.exists() ? snap.data() : null;
   } catch (e) {

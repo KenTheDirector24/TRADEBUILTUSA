@@ -21,7 +21,7 @@
     var partKey = root.getAttribute('data-part') || rootIndex;
     var STORAGE_KEY = 'tb:hotspot-progress:' + window.location.pathname + ':' + partKey;
 
-    var cloudPageId = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '').replace(/\/$/, '') || 'index';
+    var cloudPageId = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '').replace(/^\//, '').replace(/\//g, '-') || 'index';
     var cloudField = 'hotspots_' + String(partKey).replace(/[.\/\[\]~*]/g, '_');
 
     var readSavedFound = function () {
