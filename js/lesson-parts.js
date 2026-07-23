@@ -115,7 +115,7 @@
 
   var nextHint = document.createElement('span');
   nextHint.className = 'part-nav__hint';
-  nextHint.textContent = 'Complete the task above to continue';
+  nextHint.textContent = isQuiz ? 'Answer the question above to continue' : 'Complete the task above to continue';
   nextHint.hidden = true;
 
   var nextWrap = document.createElement('div');
