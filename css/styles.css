@@ -476,9 +476,11 @@ body.is-leaving #main {
 .header-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-4);
   flex: 0 0 auto;
-  margin-right: clamp(100px, 16vh, 180px);
+  min-width: 200px;
+  margin-right: clamp(130px, 18vh, 200px);
 }
 
 .header-actions__signin {

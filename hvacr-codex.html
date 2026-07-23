@@ -55,8 +55,7 @@
               var signInBtn = document.querySelector(".header-actions__signin");
               var signUpBtn = document.querySelector(".header-actions__signup");
               if (signInBtn && signUpBtn) {
-                signUpBtn.style.visibility = "hidden";
-                signUpBtn.style.pointerEvents = "none";
+                signUpBtn.style.display = "none";
                 signInBtn.textContent = "Sign Out";
               }
             }
