@@ -18,6 +18,7 @@ import {
   doc,
   setDoc,
   getDoc,
+  serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const app = initializeApp(firebaseConfig);
@@ -33,7 +34,7 @@ async function ensureUserProfile(user) {
   try {
     await setDoc(
       doc(db, "users", user.uid),
-      { email: user.email, updatedAt: Date.now() },
+      { email: user.email, updatedAt: serverTimestamp() },
       { merge: true }
     );
   } catch (e) {}
@@ -146,7 +147,7 @@ async function saveCloudProgress(kind, pageId, data) {
   try {
     const ref = cloudDocRef(kind, pageId);
     if (!ref) return;
-    await setDoc(ref, { ...data, updatedAt: Date.now() }, { merge: true });
+    await setDoc(ref, { ...data, updatedAt: serverTimestamp() }, { merge: true });
   } catch (e) {}
 }
 
