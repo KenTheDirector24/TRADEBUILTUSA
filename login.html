@@ -411,7 +411,15 @@
       }
     });
 
+    // Only redirect on the initial auth check (someone already signed in
+    // landing on this page directly). Ignore later state changes fired by
+    // the form's own sign-in/sign-up — afterAuth() owns that redirect, and
+    // firing here too would race it and cut off startSession/ensureUserProfile
+    // mid-request when the navigation aborts them.
+    let initialAuthChecked = false;
     onAuthStateChanged(auth, (user) => {
+      if (initialAuthChecked) return;
+      initialAuthChecked = true;
       if (user) window.location.href = nextPath;
     });
   </script>
