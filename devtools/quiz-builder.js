@@ -75,7 +75,6 @@
   var questionsContainer = document.getElementById('qb-questions');
   var addQuestionBtn = document.getElementById('qb-add-question');
   var downloadBtn = document.getElementById('qb-download');
-  var previewBtn = document.getElementById('qb-preview');
   var clearBtn = document.getElementById('qb-clear');
   var statusEl = document.getElementById('qb-status');
 
@@ -217,10 +216,6 @@
     textField.appendChild(textArea);
     card.appendChild(textField);
 
-    var optionsLabel = document.createElement('label');
-    optionsLabel.textContent = 'Answer options — mark the correct one';
-    card.appendChild(optionsLabel);
-
     question.options.forEach(function (option, oIndex) {
       card.appendChild(renderOption(question, qIndex, oIndex));
     });
@@ -345,7 +340,6 @@
 
       return '        <div class="section-divider" aria-hidden="true"></div>\n\n' +
         '        <div class="lesson-block lesson-block--wide lesson-part" data-part="' + partNum + '" data-quiz-question>\n' +
-        '          <h2 class="hotspot__heading">Question ' + partNum + '</h2>\n' +
         '          <p class="hotspot__intro">' + escapeHtml(question.text) + '</p>\n' +
         '          <div class="quiz-options" role="group" aria-label="Answer options for question ' + partNum + '">\n' +
         optionsHtml + '\n' +
@@ -607,20 +601,6 @@
       }, 700);
     }
     setStatus('Downloaded ' + savedNote + ' — drop them all into the /quizzes folder.');
-  });
-
-  previewBtn.addEventListener('click', function () {
-    var result = validate();
-    if (result.errors.length) {
-      setStatus(result.errors[0], true);
-      return;
-    }
-    var html = buildQuizPage(result.slug);
-    var baseHref = new URL('../quizzes/', window.location.href).href;
-    html = html.replace('<head>', '<head>\n  <base href="' + baseHref + '">');
-    var blob = new Blob([html], { type: 'text/html' });
-    var url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
   });
 
   clearBtn.addEventListener('click', function () {

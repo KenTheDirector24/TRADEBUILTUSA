@@ -1732,6 +1732,22 @@ body.is-leaving #main {
   width: 100%;
 }
 
+.lesson-progress--quiz {
+  max-width: none;
+  width: auto;
+  margin: 0;
+}
+
+.lesson-progress__counter {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-slate);
+  white-space: nowrap;
+}
+
 .lesson-progress__dot {
   position: relative;
   flex: 0 0 auto;

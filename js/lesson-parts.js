@@ -122,7 +122,7 @@
   progress.hidden = true;
   progress.setAttribute('role', 'progressbar');
   progress.setAttribute('aria-valuemin', '1');
-  progress.setAttribute('aria-valuemax', String(parts.length));
+  progress.setAttribute('aria-valuemax', String(isQuiz ? document.querySelectorAll('[data-quiz-question]').length : parts.length));
 
   var ICON_CHECK = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -133,38 +133,48 @@
     return text || ('Part ' + (i + 1));
   });
 
-  var progressSteps = document.createElement('div');
-  progressSteps.className = 'lesson-progress__steps';
-
+  var quizQuestionCount = document.querySelectorAll('[data-quiz-question]').length;
+  var counterEl = null;
+  var progressSteps = null;
   var dots = [];
   var connectors = [];
 
-  parts.forEach(function (part, i) {
-    if (i > 0) {
-      var connector = document.createElement('span');
-      connector.className = 'lesson-progress__connector';
-      progressSteps.appendChild(connector);
-      connectors.push(connector);
-    }
-    var dot = document.createElement('span');
-    dot.className = 'lesson-progress__dot';
-    dot.title = stepTitles[i];
+  if (isQuiz) {
+    progress.classList.add('lesson-progress--quiz');
+    counterEl = document.createElement('span');
+    counterEl.className = 'lesson-progress__counter';
+    progress.appendChild(counterEl);
+  } else {
+    progressSteps = document.createElement('div');
+    progressSteps.className = 'lesson-progress__steps';
 
-    var numSpan = document.createElement('span');
-    numSpan.className = 'lesson-progress__dot-face lesson-progress__dot-num';
-    numSpan.textContent = String(i + 1);
+    parts.forEach(function (part, i) {
+      if (i > 0) {
+        var connector = document.createElement('span');
+        connector.className = 'lesson-progress__connector';
+        progressSteps.appendChild(connector);
+        connectors.push(connector);
+      }
+      var dot = document.createElement('span');
+      dot.className = 'lesson-progress__dot';
+      dot.title = stepTitles[i];
 
-    var checkSpan = document.createElement('span');
-    checkSpan.className = 'lesson-progress__dot-face lesson-progress__dot-check';
-    checkSpan.innerHTML = ICON_CHECK;
+      var numSpan = document.createElement('span');
+      numSpan.className = 'lesson-progress__dot-face lesson-progress__dot-num';
+      numSpan.textContent = String(i + 1);
 
-    dot.appendChild(numSpan);
-    dot.appendChild(checkSpan);
-    progressSteps.appendChild(dot);
-    dots.push(dot);
-  });
+      var checkSpan = document.createElement('span');
+      checkSpan.className = 'lesson-progress__dot-face lesson-progress__dot-check';
+      checkSpan.innerHTML = ICON_CHECK;
 
-  progress.appendChild(progressSteps);
+      dot.appendChild(numSpan);
+      dot.appendChild(checkSpan);
+      progressSteps.appendChild(dot);
+      dots.push(dot);
+    });
+
+    progress.appendChild(progressSteps);
+  }
 
   var topbar = document.querySelector('.lesson-topbar');
   if (topbar) {
@@ -212,6 +222,16 @@
 
   var updateProgress = function () {
     if (current < 0) {
+      return;
+    }
+    if (isQuiz) {
+      var onQuestion = current < quizQuestionCount;
+      progress.hidden = !onQuestion;
+      if (onQuestion) {
+        counterEl.textContent = 'Question ' + (current + 1) + ' of ' + quizQuestionCount;
+        progress.setAttribute('aria-valuenow', String(current + 1));
+        progress.setAttribute('aria-valuetext', counterEl.textContent);
+      }
       return;
     }
     dots.forEach(function (dot, i) {

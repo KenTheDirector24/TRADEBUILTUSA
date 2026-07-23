@@ -14,7 +14,7 @@
   <style>
     body.quiz-builder {
       background: var(--color-paper);
-      padding: var(--space-8) 0 var(--space-16);
+      padding: var(--space-5) 0 var(--space-10);
       min-height: 100vh;
     }
 
@@ -25,28 +25,29 @@
     }
 
     .qb-banner {
+      display: inline-block;
       background: var(--color-navy);
       color: #fff;
-      padding: var(--space-3) var(--space-5);
+      padding: var(--space-2) var(--space-4);
       border-radius: var(--radius-md);
-      margin-bottom: var(--space-6);
+      margin-bottom: var(--space-4);
       font-size: var(--text-sm);
-      line-height: 1.5;
+      line-height: 1.4;
     }
 
     .qb-shell h1 {
-      margin-bottom: var(--space-2);
+      margin-bottom: var(--space-1);
     }
 
     .qb-shell h2 {
-      margin: var(--space-6) 0 var(--space-3);
+      margin: var(--space-4) 0 var(--space-2);
     }
 
     .qb-field {
       display: flex;
       flex-direction: column;
       gap: var(--space-1);
-      margin-bottom: var(--space-4);
+      margin-bottom: var(--space-3);
     }
 
     .qb-field label {
@@ -62,7 +63,7 @@
     .qb-field textarea {
       font-family: var(--font-body);
       font-size: var(--text-base);
-      padding: var(--space-2) var(--space-3);
+      padding: var(--space-1) var(--space-3);
       border: 1px solid var(--color-line);
       border-radius: var(--radius-sm);
       background: var(--color-surface);
@@ -72,14 +73,14 @@
 
     .qb-field textarea {
       resize: vertical;
-      min-height: 3.2em;
+      min-height: 2.4em;
       font-family: var(--font-body);
     }
 
     .qb-thumb-row {
       display: flex;
       align-items: flex-start;
-      gap: var(--space-4);
+      gap: var(--space-3);
     }
 
     .qb-thumb-row .qb-field {
@@ -100,8 +101,8 @@
 
     .qb-thumb-preview {
       flex: 0 0 auto;
-      width: 90px;
-      height: 135px;
+      width: 64px;
+      height: 96px;
       border: 1px solid var(--color-line);
       border-radius: var(--radius-sm);
       background: var(--color-surface) center / cover no-repeat;
@@ -115,8 +116,8 @@
     .qb-question {
       border: 1px solid var(--color-line);
       border-radius: var(--radius-md);
-      padding: var(--space-4);
-      margin-bottom: var(--space-5);
+      padding: var(--space-3);
+      margin-bottom: var(--space-3);
       background: var(--color-surface);
     }
 
@@ -124,7 +125,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: var(--space-3);
+      margin-bottom: var(--space-2);
     }
 
     .qb-question__head h3 {
@@ -137,13 +138,13 @@
       display: flex;
       align-items: center;
       gap: var(--space-2);
-      margin-bottom: var(--space-2);
+      margin-bottom: var(--space-1);
     }
 
     .qb-option-row input[type="radio"] {
       flex: 0 0 auto;
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       accent-color: var(--color-success);
     }
 
@@ -151,7 +152,7 @@
       flex: 1;
       font-family: var(--font-body);
       font-size: var(--text-sm);
-      padding: var(--space-2) var(--space-3);
+      padding: var(--space-1) var(--space-3);
       border: 1px solid var(--color-line);
       border-radius: var(--radius-sm);
       background: var(--color-paper);
@@ -161,7 +162,7 @@
     .qb-hint {
       font-size: var(--text-xs);
       color: var(--color-slate);
-      margin: 0 0 var(--space-3);
+      margin: 0 0 var(--space-2);
     }
 
     .qb-remove-btn,
@@ -188,13 +189,13 @@
       position: sticky;
       bottom: 0;
       background: var(--color-paper);
-      padding: var(--space-4) 0;
+      padding: var(--space-3) 0;
       border-top: 1px solid var(--color-line);
       display: flex;
       gap: var(--space-3);
       flex-wrap: wrap;
       align-items: center;
-      margin-top: var(--space-6);
+      margin-top: var(--space-4);
     }
 
     .qb-danger-btn {
@@ -240,18 +241,15 @@
     </div>
 
     <h1>Quiz Builder</h1>
-    <p class="qb-hint">Your draft autosaves to this browser as you type.</p>
-
-    <h2>New Quiz</h2>
 
     <div class="qb-field">
       <label for="qb-title">Quiz title</label>
-      <input type="text" id="qb-title" placeholder="e.g. Impact Drivers Quiz">
+      <input type="text" id="qb-title">
     </div>
 
     <div class="qb-field">
       <label for="qb-description">Quiz description</label>
-      <textarea id="qb-description" placeholder="One or two sentences shown under the title on the quiz page."></textarea>
+      <textarea id="qb-description"></textarea>
     </div>
 
     <div class="qb-thumb-row">
@@ -264,17 +262,14 @@
     </div>
     <p class="qb-hint">Browse for an image from this device to use on the quizzes hub card. It's saved alongside the quiz files when you export. Leave blank to use the default quiz artwork.</p>
 
-    <h2>Questions</h2>
     <div id="qb-questions"></div>
     <button type="button" class="btn btn-light" id="qb-add-question">+ Add Question</button>
 
     <div class="qb-actions-bar">
       <button type="button" class="btn btn-primary" id="qb-download">Export Quiz</button>
-      <button type="button" class="btn btn-light" id="qb-preview">Preview</button>
       <button type="button" class="qb-danger-btn" id="qb-clear">Clear All</button>
       <span class="qb-status" id="qb-status"></span>
     </div>
-    <p class="qb-hint">Export asks where to save, then writes <code>&lt;slug&gt;.html</code> and <code>quizzes.json</code> there — pick the project's <code>/quizzes</code> folder. In browsers that don't support choosing a folder, it downloads both files instead.</p>
   </div>
 
   <script src="quiz-builder.js"></script>
