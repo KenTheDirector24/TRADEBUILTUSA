@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign In | TradeBuilt</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    .auth-shell {
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 3rem 1.25rem 4rem;
+    }
+    .auth-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md, 12px);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .auth-card h1 {
+      margin: 0 0 0.35rem;
+      font-size: var(--text-xl, 1.5rem);
+    }
+    .auth-card p.auth-sub {
+      margin: 0 0 1.5rem;
+      color: var(--color-slate);
+      font-size: var(--text-sm);
+    }
+    .auth-field {
+      margin-bottom: 1rem;
+    }
+    .auth-field label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      color: var(--color-ink);
+    }
+    .auth-field input {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      font-size: var(--text-base);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-sm);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      box-sizing: border-box;
+    }
+    .auth-field input:focus-visible {
+      outline: 2px solid var(--color-accent-strong);
+    }
+    .auth-submit {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+      color: var(--color-slate);
+      font-size: var(--text-sm);
+    }
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--color-line);
+    }
+    .auth-google {
+      width: 100%;
+    }
+    .auth-toggle {
+      margin-top: 1.5rem;
+      font-size: var(--text-sm);
+      text-align: center;
+      color: var(--color-slate);
+    }
+    .auth-toggle button {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--color-accent-strong);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: inherit;
+      font-family: inherit;
+    }
+    .auth-error {
+      display: none;
+      margin-bottom: 1rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      background: var(--color-accent-tint);
+      color: var(--color-accent-strong);
+      font-size: var(--text-sm);
+    }
+    .auth-error.is-visible {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="index.html">
+        <img src="assets/img/tradebuilt-logo.png" alt="TradeBuilt" width="2172" height="724">
+        <span class="logo__tagline">Skilled Trades Learning Platform</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="auth-shell">
+      <div class="auth-card">
+        <h1 id="auth-heading">Sign in</h1>
+        <p class="auth-sub" id="auth-sub">Sign in to continue to your course.</p>
+
+        <div class="auth-error" id="auth-error"></div>
+
+        <form id="auth-form" novalidate>
+          <div class="auth-field">
+            <label for="auth-email">Email</label>
+            <input type="email" id="auth-email" name="email" autocomplete="email" required>
+          </div>
+          <div class="auth-field">
+            <label for="auth-password">Password</label>
+            <input type="password" id="auth-password" name="password" autocomplete="current-password" minlength="6" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm auth-submit" id="auth-submit">Sign In</button>
+        </form>
+
+        <div class="auth-divider">or</div>
+
+        <button type="button" class="btn btn-light btn-sm auth-google" id="auth-google">Sign in with Google</button>
+
+        <p class="auth-toggle">
+          <span id="auth-toggle-copy">Don't have an account?</span>
+          <button type="button" id="auth-toggle-btn">Sign up</button>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/main.js"></script>
+  <script type="module">
+    import {
+      auth,
+      startSession,
+      safeNextPath,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signInWithPopup,
+      GoogleAuthProvider,
+      onAuthStateChanged,
+    } from "./js/auth.js";
+
+    const params = new URLSearchParams(window.location.search);
+    const nextPath = safeNextPath(params.get("next"));
+    let mode = params.get("mode") === "signup" ? "signup" : "signin";
+
+    const heading = document.getElementById("auth-heading");
+    const sub = document.getElementById("auth-sub");
+    const submitBtn = document.getElementById("auth-submit");
+    const toggleCopy = document.getElementById("auth-toggle-copy");
+    const toggleBtn = document.getElementById("auth-toggle-btn");
+    const errorBox = document.getElementById("auth-error");
+    const form = document.getElementById("auth-form");
+    const emailInput = document.getElementById("auth-email");
+    const passwordInput = document.getElementById("auth-password");
+    const googleBtn = document.getElementById("auth-google");
+
+    function applyMode() {
+      if (mode === "signup") {
+        heading.textContent = "Create your account";
+        sub.textContent = "Create an account to start your course.";
+        submitBtn.textContent = "Sign Up";
+        toggleCopy.textContent = "Already have an account?";
+        toggleBtn.textContent = "Sign in";
+      } else {
+        heading.textContent = "Sign in";
+        sub.textContent = "Sign in to continue to your course.";
+        submitBtn.textContent = "Sign In";
+        toggleCopy.textContent = "Don't have an account?";
+        toggleBtn.textContent = "Sign up";
+      }
+    }
+    applyMode();
+
+    toggleBtn.addEventListener("click", () => {
+      mode = mode === "signup" ? "signin" : "signup";
+      errorBox.classList.remove("is-visible");
+      applyMode();
+    });
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.classList.add("is-visible");
+    }
+
+    async function afterAuth(user) {
+      await startSession(user);
+      window.location.href = nextPath;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      errorBox.classList.remove("is-visible");
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      submitBtn.disabled = true;
+      try {
+        const credential =
+          mode === "signup"
+            ? await createUserWithEmailAndPassword(auth, email, password)
+            : await signInWithEmailAndPassword(auth, email, password);
+        await afterAuth(credential.user);
+      } catch (err) {
+        showError(err.message || "Something went wrong. Please try again.");
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    googleBtn.addEventListener("click", async () => {
+      errorBox.classList.remove("is-visible");
+      googleBtn.disabled = true;
+      try {
+        const provider = new GoogleAuthProvider();
+        const credential = await signInWithPopup(auth, provider);
+        await afterAuth(credential.user);
+      } catch (err) {
+        showError(err.message || "Something went wrong. Please try again.");
+      } finally {
+        googleBtn.disabled = false;
+      }
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) window.location.href = nextPath;
+    });
+  </script>
+</body>
+</html>
