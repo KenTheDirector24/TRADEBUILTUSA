@@ -29,6 +29,16 @@ function safeNextPath(rawNext) {
   return "/index.html";
 }
 
+async function ensureUserProfile(user) {
+  try {
+    await setDoc(
+      doc(db, "users", user.uid),
+      { email: user.email, updatedAt: Date.now() },
+      { merge: true }
+    );
+  } catch (e) {}
+}
+
 async function startSession(user) {
   const idToken = await user.getIdToken();
   const res = await fetch("/api/session-login", {
@@ -185,6 +195,7 @@ window.TB.hydratePageProgress = hydratePageProgress;
 export {
   auth,
   startSession,
+  ensureUserProfile,
   endSession,
   signOutEverywhere,
   safeNextPath,

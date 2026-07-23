@@ -260,6 +260,7 @@
     import {
       auth,
       startSession,
+      ensureUserProfile,
       safeNextPath,
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
@@ -341,6 +342,7 @@
 
     async function afterAuth(user) {
       await startSession(user);
+      await ensureUserProfile(user);
       window.location.href = nextPath;
     }
 
