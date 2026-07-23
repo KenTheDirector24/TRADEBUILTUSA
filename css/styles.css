@@ -787,6 +787,10 @@ body.is-leaving #main {
   background: linear-gradient(to right, transparent, rgba(18, 21, 26, 0.35), transparent);
 }
 
+.hub:has(.lesson-part) .section-divider {
+  display: none;
+}
+
 .hub__header--icon-only {
   display: flex;
   flex-direction: column;
@@ -1907,6 +1911,10 @@ body.is-leaving #main {
   align-items: center;
   justify-content: center;
   margin-bottom: 0;
+}
+
+.lesson-part {
+  display: none;
 }
 
 body.is-lesson-active .lesson-part {
