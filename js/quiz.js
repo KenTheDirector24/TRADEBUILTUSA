@@ -14,6 +14,25 @@
   var answers = {};
 
   var SCORE_KEY = 'tb:quiz-score:' + window.location.pathname;
+  var cloudPageId = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '').replace(/\/$/, '') || 'index';
+
+  var hasLocalScore = function () {
+    try {
+      return !!window.localStorage.getItem(SCORE_KEY);
+    } catch (e) {
+      return false;
+    }
+  };
+
+  if (!hasLocalScore() && window.TB && window.TB.hydratePageProgress) {
+    window.TB.hydratePageProgress('quizzes', cloudPageId, function (data) {
+      if (data.quizScore && !hasLocalScore()) {
+        try { window.localStorage.setItem(SCORE_KEY, data.quizScore); } catch (e) {}
+        return true;
+      }
+      return false;
+    });
+  }
 
   var lockQuestion = function (question, options, chosen) {
     options.forEach(function (option) {
@@ -53,9 +72,13 @@
       }
     });
     scoreEl.textContent = 'You scored ' + correct + ' out of ' + questions.length + '.';
+    var scoreValue = correct + '/' + questions.length;
     try {
-      window.localStorage.setItem(SCORE_KEY, correct + '/' + questions.length);
+      window.localStorage.setItem(SCORE_KEY, scoreValue);
     } catch (e) {}
+    if (window.TB && window.TB.saveCloudProgress) {
+      window.TB.saveCloudProgress('quizzes', cloudPageId, { quizScore: scoreValue });
+    }
   };
 
   if (resultsPart) {

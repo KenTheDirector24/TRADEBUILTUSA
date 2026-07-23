@@ -13,9 +13,16 @@ import {
   browserLocalPersistence,
   browserSessionPersistence,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 function safeNextPath(rawNext) {
   if (typeof rawNext === "string" && /^\/(?!\/)/.test(rawNext)) return rawNext;
@@ -101,6 +108,76 @@ function wireHeaderButtons() {
 }
 
 wireHeaderButtons();
+
+// Bridge so classic (non-module) scripts — lesson-parts.js, hotspot.js,
+// quiz.js — can sync progress to Firestore under the signed-in user without
+// each needing their own Firebase import. Progress is organized per user as
+// users/{uid}/lessons/{pageId} and users/{uid}/quizzes/{pageId}, one doc per
+// page that gets overwritten (merged) on every save — never duplicated.
+let resolveAuthReady;
+const authReadyPromise = new Promise((resolve) => {
+  resolveAuthReady = resolve;
+});
+let authReadyResolved = false;
+onAuthStateChanged(auth, (user) => {
+  if (!authReadyResolved) {
+    authReadyResolved = true;
+    resolveAuthReady(user);
+  }
+});
+
+function cloudDocRef(kind, pageId) {
+  const user = auth.currentUser;
+  if (!user) return null;
+  return doc(db, "users", user.uid, kind, pageId);
+}
+
+async function saveCloudProgress(kind, pageId, data) {
+  const ref = cloudDocRef(kind, pageId);
+  if (!ref) return;
+  try {
+    await setDoc(ref, { ...data, updatedAt: Date.now() }, { merge: true });
+  } catch (e) {}
+}
+
+async function loadCloudProgress(kind, pageId) {
+  const ref = cloudDocRef(kind, pageId);
+  if (!ref) return null;
+  try {
+    const snap = await getDoc(ref);
+    return snap.exists() ? snap.data() : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// applyFn(cloudData) should write into localStorage and return true only if
+// it actually wrote something new (i.e. local was empty). Reloads once so
+// the page's normal localStorage-reading code picks up the hydrated value.
+function hydratePageProgress(kind, pageId, applyFn) {
+  authReadyPromise.then((user) => {
+    if (!user) return;
+    loadCloudProgress(kind, pageId).then((data) => {
+      if (!data) return;
+      let wrote = false;
+      try {
+        wrote = !!applyFn(data);
+      } catch (e) {}
+      if (!wrote) return;
+      const flagKey = "tb:hydrated:" + kind + ":" + pageId;
+      try {
+        if (window.sessionStorage.getItem(flagKey)) return;
+        window.sessionStorage.setItem(flagKey, "1");
+      } catch (e) {}
+      window.location.reload();
+    });
+  });
+}
+
+window.TB = window.TB || {};
+window.TB.saveCloudProgress = saveCloudProgress;
+window.TB.loadCloudProgress = loadCloudProgress;
+window.TB.hydratePageProgress = hydratePageProgress;
 
 export {
   auth,

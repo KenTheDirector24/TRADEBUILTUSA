@@ -23,6 +23,10 @@
   var PROGRESS_KEY = 'tb:lesson-progress:' + window.location.pathname;
   var STATUS_KEY = 'tb:lesson-status:' + normalizePath(window.location.pathname);
 
+  var isQuiz = document.querySelector('[data-quiz-question]') !== null;
+  var cloudKind = isQuiz ? 'quizzes' : 'lessons';
+  var cloudPageId = normalizePath(window.location.pathname).replace(/^\//, '') || 'index';
+
   var readSavedProgress = function () {
     try {
       var raw = window.localStorage.getItem(PROGRESS_KEY);
@@ -38,6 +42,9 @@
     try {
       window.localStorage.setItem(PROGRESS_KEY, String(index));
     } catch (e) {}
+    if (window.TB && window.TB.saveCloudProgress) {
+      window.TB.saveCloudProgress(cloudKind, cloudPageId, { partIndex: index });
+    }
   };
 
   var clearSavedProgress = function () {
@@ -60,8 +67,22 @@
   var savedCurrent = readSavedProgress();
   var current = savedCurrent !== null ? savedCurrent : (startBtn ? -1 : 0);
   var animating = false;
-  var isQuiz = document.querySelector('[data-quiz-question]') !== null;
   var completeLabel = isQuiz ? 'Finish Quiz' : 'Complete Lesson';
+
+  if (savedCurrent === null && window.TB && window.TB.hydratePageProgress) {
+    window.TB.hydratePageProgress(cloudKind, cloudPageId, function (data) {
+      var wrote = false;
+      if (typeof data.partIndex === 'number' && readSavedProgress() === null) {
+        saveProgress(data.partIndex);
+        wrote = true;
+      }
+      if (data.status && !window.localStorage.getItem(STATUS_KEY)) {
+        try { window.localStorage.setItem(STATUS_KEY, data.status); } catch (e) {}
+        wrote = true;
+      }
+      return wrote;
+    });
+  }
 
   var TRANSITION_MS = 280;
 
@@ -198,15 +219,21 @@
   };
 
   var syncStatus = function (incomplete) {
+    var value = null;
     try {
       if (current < 0) {
         window.localStorage.removeItem(STATUS_KEY);
       } else if (current === parts.length - 1 && !incomplete) {
-        window.localStorage.setItem(STATUS_KEY, 'complete');
+        value = 'complete';
+        window.localStorage.setItem(STATUS_KEY, value);
       } else {
-        window.localStorage.setItem(STATUS_KEY, 'in-progress');
+        value = 'in-progress';
+        window.localStorage.setItem(STATUS_KEY, value);
       }
     } catch (e) {}
+    if (value && window.TB && window.TB.saveCloudProgress) {
+      window.TB.saveCloudProgress(cloudKind, cloudPageId, { status: value });
+    }
   };
 
   var updateNav = function () {

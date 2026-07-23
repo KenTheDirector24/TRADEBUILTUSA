@@ -18,7 +18,11 @@
 
     var total = markers.length;
 
-    var STORAGE_KEY = 'tb:hotspot-progress:' + window.location.pathname + ':' + (root.getAttribute('data-part') || rootIndex);
+    var partKey = root.getAttribute('data-part') || rootIndex;
+    var STORAGE_KEY = 'tb:hotspot-progress:' + window.location.pathname + ':' + partKey;
+
+    var cloudPageId = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '').replace(/\/$/, '') || 'index';
+    var cloudField = 'hotspots_' + String(partKey).replace(/[.\/\[\]~*]/g, '_');
 
     var readSavedFound = function () {
       try {
@@ -34,9 +38,27 @@
       try {
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(found)));
       } catch (e) {}
+      if (window.TB && window.TB.saveCloudProgress) {
+        var patch = {};
+        patch[cloudField] = Array.from(found);
+        window.TB.saveCloudProgress('lessons', cloudPageId, patch);
+      }
     };
 
     var found = new Set(readSavedFound());
+
+    if (found.size === 0 && window.TB && window.TB.hydratePageProgress) {
+      window.TB.hydratePageProgress('lessons', cloudPageId, function (data) {
+        var list = data[cloudField];
+        if (Array.isArray(list) && list.length && readSavedFound().length === 0) {
+          try {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+          } catch (e) {}
+          return true;
+        }
+        return false;
+      });
+    }
 
     var progress = document.createElement('p');
     progress.className = 'hotspot__progress';
