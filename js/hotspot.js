@@ -47,16 +47,23 @@
 
     var found = new Set(readSavedFound());
 
-    if (found.size === 0 && window.TB && window.TB.hydratePageProgress) {
+    if (window.TB && window.TB.hydratePageProgress) {
       window.TB.hydratePageProgress('lessons', cloudPageId, function (data) {
-        var list = data[cloudField];
-        if (Array.isArray(list) && list.length && readSavedFound().length === 0) {
-          try {
-            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-          } catch (e) {}
-          return true;
+        var localList = readSavedFound();
+        var cloudList = Array.isArray(data[cloudField]) ? data[cloudField] : [];
+        var localKey = JSON.stringify(localList.slice().sort());
+        var cloudKey = JSON.stringify(cloudList.slice().sort());
+        if (cloudKey === localKey) {
+          return false;
         }
-        return false;
+        try {
+          if (cloudList.length) {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(cloudList));
+          } else {
+            window.localStorage.removeItem(STORAGE_KEY);
+          }
+        } catch (e) {}
+        return true;
       });
     }
 

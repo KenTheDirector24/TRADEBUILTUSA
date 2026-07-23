@@ -62,6 +62,18 @@
         window.localStorage.removeItem(key);
       });
     } catch (e) {}
+
+    // Cloud is authoritative, so a local-only clear would just get
+    // overwritten back from Firestore on the next load — clear there too.
+    if (window.TB && window.TB.saveCloudProgress) {
+      var patch = { partIndex: null, status: null };
+      document.querySelectorAll('[data-hotspot]').forEach(function (root, rootIndex) {
+        var partKey = root.getAttribute('data-part') || rootIndex;
+        var field = 'hotspots_' + String(partKey).replace(/[.\/\[\]~*]/g, '_');
+        patch[field] = [];
+      });
+      window.TB.saveCloudProgress(cloudKind, cloudPageId, patch);
+    }
   };
 
   var savedCurrent = readSavedProgress();
@@ -69,18 +81,37 @@
   var animating = false;
   var completeLabel = isQuiz ? 'Finish Quiz' : 'Complete Lesson';
 
-  if (savedCurrent === null && window.TB && window.TB.hydratePageProgress) {
+  if (window.TB && window.TB.hydratePageProgress) {
     window.TB.hydratePageProgress(cloudKind, cloudPageId, function (data) {
-      var wrote = false;
-      if (typeof data.partIndex === 'number' && readSavedProgress() === null) {
-        saveProgress(data.partIndex);
-        wrote = true;
+      var changed = false;
+
+      var localIndex = readSavedProgress();
+      var cloudIndex = typeof data.partIndex === 'number' ? data.partIndex : null;
+      if (cloudIndex !== localIndex) {
+        try {
+          if (cloudIndex === null) {
+            window.localStorage.removeItem(PROGRESS_KEY);
+          } else {
+            window.localStorage.setItem(PROGRESS_KEY, String(cloudIndex));
+          }
+        } catch (e) {}
+        changed = true;
       }
-      if (data.status && !window.localStorage.getItem(STATUS_KEY)) {
-        try { window.localStorage.setItem(STATUS_KEY, data.status); } catch (e) {}
-        wrote = true;
+
+      var localStatus = window.localStorage.getItem(STATUS_KEY);
+      var cloudStatus = data.status || null;
+      if (cloudStatus !== localStatus) {
+        try {
+          if (cloudStatus) {
+            window.localStorage.setItem(STATUS_KEY, cloudStatus);
+          } else {
+            window.localStorage.removeItem(STATUS_KEY);
+          }
+        } catch (e) {}
+        changed = true;
       }
-      return wrote;
+
+      return changed;
     });
   }
 
@@ -218,7 +249,7 @@
     });
   };
 
-  var syncStatus = function (incomplete) {
+  var syncStatus = function (incomplete, skipCloud) {
     var value = null;
     try {
       if (current < 0) {
@@ -231,12 +262,15 @@
         window.localStorage.setItem(STATUS_KEY, value);
       }
     } catch (e) {}
-    if (value && window.TB && window.TB.saveCloudProgress) {
+    if (value && !skipCloud && window.TB && window.TB.saveCloudProgress) {
       window.TB.saveCloudProgress(cloudKind, cloudPageId, { status: value });
     }
   };
 
-  var updateNav = function () {
+  // skipCloud: true when this is just re-rendering restored state (initial
+  // page load), not a real change — avoids re-pushing stale local data to
+  // Firestore on every visit, which would silently undo a cloud-side delete.
+  var updateNav = function (skipCloud) {
     prevBtn.disabled = current <= 0;
     prevBtn.classList.toggle('is-invisible', current <= 0);
     var isLastPart = current > -1 && current === parts.length - 1;
@@ -244,7 +278,7 @@
     nextBtn.disabled = current < 0 || incomplete;
     nextBtn.innerHTML = isLastPart ? '<span>' + completeLabel + '</span>' : '<span>Next</span>' + ICON_NEXT;
     nextHint.hidden = !incomplete;
-    syncStatus(incomplete);
+    syncStatus(incomplete, skipCloud);
   };
 
   var updateProgress = function () {
@@ -349,7 +383,7 @@
 
   showOnly(current);
   syncChrome();
-  updateNav();
+  updateNav(true);
 
   document.addEventListener('hotspot:complete', updateNav);
   document.addEventListener('quiz:answered', updateNav);

@@ -37,30 +37,37 @@
     }
   };
 
-  var hasLocalScore = function () {
-    try {
-      return !!window.localStorage.getItem(SCORE_KEY);
-    } catch (e) {
-      return false;
-    }
-  };
-
-  var hasLocalAnswers = function () {
-    return Object.keys(readSavedAnswers()).length > 0;
-  };
-
-  if (!hasLocalAnswers() && window.TB && window.TB.hydratePageProgress) {
+  if (window.TB && window.TB.hydratePageProgress) {
     window.TB.hydratePageProgress('quizzes', cloudPageId, function (data) {
-      var wrote = false;
-      if (data.answers && typeof data.answers === 'object' && Object.keys(data.answers).length && !hasLocalAnswers()) {
-        try { window.localStorage.setItem(ANSWERS_KEY, JSON.stringify(data.answers)); } catch (e) {}
-        wrote = true;
+      var changed = false;
+
+      var localAnswers = readSavedAnswers();
+      var cloudAnswers = (data.answers && typeof data.answers === 'object') ? data.answers : {};
+      if (JSON.stringify(cloudAnswers) !== JSON.stringify(localAnswers)) {
+        try {
+          if (Object.keys(cloudAnswers).length) {
+            window.localStorage.setItem(ANSWERS_KEY, JSON.stringify(cloudAnswers));
+          } else {
+            window.localStorage.removeItem(ANSWERS_KEY);
+          }
+        } catch (e) {}
+        changed = true;
       }
-      if (data.quizScore && !hasLocalScore()) {
-        try { window.localStorage.setItem(SCORE_KEY, data.quizScore); } catch (e) {}
-        wrote = true;
+
+      var localScore = window.localStorage.getItem(SCORE_KEY);
+      var cloudScore = data.quizScore || null;
+      if (cloudScore !== localScore) {
+        try {
+          if (cloudScore) {
+            window.localStorage.setItem(SCORE_KEY, cloudScore);
+          } else {
+            window.localStorage.removeItem(SCORE_KEY);
+          }
+        } catch (e) {}
+        changed = true;
       }
-      return wrote;
+
+      return changed;
     });
   }
 
@@ -101,7 +108,10 @@
   // ran, so nudge it to re-check the current question's unlocked state.
   document.dispatchEvent(new CustomEvent('quiz:answered'));
 
-  var showResults = function () {
+  // skipCloud: true when this is just re-rendering a restored score on page
+  // load, not a real completion — avoids re-pushing stale local data to
+  // Firestore on every visit, which would silently undo a cloud-side delete.
+  var showResults = function (skipCloud) {
     if (!scoreEl) {
       return;
     }
@@ -118,14 +128,14 @@
     try {
       window.localStorage.setItem(SCORE_KEY, scoreValue);
     } catch (e) {}
-    if (window.TB && window.TB.saveCloudProgress) {
+    if (!skipCloud && window.TB && window.TB.saveCloudProgress) {
       window.TB.saveCloudProgress('quizzes', cloudPageId, { quizScore: scoreValue });
     }
   };
 
   if (resultsPart) {
     if (!resultsPart.hidden) {
-      showResults();
+      showResults(true);
     }
     new MutationObserver(function () {
       if (!resultsPart.hidden) {
@@ -150,6 +160,11 @@
         window.localStorage.removeItem(SCORE_KEY);
         window.localStorage.removeItem(ANSWERS_KEY);
       } catch (e) {}
+      // Cloud is authoritative, so a local-only clear would just get
+      // overwritten back from Firestore on the next load — clear there too.
+      if (window.TB && window.TB.saveCloudProgress) {
+        window.TB.saveCloudProgress('quizzes', cloudPageId, { answers: {}, quizScore: null, partIndex: null, status: null });
+      }
       window.location.reload();
     });
   }

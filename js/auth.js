@@ -151,17 +151,20 @@ async function loadCloudProgress(kind, pageId) {
   }
 }
 
-// applyFn(cloudData) should write into localStorage and return true only if
-// it actually wrote something new (i.e. local was empty). Reloads once so
-// the page's normal localStorage-reading code picks up the hydrated value.
+// Firestore is the source of truth for signed-in users — localStorage is
+// just a fast local cache. applyFn(cloudData) should make localStorage match
+// the cloud exactly (writing new values, and clearing anything local that
+// the cloud no longer has, e.g. after a support-side deletion) and return
+// true only if it actually changed something. Reloads once so the page's
+// normal localStorage-reading code picks up the corrected value. cloudData
+// is always an object — {} when no cloud doc exists (never saved, or deleted).
 function hydratePageProgress(kind, pageId, applyFn) {
   authReadyPromise.then((user) => {
     if (!user) return;
     loadCloudProgress(kind, pageId).then((data) => {
-      if (!data) return;
       let wrote = false;
       try {
-        wrote = !!applyFn(data);
+        wrote = !!applyFn(data || {});
       } catch (e) {}
       if (!wrote) return;
       const flagKey = "tb:hydrated:" + kind + ":" + pageId;
