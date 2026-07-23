@@ -24,6 +24,11 @@
       border-radius: var(--radius-md, 12px);
       padding: 2rem;
       box-shadow: var(--shadow-sm);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .auth-card.is-switching {
+      opacity: 0;
+      transform: translateY(6px);
     }
     .auth-card h1 {
       margin: 0 0 0.35rem;
@@ -61,6 +66,38 @@
       width: 100%;
       margin-top: 0.5rem;
     }
+    .auth-row {
+      display: flex;
+      align-items: center;
+      margin: -0.5rem 0 0;
+      font-size: var(--text-sm);
+    }
+    .auth-remember {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--color-slate);
+      cursor: pointer;
+    }
+    .auth-remember input {
+      margin: 0;
+      cursor: pointer;
+    }
+    .auth-forgot {
+      margin: 0.65rem 0 0;
+      text-align: center;
+      font-size: var(--text-sm);
+    }
+    .auth-forgot button {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--color-accent-strong);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: inherit;
+      font-family: inherit;
+    }
     .auth-divider {
       display: flex;
       align-items: center;
@@ -78,6 +115,17 @@
     }
     .auth-google {
       width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.85rem 1.15rem;
+      border: 1px solid var(--color-line);
+    }
+    .auth-google svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
     }
     .auth-toggle {
       margin-top: 1.5rem;
@@ -107,6 +155,10 @@
     .auth-error.is-visible {
       display: block;
     }
+    .auth-error.is-success {
+      background: rgba(46, 139, 87, 0.12);
+      color: var(--color-success);
+    }
   </style>
 </head>
 <body>
@@ -121,9 +173,9 @@
 
   <main id="main">
     <div class="auth-shell">
-      <div class="auth-card">
+      <div class="auth-card" id="auth-card">
         <h1 id="auth-heading">Sign in</h1>
-        <p class="auth-sub" id="auth-sub">Sign in to continue to your course.</p>
+        <p class="auth-sub" id="auth-sub">Sign in and keep improving your skills.</p>
 
         <div class="auth-error" id="auth-error"></div>
 
@@ -136,12 +188,27 @@
             <label for="auth-password">Password</label>
             <input type="password" id="auth-password" name="password" autocomplete="current-password" minlength="6" required>
           </div>
+          <div class="auth-row" id="auth-row">
+            <label class="auth-remember">
+              <input type="checkbox" id="auth-remember" checked>
+              Remember me
+            </label>
+          </div>
           <button type="submit" class="btn btn-primary btn-sm auth-submit" id="auth-submit">Sign In</button>
+          <p class="auth-forgot"><button type="button" id="auth-forgot-btn">Forgot password?</button></p>
         </form>
 
         <div class="auth-divider">or</div>
 
-        <button type="button" class="btn btn-light btn-sm auth-google" id="auth-google">Sign in with Google</button>
+        <button type="button" class="btn btn-light btn-sm auth-google" id="auth-google">
+          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+          </svg>
+          <span>Sign in with Google</span>
+        </button>
 
         <p class="auth-toggle">
           <span id="auth-toggle-copy">Don't have an account?</span>
@@ -161,6 +228,10 @@
       createUserWithEmailAndPassword,
       signInWithPopup,
       GoogleAuthProvider,
+      sendPasswordResetEmail,
+      setPersistence,
+      browserLocalPersistence,
+      browserSessionPersistence,
       onAuthStateChanged,
     } from "./js/auth.js";
 
@@ -168,6 +239,7 @@
     const nextPath = safeNextPath(params.get("next"));
     let mode = params.get("mode") === "signup" ? "signup" : "signin";
 
+    const card = document.getElementById("auth-card");
     const heading = document.getElementById("auth-heading");
     const sub = document.getElementById("auth-sub");
     const submitBtn = document.getElementById("auth-submit");
@@ -178,33 +250,48 @@
     const emailInput = document.getElementById("auth-email");
     const passwordInput = document.getElementById("auth-password");
     const googleBtn = document.getElementById("auth-google");
+    const forgotBtn = document.getElementById("auth-forgot-btn");
+    const rememberInput = document.getElementById("auth-remember");
 
     function applyMode() {
       if (mode === "signup") {
         heading.textContent = "Create your account";
-        sub.textContent = "Create an account to start your course.";
+        sub.textContent = "Sign up and start improving your skills.";
         submitBtn.textContent = "Sign Up";
         toggleCopy.textContent = "Already have an account?";
         toggleBtn.textContent = "Sign in";
+        forgotBtn.style.display = "none";
       } else {
         heading.textContent = "Sign in";
-        sub.textContent = "Sign in to continue to your course.";
+        sub.textContent = "Sign in and keep improving your skills.";
         submitBtn.textContent = "Sign In";
         toggleCopy.textContent = "Don't have an account?";
         toggleBtn.textContent = "Sign up";
+        forgotBtn.style.display = "";
       }
     }
     applyMode();
 
     toggleBtn.addEventListener("click", () => {
-      mode = mode === "signup" ? "signin" : "signup";
-      errorBox.classList.remove("is-visible");
-      applyMode();
+      card.classList.add("is-switching");
+      window.setTimeout(() => {
+        mode = mode === "signup" ? "signin" : "signup";
+        errorBox.classList.remove("is-visible", "is-success");
+        applyMode();
+        card.classList.remove("is-switching");
+        emailInput.focus();
+      }, 180);
     });
 
     function showError(message) {
       errorBox.textContent = message;
+      errorBox.classList.remove("is-success");
       errorBox.classList.add("is-visible");
+    }
+
+    function showSuccess(message) {
+      errorBox.textContent = message;
+      errorBox.classList.add("is-visible", "is-success");
     }
 
     async function afterAuth(user) {
@@ -218,7 +305,12 @@
       const email = emailInput.value.trim();
       const password = passwordInput.value;
       submitBtn.disabled = true;
+      submitBtn.textContent = mode === "signup" ? "Creating account…" : "Signing in…";
       try {
+        await setPersistence(
+          auth,
+          rememberInput.checked ? browserLocalPersistence : browserSessionPersistence
+        );
         const credential =
           mode === "signup"
             ? await createUserWithEmailAndPassword(auth, email, password)
@@ -226,22 +318,49 @@
         await afterAuth(credential.user);
       } catch (err) {
         showError(err.message || "Something went wrong. Please try again.");
-      } finally {
         submitBtn.disabled = false;
+        submitBtn.textContent = mode === "signup" ? "Sign Up" : "Sign In";
       }
     });
+
+    forgotBtn.addEventListener("click", async () => {
+      errorBox.classList.remove("is-visible");
+      const email = emailInput.value.trim();
+      if (!email) {
+        showError("Enter your email above first, then click Forgot password.");
+        return;
+      }
+      forgotBtn.disabled = true;
+      forgotBtn.textContent = "Sending…";
+      try {
+        await sendPasswordResetEmail(auth, email);
+        showSuccess(`Password reset email sent to ${email}.`);
+      } catch (err) {
+        showError(err.message || "Could not send reset email. Please try again.");
+      } finally {
+        forgotBtn.disabled = false;
+        forgotBtn.textContent = "Forgot password?";
+      }
+    });
+
+    const googleBtnLabel = googleBtn.querySelector("span");
 
     googleBtn.addEventListener("click", async () => {
       errorBox.classList.remove("is-visible");
       googleBtn.disabled = true;
+      googleBtnLabel.textContent = "Signing in…";
       try {
+        await setPersistence(
+          auth,
+          rememberInput.checked ? browserLocalPersistence : browserSessionPersistence
+        );
         const provider = new GoogleAuthProvider();
         const credential = await signInWithPopup(auth, provider);
         await afterAuth(credential.user);
       } catch (err) {
         showError(err.message || "Something went wrong. Please try again.");
-      } finally {
         googleBtn.disabled = false;
+        googleBtnLabel.textContent = "Sign in with Google";
       }
     });
 
