@@ -47,35 +47,6 @@
     }
   };
 
-  var clearSavedProgress = function () {
-    try {
-      var lessonKey = PROGRESS_KEY;
-      var hotspotPrefix = 'tb:hotspot-progress:' + window.location.pathname + ':';
-      var keysToRemove = [];
-      for (var i = 0; i < window.localStorage.length; i++) {
-        var key = window.localStorage.key(i);
-        if (key === lessonKey || key === STATUS_KEY || key.indexOf(hotspotPrefix) === 0) {
-          keysToRemove.push(key);
-        }
-      }
-      keysToRemove.forEach(function (key) {
-        window.localStorage.removeItem(key);
-      });
-    } catch (e) {}
-
-    // Cloud is authoritative, so a local-only clear would just get
-    // overwritten back from Firestore on the next load — clear there too.
-    if (window.TB && window.TB.saveCloudProgress) {
-      var patch = { partIndex: null, status: null };
-      document.querySelectorAll('[data-hotspot]').forEach(function (root, rootIndex) {
-        var partKey = root.getAttribute('data-part') || rootIndex;
-        var field = 'hotspots_' + String(partKey).replace(/[.\/\[\]~*]/g, '_');
-        patch[field] = [];
-      });
-      window.TB.saveCloudProgress(cloudKind, cloudPageId, patch);
-    }
-  };
-
   var savedCurrent = readSavedProgress();
   var current = savedCurrent !== null ? savedCurrent : (startBtn ? -1 : 0);
   var animating = false;
@@ -157,17 +128,6 @@
   nav.appendChild(prevBtn);
   nav.appendChild(nextWrap);
   document.body.appendChild(nav);
-
-  var resetBtn = document.createElement('button');
-  resetBtn.type = 'button';
-  resetBtn.className = 'lesson-dev-reset';
-  resetBtn.textContent = isQuiz ? 'Reset quiz (dev)' : 'Reset lesson (dev)';
-  resetBtn.title = 'Dev tool: clears saved progress for this ' + (isQuiz ? 'quiz' : 'lesson') + ' and reloads';
-  resetBtn.addEventListener('click', function () {
-    clearSavedProgress();
-    window.location.reload();
-  });
-  document.body.appendChild(resetBtn);
 
   var progress = document.createElement('div');
   progress.className = 'lesson-progress';

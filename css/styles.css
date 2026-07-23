@@ -2086,29 +2086,6 @@ body.is-lesson-active .lesson-part[hidden] {
   }
 }
 
-.lesson-dev-reset {
-  position: fixed;
-  top: var(--space-4);
-  right: var(--space-4);
-  z-index: 70;
-  padding: 0.35rem 0.7rem;
-  font-family: monospace;
-  font-size: 0.7rem;
-  line-height: 1.4;
-  color: #b45309;
-  background: #fffbeb;
-  border: 1px dashed #d97706;
-  border-radius: 4px;
-  cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 0.15s ease;
-}
-
-.lesson-dev-reset:hover,
-.lesson-dev-reset:focus-visible {
-  opacity: 1;
-}
-
 /* Lesson content */
 .lesson__body {
   max-width: 1040px;
