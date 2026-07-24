@@ -344,4 +344,44 @@
       }, 2200);
     }, 700);
   }
+
+  var popWrap = document.querySelector('.hero__bag-wrap');
+  var popItems = popWrap ? Array.prototype.slice.call(popWrap.querySelectorAll('.hero__pop-item')) : [];
+
+  if (popWrap && popItems.length) {
+    if (prefersReducedMotion) {
+      popWrap.classList.add('is-open');
+    } else {
+      window.setTimeout(function () {
+        popWrap.classList.add('is-open');
+      }, 500);
+
+      var lastWiggleItem = null;
+
+      var scheduleWiggle = function () {
+        var delay = 2500 + Math.random() * 2000;
+        window.setTimeout(function () {
+          var candidates = popItems.filter(function (el) {
+            return el !== lastWiggleItem;
+          });
+          var item = candidates[Math.floor(Math.random() * candidates.length)];
+          lastWiggleItem = item;
+          item.classList.remove('is-wiggling');
+          void item.offsetWidth;
+          item.classList.add('is-wiggling');
+          scheduleWiggle();
+        }, delay);
+      };
+
+      popItems.forEach(function (el) {
+        el.addEventListener('animationend', function (e) {
+          if (e.animationName === 'hero-pop-wiggle') {
+            el.classList.remove('is-wiggling');
+          }
+        });
+      });
+
+      window.setTimeout(scheduleWiggle, 1800);
+    }
+  }
 })();
