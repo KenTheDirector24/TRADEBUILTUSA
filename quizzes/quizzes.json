@@ -12,5 +12,12 @@
     "desc": "Dev quiz created to test features.",
     "thumb": "quizzes/demo-quiz-thumb.png",
     "href": "quizzes/demo-quiz.html"
+  },
+  {
+    "slug": "demo-quiz-2",
+    "title": "Demo Quiz #2",
+    "desc": "Dev quiz created to test features.",
+    "thumb": "quizzes/demo-quiz-2-thumb.png",
+    "href": "quizzes/demo-quiz-2.html"
   }
 ]
