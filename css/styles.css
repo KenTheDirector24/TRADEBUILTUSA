@@ -509,6 +509,15 @@ body.is-leaving #main {
   transform: translateY(-2px);
 }
 
+.header-actions__signin--signed-in {
+  border-color: #c7431a;
+}
+
+.header-actions__signin--signed-in:hover,
+.header-actions__signin--signed-in:focus-visible {
+  border-color: #c7431a;
+}
+
 .header-actions__signup {
   background: var(--color-accent-strong);
   color: #FFFFFF;
@@ -526,6 +535,7 @@ body.is-leaving #main {
 
 .header-actions__account {
   position: relative;
+  order: -1;
 }
 
 .header-actions__account-btn {
@@ -643,21 +653,21 @@ body.is-leaving #main {
 
 .tb-modal__actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 0.6rem;
   margin-top: 0.4rem;
 }
 
 .tb-modal__delete-btn {
-  background: var(--color-accent-strong);
+  background: #dc2626;
   color: #FFFFFF;
-  border-color: var(--color-accent-strong);
+  border-color: #dc2626;
 }
 
 .tb-modal__delete-btn:hover:not(:disabled),
 .tb-modal__delete-btn:focus-visible:not(:disabled) {
-  background: #a8360f;
-  border-color: #a8360f;
+  background: #b91c1c;
+  border-color: #b91c1c;
 }
 
 .tb-modal__delete-btn:disabled {

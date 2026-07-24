@@ -84,6 +84,7 @@ const SIGNED_IN_HINT_KEY = "tb_signed_in_hint";
 function renderHeaderSignedIn(signInBtn, signUpBtn) {
   signUpBtn.style.display = "none";
   signInBtn.textContent = "Sign Out";
+  signInBtn.classList.add("header-actions__signin--signed-in");
   signInBtn.onclick = () => signOutEverywhere();
   const accountWrap = document.querySelector(".header-actions__account");
   if (accountWrap) accountWrap.hidden = false;
@@ -105,6 +106,7 @@ function navigateWithFade(url) {
 function renderHeaderSignedOut(signInBtn, signUpBtn) {
   signUpBtn.style.display = "";
   signInBtn.textContent = "Sign In";
+  signInBtn.classList.remove("header-actions__signin--signed-in");
   const next = safeNextPath(window.location.pathname);
   signInBtn.onclick = () => {
     navigateWithFade(`/login.html#next=${encodeURIComponent(next)}`);
@@ -168,7 +170,7 @@ function buildDeleteAccountModal() {
   overlay.innerHTML = `
     <div class="tb-modal" role="dialog" aria-modal="true" aria-labelledby="tb-delete-modal-title">
       <h2 id="tb-delete-modal-title">Delete your account?</h2>
-      <p class="tb-modal__warning">This permanently deletes your account and everything tied to it &mdash; profile info, lesson progress, and quiz scores. This cannot be undone, so back up anything you want to keep before continuing.</p>
+      <p class="tb-modal__warning">This permanently deletes your account and everything associated to it. This cannot be undone!</p>
       <label class="tb-modal__label" for="tb-delete-confirm-input">Type <strong>delete</strong> to confirm</label>
       <input type="text" id="tb-delete-confirm-input" class="tb-modal__input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="delete">
       <p class="tb-modal__error" hidden></p>

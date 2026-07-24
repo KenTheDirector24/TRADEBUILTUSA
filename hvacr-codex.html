@@ -63,6 +63,7 @@
               if (signInBtn && signUpBtn) {
                 signUpBtn.style.display = "none";
                 signInBtn.textContent = "Sign Out";
+                signInBtn.classList.add("header-actions__signin--signed-in");
               }
             }
           } catch (e) {}
