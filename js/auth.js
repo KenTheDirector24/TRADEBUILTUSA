@@ -67,6 +67,7 @@ async function endSession() {
 async function signOutEverywhere() {
   await endSession();
   await firebaseSignOut(auth).catch(() => {});
+  clearProfileHint();
   window.location.href = "/index.html";
 }
 
@@ -84,19 +85,91 @@ async function deleteAccountEverywhere() {
     throw new Error(data.error || "Could not delete account");
   }
   localStorage.removeItem(SIGNED_IN_HINT_KEY);
+  clearProfileHint();
   await firebaseSignOut(auth).catch(() => {});
   window.location.href = "/index.html";
 }
 
 const SIGNED_IN_HINT_KEY = "tb_signed_in_hint";
+const PROFILE_HINT_KEY = "tb_profile_hint";
 
-function renderHeaderSignedIn(signInBtn, signUpBtn) {
+// Small cross-page cache of the signed-in user's name/photo so the header
+// can render a real avatar instantly on every page load without an extra
+// Firestore read. Written whenever account.html or the sign-up/Google flow
+// in login.html learns the user's name or photo; read-only everywhere else.
+function getProfileHint() {
+  try {
+    const raw = localStorage.getItem(PROFILE_HINT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function setProfileHint(profile) {
+  try {
+    localStorage.setItem(PROFILE_HINT_KEY, JSON.stringify(profile));
+  } catch (e) {}
+}
+
+function clearProfileHint() {
+  try {
+    localStorage.removeItem(PROFILE_HINT_KEY);
+  } catch (e) {}
+}
+
+function initialsFrom(firstName, lastName, email) {
+  const a = (firstName || "").trim().charAt(0);
+  const b = (lastName || "").trim().charAt(0);
+  if (a || b) return (a + b).toUpperCase();
+  return (email || "?").trim().charAt(0).toUpperCase();
+}
+
+function splitDisplayName(displayName) {
+  const parts = (displayName || "").trim().split(/\s+/).filter(Boolean);
+  return { firstName: parts[0] || "", lastName: parts.slice(1).join(" ") };
+}
+
+function renderAccountLink(accountLink, profile, email) {
+  if (!accountLink) return;
+  const firstName = (profile && profile.firstName) || "";
+  const lastName = (profile && profile.lastName) || "";
+  const photoURL = (profile && profile.photoURL) || "";
+
+  accountLink.textContent = "";
+
+  const avatar = document.createElement("span");
+  avatar.className = "header-actions__avatar";
+  if (photoURL) {
+    const img = document.createElement("img");
+    img.src = photoURL;
+    img.alt = "";
+    avatar.appendChild(img);
+  } else {
+    const initials = document.createElement("span");
+    initials.className = "header-actions__avatar-initials";
+    initials.textContent = initialsFrom(firstName, lastName, email);
+    avatar.appendChild(initials);
+  }
+
+  const nameEl = document.createElement("span");
+  nameEl.className = "header-actions__account-name";
+  nameEl.textContent = firstName || "Account";
+
+  accountLink.appendChild(avatar);
+  accountLink.appendChild(nameEl);
+}
+
+function renderHeaderSignedIn(signInBtn, signUpBtn, profile, email) {
   signUpBtn.style.display = "none";
   signInBtn.textContent = "Sign Out";
   signInBtn.classList.add("header-actions__signin--signed-in");
   signInBtn.onclick = () => signOutEverywhere();
   const accountLink = document.querySelector(".header-actions__account");
-  if (accountLink) accountLink.hidden = false;
+  if (accountLink) {
+    accountLink.hidden = false;
+    renderAccountLink(accountLink, profile, email);
+  }
 }
 
 function navigateWithFade(url) {
@@ -206,8 +279,9 @@ function wireHeaderButtons() {
   // Render optimistically from the last known state so the header doesn't
   // flash "Sign In" while Firebase resolves the real auth state on each
   // page load. This is just a UI hint, never used for access control.
+  const cachedProfile = getProfileHint();
   if (localStorage.getItem(SIGNED_IN_HINT_KEY) === "1") {
-    renderHeaderSignedIn(signInBtn, signUpBtn);
+    renderHeaderSignedIn(signInBtn, signUpBtn, cachedProfile, cachedProfile && cachedProfile.email);
   } else {
     renderHeaderSignedOut(signInBtn, signUpBtn);
   }
@@ -215,9 +289,18 @@ function wireHeaderButtons() {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       localStorage.setItem(SIGNED_IN_HINT_KEY, "1");
-      renderHeaderSignedIn(signInBtn, signUpBtn);
+      let profile = getProfileHint();
+      // Google sign-in already carries a name/photo on the Firebase user
+      // object itself, so use that as a fallback until account.html (or
+      // the sign-up flow) caches a proper profile hint.
+      if (!profile && (user.displayName || user.photoURL)) {
+        profile = { ...splitDisplayName(user.displayName), photoURL: user.photoURL || "", email: user.email || "" };
+        setProfileHint(profile);
+      }
+      renderHeaderSignedIn(signInBtn, signUpBtn, profile, user.email);
     } else {
       localStorage.removeItem(SIGNED_IN_HINT_KEY);
+      clearProfileHint();
       renderHeaderSignedOut(signInBtn, signUpBtn);
     }
   });
@@ -319,6 +402,9 @@ export {
   deleteAccountEverywhere,
   openDeleteAccountModal,
   safeNextPath,
+  getProfileHint,
+  setProfileHint,
+  clearProfileHint,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,

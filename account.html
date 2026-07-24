@@ -451,6 +451,7 @@
       openDeleteAccountModal,
       safeNextPath,
       onAuthStateChanged,
+      setProfileHint,
     } from "./js/auth.js";
 
     const statusBox = document.getElementById("account-status");
@@ -659,7 +660,14 @@
       zipInput.value = data.zip || "";
       schoolInput.value = data.school || "";
       tradeInput.value = data.skilledTrade || "";
-      renderAvatar(data.photoURL || user.photoURL || "", firstNameInput.value, lastNameInput.value, user.email);
+      const photoURL = data.photoURL || user.photoURL || "";
+      renderAvatar(photoURL, firstNameInput.value, lastNameInput.value, user.email);
+      setProfileHint({
+        firstName: firstNameInput.value,
+        lastName: lastNameInput.value,
+        photoURL,
+        email: user.email || "",
+      });
     }
 
     onAuthStateChanged(auth, (user) => {
@@ -700,6 +708,12 @@
         const photoURL = await getDownloadURL(fileRef);
         await setDoc(doc(db, "users", currentUser.uid), { photoURL, updatedAt: serverTimestamp() }, { merge: true });
         renderAvatar(photoURL, firstNameInput.value, lastNameInput.value, currentUser.email);
+        setProfileHint({
+          firstName: firstNameInput.value,
+          lastName: lastNameInput.value,
+          photoURL,
+          email: currentUser.email || "",
+        });
         showStatus("Profile picture updated.");
 
         try {
@@ -750,6 +764,12 @@
           skilledTrade: skilledTrade || null,
         });
         renderAvatar(currentPhotoURL, firstName, lastName, currentUser.email);
+        setProfileHint({
+          firstName,
+          lastName,
+          photoURL: currentPhotoURL,
+          email: currentUser.email || "",
+        });
         showStatus("Changes saved.");
       } catch (err) {
         showStatus(err.message || "Could not save changes. Please try again.", true);

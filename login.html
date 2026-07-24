@@ -331,6 +331,7 @@
       auth,
       startSession,
       ensureUserProfile,
+      setProfileHint,
       safeNextPath,
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
@@ -430,6 +431,14 @@
     async function afterAuth(user, extraProfile) {
       await startSession(user);
       await ensureUserProfile(user, extraProfile);
+      if (extraProfile) {
+        setProfileHint({
+          firstName: extraProfile.firstName || "",
+          lastName: extraProfile.lastName || "",
+          photoURL: user.photoURL || "",
+          email: user.email || "",
+        });
+      }
       window.location.href = nextPath;
     }
 
