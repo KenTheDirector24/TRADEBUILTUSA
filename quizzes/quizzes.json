@@ -5,5 +5,12 @@
     "desc": "Test your understanding of refrigeration cycle sequence, pressures, temperatures, and component functions.",
     "thumb": "quizzes/the-refrigeration-cycle-thumb.png",
     "href": "quizzes/the-refrigeration-cycle.html"
+  },
+  {
+    "slug": "demo-quiz",
+    "title": "Demo Quiz",
+    "desc": "Dev quiz created to test features.",
+    "thumb": "quizzes/demo-quiz-thumb.png",
+    "href": "quizzes/demo-quiz.html"
   }
 ]

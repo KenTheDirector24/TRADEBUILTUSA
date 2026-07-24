@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TradeBuilt | Demo Quiz — HVAC/R Quizzes</title>
+  <meta name="description" content="Dev quiz created to test features.">
+  <meta name="theme-color" content="#14181F">
+
+  <meta property="og:title" content="Demo Quiz — TradeBuilt HVAC/R Quizzes">
+  <meta property="og:description" content="Dev quiz created to test features.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Demo Quiz — TradeBuilt HVAC/R Quizzes">
+  <meta name="twitter:description" content="Dev quiz created to test features.">
+
+  <link rel="icon" type="image/x-icon" href="../assets/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/img/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="../assets/img/favicon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/favicon-180.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div class="nav-sentinel" id="nav-sentinel" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="../index.html">
+        <img src="../assets/img/tradebuilt-logo.png" alt="TradeBuilt" width="2172" height="724">
+        <span class="logo__tagline">Skilled Trades Learning Platform</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="../index.html">Home</a>
+        <a href="../hvacr.html" aria-current="page">HVAC/R</a>
+        <span class="site-nav__disabled" tabindex="0">Electrician<span class="site-nav__tooltip">In Development</span></span>
+        <span class="site-nav__disabled" tabindex="0">Resources<span class="site-nav__tooltip">Coming Soon</span></span>
+        <span class="site-nav__disabled" tabindex="0">Store<span class="site-nav__tooltip">Coming Soon</span></span>
+        <a href="../follow-the-build.html">Follow Us</a>
+      </nav>
+      <div class="header-actions">
+        <button type="button" class="btn btn-sm header-actions__signin">Sign In</button>
+        <button type="button" class="btn btn-sm header-actions__signup">Sign Up</button>
+      </div>
+      <div class="updates-badge">
+        <img src="../assets/img/Updates.png" alt="New updates weekly">
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hub" id="quiz-demo-quiz" aria-labelledby="quiz-demo-quiz-heading">
+      <div class="hub__bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="lesson-topbar">
+          <a class="back-link" href="../hvacr-quizzes.html">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back to Quizzes
+          </a>
+        </div>
+        <div class="hub__header">
+          <h1 id="quiz-demo-quiz-heading">Demo Quiz</h1>
+          <p class="hub__subhead">Dev quiz created to test features.</p>
+          <button type="button" class="btn btn-primary btn-lg" data-lesson-start>Start Quiz</button>
+        </div>
+
+        <div class="section-divider" aria-hidden="true"></div>
+
+        <div class="lesson-block lesson-block--wide lesson-part" data-part="1" data-quiz-question>
+          <p class="hotspot__intro">This is a sample question for test purposes.</p>
+          <div class="quiz-options" role="group" aria-label="Answer options for question 1">
+            <button type="button" class="quiz-option">
+              <span class="quiz-option__letter" aria-hidden="true">A</span>
+              Wrong
+            </button>
+            <button type="button" class="quiz-option" data-correct="true">
+              <span class="quiz-option__letter" aria-hidden="true">B</span>
+              Correct
+            </button>
+            <button type="button" class="quiz-option">
+              <span class="quiz-option__letter" aria-hidden="true">C</span>
+              Wrong
+            </button>
+            <button type="button" class="quiz-option">
+              <span class="quiz-option__letter" aria-hidden="true">D</span>
+              Wrong
+            </button>
+          </div>
+        </div>
+
+        <div class="section-divider" aria-hidden="true"></div>
+
+        <div class="lesson-block lesson-block--wide lesson-part" data-part="2" data-quiz-results>
+          <div class="quiz-results">
+            <h2 class="hotspot__heading">Quiz Complete</h2>
+            <p class="quiz-results__score" data-quiz-score></p>
+            <button type="button" class="btn btn-primary btn-lg" data-quiz-retake>Retake Quiz</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__legal">
+      <p>&copy; 2026 TradeBuilt. All rights reserved. &middot; Created by Kenneth J. Thompson &middot; <span class="site-footer__veteran">Veteran Owned 🇺🇸</span></p>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/lesson-parts.js"></script>
+  <script src="../js/quiz.js"></script>
+</body>
+</html>
