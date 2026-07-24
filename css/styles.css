@@ -793,10 +793,6 @@ body.is-leaving #main {
   object-fit: contain;
   user-select: none;
   pointer-events: none;
-  transition: transform 0.25s ease;
-}
-
-.hero__bag-wrap:hover .hero__bag {
   transform: scale(1.06);
 }
 
