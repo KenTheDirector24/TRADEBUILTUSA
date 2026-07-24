@@ -19,32 +19,46 @@
 
   <style>
     body {
+      height: 100svh;
       padding-bottom: calc(var(--footer-height, 2.25rem) + var(--space-2));
+      overflow: hidden;
+    }
+    #main {
+      overflow: hidden;
+      min-height: 0;
     }
     .account-shell {
       max-width: 520px;
       width: 100%;
+      height: 100%;
       margin: 0 auto;
-      padding: var(--space-8) var(--space-5) var(--space-10);
+      padding: var(--space-2) var(--space-5);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 0;
+      overflow: hidden;
     }
     .account-card {
       background: var(--color-surface);
       border: 1px solid var(--color-line);
       border-radius: var(--radius-md, 12px);
-      padding: 1.5rem 1.5rem 1.75rem;
+      padding: 0.9rem 1.5rem 1rem;
       box-shadow: var(--shadow-sm);
+      max-height: 100%;
+      overflow-y: auto;
     }
     .account-card h1 {
-      margin: 0 0 0.2rem;
-      font-size: var(--text-xl);
+      margin: 0 0 0.15rem;
+      font-size: var(--text-lg);
     }
     .account-sub {
-      margin: 0 0 1.25rem;
+      margin: 0 0 0.65rem;
       color: var(--color-slate);
       font-size: var(--text-sm);
     }
     .account-status {
-      margin-bottom: 1rem;
+      margin-bottom: 0.6rem;
       padding: 0.5rem 0.7rem;
       border-radius: var(--radius-sm);
       background: rgba(46, 139, 87, 0.12);
@@ -58,16 +72,16 @@
     .account-avatar-section {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1.5rem;
+      gap: 0.75rem;
+      margin-bottom: 0.65rem;
+      padding-bottom: 0.65rem;
       border-bottom: 1px solid var(--color-line);
     }
     .account-avatar {
       position: relative;
       flex: 0 0 auto;
-      width: 76px;
-      height: 76px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       overflow: hidden;
       background: var(--color-ink);
@@ -91,28 +105,31 @@
       min-width: 0;
     }
     .account-hint {
-      margin: 0.4rem 0 0;
+      margin: 0.3rem 0 0;
       font-size: var(--text-xs, 0.75rem);
       color: var(--color-slate);
     }
     .account-field {
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.4rem;
     }
     .account-field-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.6rem;
     }
+    .account-field-row--address {
+      grid-template-columns: 1.4fr 0.8fr 1fr;
+    }
     .account-field label {
       display: block;
       font-size: var(--text-xs, 0.8rem);
       font-weight: 600;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.2rem;
       color: var(--color-ink);
     }
     .account-field input {
       width: 100%;
-      padding: 0.5rem 0.65rem;
+      padding: 0.4rem 0.6rem;
       font-size: var(--text-sm, 0.9rem);
       font-family: var(--font-body);
       border: 1px solid var(--color-line);
@@ -133,16 +150,16 @@
       margin-top: 0.35rem;
     }
     .account-danger-zone {
-      margin-top: 1.75rem;
-      padding-top: 1.25rem;
+      margin-top: 0.75rem;
+      padding-top: 0.65rem;
       border-top: 1px solid var(--color-line);
     }
     .account-danger-zone h2 {
       font-size: var(--text-base);
-      margin: 0 0 0.3rem;
+      margin: 0 0 0.25rem;
     }
     .account-danger-zone p {
-      margin: 0 0 0.85rem;
+      margin: 0 0 0.5rem;
       font-size: var(--text-xs, 0.8rem);
       color: var(--color-slate);
     }
@@ -297,13 +314,15 @@
               <input type="text" id="account-last-name" name="lastName" autocomplete="family-name">
             </div>
           </div>
-          <div class="account-field">
-            <label for="account-phone">Phone</label>
-            <input type="tel" id="account-phone" name="phone" autocomplete="tel">
-          </div>
-          <div class="account-field">
-            <label for="account-email">Email</label>
-            <input type="email" id="account-email" disabled>
+          <div class="account-field-row">
+            <div class="account-field">
+              <label for="account-phone">Phone</label>
+              <input type="tel" id="account-phone" name="phone" autocomplete="tel">
+            </div>
+            <div class="account-field">
+              <label for="account-email">Email</label>
+              <input type="email" id="account-email" disabled>
+            </div>
           </div>
           <div class="account-field-row">
             <div class="account-field">
@@ -318,6 +337,24 @@
           <div class="account-field">
             <label for="account-address">Address</label>
             <input type="text" id="account-address" name="address" autocomplete="street-address">
+          </div>
+          <div class="account-field-row account-field-row--address">
+            <div class="account-field">
+              <label for="account-city">City</label>
+              <input type="text" id="account-city" name="city" autocomplete="address-level2">
+            </div>
+            <div class="account-field">
+              <label for="account-state">State</label>
+              <input type="text" id="account-state" name="state" autocomplete="address-level1">
+            </div>
+            <div class="account-field">
+              <label for="account-zip">ZIP code</label>
+              <input type="text" id="account-zip" name="zip" autocomplete="postal-code" inputmode="numeric">
+            </div>
+          </div>
+          <div class="account-field">
+            <label for="account-school">School / College</label>
+            <input type="text" id="account-school" name="school" autocomplete="organization">
           </div>
           <button type="submit" class="btn btn-primary btn-sm account-save-btn" id="account-save-btn">Save Changes</button>
         </form>
@@ -387,6 +424,10 @@
     const companyInput = document.getElementById("account-company");
     const jobTitleInput = document.getElementById("account-job-title");
     const addressInput = document.getElementById("account-address");
+    const cityInput = document.getElementById("account-city");
+    const stateInput = document.getElementById("account-state");
+    const zipInput = document.getElementById("account-zip");
+    const schoolInput = document.getElementById("account-school");
     const saveBtn = document.getElementById("account-save-btn");
     const deleteBtn = document.getElementById("account-delete-btn");
 
@@ -570,6 +611,10 @@
       companyInput.value = data.company || "";
       jobTitleInput.value = data.jobTitle || "";
       addressInput.value = data.address || "";
+      cityInput.value = data.city || "";
+      stateInput.value = data.state || "";
+      zipInput.value = data.zip || "";
+      schoolInput.value = data.school || "";
       renderAvatar(data.photoURL || user.photoURL || "", firstNameInput.value, lastNameInput.value, user.email);
     }
 
@@ -642,6 +687,10 @@
         const company = companyInput.value.trim();
         const jobTitle = jobTitleInput.value.trim();
         const address = addressInput.value.trim();
+        const city = cityInput.value.trim();
+        const state = stateInput.value.trim();
+        const zip = zipInput.value.trim();
+        const school = schoolInput.value.trim();
         await ensureUserProfile(currentUser, {
           firstName,
           lastName,
@@ -649,6 +698,10 @@
           company: company || null,
           jobTitle: jobTitle || null,
           address: address || null,
+          city: city || null,
+          state: state || null,
+          zip: zip || null,
+          school: school || null,
         });
         renderAvatar(currentPhotoURL, firstName, lastName, currentUser.email);
         showStatus("Changes saved.");
