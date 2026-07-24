@@ -35,22 +35,7 @@
     @media (prefers-reduced-motion: no-preference) {
       .auth-grid {
         animation: grid-flow 14s linear infinite;
-      }
-    }
-    #main.js-anim {
-      opacity: 0;
-      transform: translateY(14px);
-      transition: opacity 0.4s var(--ease-premium, ease), transform 0.4s var(--ease-premium, ease);
-    }
-    #main.js-anim.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    @media (prefers-reduced-motion: reduce) {
-      #main.js-anim {
-        transition: none;
-        opacity: 1;
-        transform: none;
+        will-change: transform;
       }
     }
     body {
@@ -331,19 +316,6 @@
       </div>
     </div>
   </main>
-
-  <script>
-    (function () {
-      var main = document.getElementById("main");
-      if (!main) return;
-      main.classList.add("js-anim");
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          main.classList.add("is-visible");
-        });
-      });
-    })();
-  </script>
 
   <script src="js/main.js"></script>
   <script type="module">
