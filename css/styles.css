@@ -2618,6 +2618,16 @@ body.is-lesson-active .lesson-part[hidden] {
   white-space: nowrap;
 }
 
+.site-footer__flag {
+  display: inline-block;
+  width: 1.1em;
+  height: auto;
+  vertical-align: middle;
+  margin-left: 0.3em;
+  margin-top: -0.1em;
+  border-radius: 1px;
+}
+
 /* Bag hero tethers */
 .tether-layer {
   position: fixed;
