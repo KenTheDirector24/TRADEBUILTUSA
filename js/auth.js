@@ -26,6 +26,8 @@ import {
   ref as storageRef,
   uploadBytes,
   getDownloadURL,
+  listAll,
+  deleteObject,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
 const app = initializeApp(firebaseConfig);
@@ -346,6 +348,8 @@ export {
   storageRef,
   uploadBytes,
   getDownloadURL,
+  listAll,
+  deleteObject,
   startSession,
   ensureUserProfile,
   endSession,

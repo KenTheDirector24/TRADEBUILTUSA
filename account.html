@@ -352,6 +352,8 @@
       storageRef,
       uploadBytes,
       getDownloadURL,
+      listAll,
+      deleteObject,
       ensureUserProfile,
       openDeleteAccountModal,
       safeNextPath,
@@ -583,12 +585,22 @@
       photoBtn.disabled = true;
       photoBtn.textContent = "Uploading…";
       try {
+        const folderRef = storageRef(storage, `user-profile-pictures/${currentUser.uid}`);
         const fileRef = storageRef(storage, `user-profile-pictures/${currentUser.uid}/profile-picture.jpg`);
         await uploadBytes(fileRef, blob, { contentType: "image/jpeg" });
         const photoURL = await getDownloadURL(fileRef);
         await setDoc(doc(db, "users", currentUser.uid), { photoURL, updatedAt: serverTimestamp() }, { merge: true });
         renderAvatar(photoURL, firstNameInput.value, lastNameInput.value, currentUser.email);
         showStatus("Profile picture updated.");
+
+        try {
+          const { items } = await listAll(folderRef);
+          await Promise.all(
+            items
+              .filter((item) => item.fullPath !== fileRef.fullPath)
+              .map((item) => deleteObject(item).catch(() => {}))
+          );
+        } catch (e) {}
       } catch (err) {
         showStatus(err.message || "Could not upload photo. Please try again.", true);
       } finally {
