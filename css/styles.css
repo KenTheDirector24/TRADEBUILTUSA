@@ -1414,6 +1414,7 @@ body.is-leaving #main {
 .back-link {
   display: inline-flex;
   align-items: center;
+  align-self: flex-start;
   gap: var(--space-1);
   margin: 0 0 var(--space-5);
   font-family: var(--font-heading);
