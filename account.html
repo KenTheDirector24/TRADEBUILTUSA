@@ -24,8 +24,14 @@
       overflow: hidden;
     }
     #main {
+      min-height: 0;
+    }
+    .account-viewport {
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
       min-height: 0;
     }
     .account-bg {
@@ -55,12 +61,12 @@
       z-index: 1;
       max-width: 520px;
       width: 100%;
-      height: 100%;
       margin: 0 auto;
       padding: var(--space-2) var(--space-5);
       display: flex;
       flex-direction: column;
       justify-content: center;
+      flex: 1 1 auto;
       min-height: 0;
       overflow: hidden;
     }
@@ -309,6 +315,7 @@
   </header>
 
   <main id="main">
+   <div class="account-viewport">
     <div class="account-bg" aria-hidden="true">
       <div class="account-grid"></div>
     </div>
@@ -394,6 +401,7 @@
         </div>
       </div>
     </div>
+   </div>
   </main>
 
   <div class="crop-overlay" id="crop-overlay" hidden>

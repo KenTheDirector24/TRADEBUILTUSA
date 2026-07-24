@@ -13,8 +13,13 @@
   <link rel="stylesheet" href="css/styles.css">
 
   <style>
-    #main {
+    .auth-viewport {
       position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 0;
     }
     .auth-bg {
       position: absolute;
@@ -49,6 +54,7 @@
       margin: 0 auto;
       padding: 1.25rem 1.25rem 1.5rem;
       flex: 1 1 auto;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -247,6 +253,7 @@
   </header>
 
   <main id="main">
+   <div class="auth-viewport">
     <div class="auth-bg" aria-hidden="true">
       <div class="auth-grid"></div>
     </div>
@@ -315,6 +322,7 @@
         </p>
       </div>
     </div>
+   </div>
   </main>
 
   <script src="js/main.js"></script>
