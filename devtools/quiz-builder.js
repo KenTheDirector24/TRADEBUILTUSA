@@ -442,7 +442,7 @@
       '',
       '  <footer class="site-footer">',
       '    <div class="site-footer__legal">',
-      '      <p>&copy; 2026 TradeBuilt. All rights reserved. &middot; Created by Kenneth J. Thompson &middot; <span class="site-footer__veteran">Veteran Owned 🇺🇸</span></p>',
+      '      <p>&copy; 2026 TradeBuiltUSA. All rights reserved. &middot; Created by Kenneth J. Thompson &middot; <span class="site-footer__veteran">Veteran Owned 🇺🇸</span></p>',
       '    </div>',
       '  </footer>',
       '',
