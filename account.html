@@ -102,6 +102,7 @@
     }
     .account-avatar-section {
       display: flex;
+      justify-content: center;
       align-items: center;
       gap: 0.75rem;
       margin-bottom: 0.65rem;
@@ -132,13 +133,13 @@
       color: #fff;
     }
     .account-avatar-actions {
-      flex: 1 1 auto;
-      min-width: 0;
+      display: flex;
+      justify-content: center;
     }
-    .account-hint {
-      margin: 0.3rem 0 0;
-      font-size: var(--text-xs, 0.75rem);
-      color: var(--color-slate);
+    #account-photo-btn {
+      padding: 0.35rem 1.2rem;
+      min-height: 0;
+      border-color: var(--color-ink);
     }
     .account-field {
       margin-bottom: 0.4rem;
@@ -329,9 +330,8 @@
             <span class="account-avatar__initials" id="account-avatar-initials"></span>
           </div>
           <div class="account-avatar-actions">
-            <button type="button" class="btn btn-light btn-sm" id="account-photo-btn">Change Photo</button>
+            <button type="button" class="btn btn-light btn-sm" id="account-photo-btn">Upload Photo</button>
             <input type="file" id="account-photo-input" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
-            <p class="account-hint">JPG, PNG, WEBP or GIF. Max 5MB. You'll be able to crop it before saving.</p>
           </div>
         </section>
 
