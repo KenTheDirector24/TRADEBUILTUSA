@@ -95,8 +95,8 @@ function renderHeaderSignedIn(signInBtn, signUpBtn) {
   signInBtn.textContent = "Sign Out";
   signInBtn.classList.add("header-actions__signin--signed-in");
   signInBtn.onclick = () => signOutEverywhere();
-  const accountWrap = document.querySelector(".header-actions__account");
-  if (accountWrap) accountWrap.hidden = false;
+  const accountLink = document.querySelector(".header-actions__account");
+  if (accountLink) accountLink.hidden = false;
 }
 
 function navigateWithFade(url) {
@@ -123,45 +123,8 @@ function renderHeaderSignedOut(signInBtn, signUpBtn) {
   signUpBtn.onclick = () => {
     navigateWithFade(`/login.html#mode=signup&next=${encodeURIComponent(next)}`);
   };
-  const accountWrap = document.querySelector(".header-actions__account");
-  if (accountWrap) {
-    accountWrap.hidden = true;
-    closeAccountMenu();
-  }
-}
-
-function closeAccountMenu() {
-  const btn = document.querySelector(".header-actions__account-btn");
-  const menu = document.querySelector(".account-menu");
-  if (!btn || !menu) return;
-  menu.hidden = true;
-  btn.setAttribute("aria-expanded", "false");
-}
-
-function wireAccountMenu() {
-  const wrap = document.querySelector(".header-actions__account");
-  const btn = document.querySelector(".header-actions__account-btn");
-  const menu = document.querySelector(".account-menu");
-  if (!wrap || !btn || !menu) return;
-
-  btn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    const isOpen = !menu.hidden;
-    if (isOpen) {
-      closeAccountMenu();
-    } else {
-      menu.hidden = false;
-      btn.setAttribute("aria-expanded", "true");
-    }
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!wrap.contains(e.target)) closeAccountMenu();
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeAccountMenu();
-  });
+  const accountLink = document.querySelector(".header-actions__account");
+  if (accountLink) accountLink.hidden = true;
 }
 
 let deleteModalEls = null;
@@ -261,7 +224,6 @@ function wireHeaderButtons() {
 }
 
 wireHeaderButtons();
-wireAccountMenu();
 
 // Bridge so classic (non-module) scripts — lesson-parts.js, hotspot.js,
 // quiz.js — can sync progress to Firestore under the signed-in user without

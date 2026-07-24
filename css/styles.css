@@ -534,56 +534,17 @@ body.is-leaving #main {
 }
 
 .header-actions__account {
-  position: relative;
   order: -1;
-}
-
-.header-actions__account-btn {
   background: transparent;
   color: #FFFFFF;
   border-color: rgba(255, 255, 255, 0.35);
 }
 
-.header-actions__account-btn:hover,
-.header-actions__account-btn:focus-visible {
+.header-actions__account:hover,
+.header-actions__account:focus-visible {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.6);
   transform: translateY(-2px);
-}
-
-.account-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 180px;
-  background: var(--color-surface);
-  border: 1px solid rgba(18, 21, 26, 0.1);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-lg);
-  padding: 0.4rem;
-  z-index: 20;
-}
-
-.account-menu__link {
-  display: block;
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 0.6rem 0.75rem;
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background-color 0.15s var(--ease-premium);
-  color: var(--color-ink);
-}
-
-.account-menu__link:hover,
-.account-menu__link:focus-visible {
-  background: var(--color-accent-tint);
 }
 
 /* Delete-account confirmation modal */
