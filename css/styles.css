@@ -792,6 +792,7 @@ body.is-leaving #main {
   max-width: 100%;
   object-fit: contain;
   user-select: none;
+  pointer-events: none;
   transition: transform 0.25s ease;
 }
 
@@ -813,7 +814,8 @@ body.is-leaving #main {
   z-index: 1;
   height: 42%;
   width: auto;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
   user-select: none;
   transform-origin: 22% 50%;
   transform: translate(-50%, -50%) translate(var(--pop-x), var(--pop-y)) rotate(var(--pop-rot)) scale(var(--pop-scale));
@@ -859,7 +861,8 @@ body.is-leaving #main {
   }
 }
 
-.hero__pop-item.is-wiggling img {
+.hero__pop-item.is-wiggling img,
+.hero__pop-item:hover img {
   animation: hero-pop-wiggle 0.45s ease-in-out;
 }
 
@@ -868,7 +871,8 @@ body.is-leaving #main {
     transition: opacity 0.3s ease;
   }
 
-  .hero__pop-item.is-wiggling img {
+  .hero__pop-item.is-wiggling img,
+  .hero__pop-item:hover img {
     animation: none;
   }
 }
