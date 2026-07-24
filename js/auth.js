@@ -285,6 +285,7 @@ function cloudDocRef(kind, pageId) {
 
 async function saveCloudProgress(kind, pageId, data) {
   try {
+    await authReadyPromise;
     const ref = cloudDocRef(kind, pageId);
     if (!ref) return;
     await setDoc(ref, { ...data, updatedAt: serverTimestamp() }, { merge: true });
