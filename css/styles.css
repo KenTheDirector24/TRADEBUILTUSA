@@ -598,6 +598,10 @@ body.is-leaving #main {
   backdrop-filter: blur(2px);
 }
 
+.tb-modal-overlay[hidden] {
+  display: none;
+}
+
 .tb-modal {
   width: 100%;
   max-width: 440px;
