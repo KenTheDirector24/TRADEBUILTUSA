@@ -84,22 +84,22 @@
         </a>
         <div class="hub__codex-row">
           <div class="hub__header hub__header--icon-only">
-            <a class="eyebrow" href="hvacr-codex.html">HVAC/R Lessons</a>
-            <a class="hub__codex-cover" href="hvacr-codex.html" aria-label="Open the HVAC/R Lessons">
+            <a class="eyebrow js-auth-gate" href="hvacr-codex.html">HVAC/R Lessons</a>
+            <a class="hub__codex-cover js-auth-gate" href="hvacr-codex.html" aria-label="Open the HVAC/R Lessons">
               <img src="assets/img/Codex.png" alt="TradeBuilt: HVAC/R Lessons" width="1024" height="1536">
             </a>
             <p class="hub__codex-desc">Master HVAC/R core fundamentals through continuously evolving technical lessons covering tools, materials, installation techniques, service, maintenance, and industry best practices.</p>
           </div>
           <div class="hub__header hub__header--icon-only">
-            <a class="eyebrow" href="hvacr-quizzes.html">HVAC/R Quizzes</a>
-            <a class="hub__codex-cover" href="hvacr-quizzes.html" aria-label="Open the HVAC/R Quizzes">
+            <a class="eyebrow js-auth-gate" href="hvacr-quizzes.html">HVAC/R Quizzes</a>
+            <a class="hub__codex-cover js-auth-gate" href="hvacr-quizzes.html" aria-label="Open the HVAC/R Quizzes">
               <img src="assets/img/Quizzes.png" alt="TradeBuilt: HVAC/R Quizzes" width="1024" height="1536">
             </a>
             <p class="hub__codex-desc">Challenge your true HVAC/R technical knowledge with scored quizzes, instant feedback, and real results.</p>
           </div>
           <div class="hub__header hub__header--icon-only">
-            <a class="eyebrow" href="hvacr-simulations.html">HVAC/R Simulations</a>
-            <a class="hub__codex-cover" href="hvacr-simulations.html" aria-label="Open the HVAC/R Simulations">
+            <a class="eyebrow js-auth-gate" href="hvacr-simulations.html">HVAC/R Simulations</a>
+            <a class="hub__codex-cover js-auth-gate" href="hvacr-simulations.html" aria-label="Open the HVAC/R Simulations">
               <img src="assets/img/Drill.png" alt="TradeBuilt: HVAC/R Simulations" width="1024" height="1536">
             </a>
             <p class="hub__codex-desc">Apply your HVAC/R knowledge to real-world scenarios built to test your diagnostic skills.</p>
@@ -117,5 +117,22 @@
 
   <script src="js/main.js"></script>
   <script type="module" src="js/auth.js"></script>
+  <script type="module">
+    import { auth, onAuthStateChanged, safeNextPath } from "./js/auth.js";
+
+    let signedIn = localStorage.getItem("tb_signed_in_hint") === "1";
+    onAuthStateChanged(auth, (user) => {
+      signedIn = !!user;
+    });
+
+    document.querySelectorAll(".js-auth-gate").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        if (signedIn) return;
+        event.preventDefault();
+        const next = safeNextPath("/" + link.getAttribute("href"));
+        window.location.href = `/login.html#next=${encodeURIComponent(next)}`;
+      });
+    });
+  </script>
 </body>
 </html>
