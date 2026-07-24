@@ -61,12 +61,32 @@ async function signOutEverywhere() {
   window.location.href = "/index.html";
 }
 
+async function deleteAccountEverywhere() {
+  const user = auth.currentUser;
+  if (!user) throw new Error("Not signed in");
+  const idToken = await user.getIdToken(true);
+  const res = await fetch("/api/delete-account", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ idToken }),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || "Could not delete account");
+  }
+  localStorage.removeItem(SIGNED_IN_HINT_KEY);
+  await firebaseSignOut(auth).catch(() => {});
+  window.location.href = "/index.html";
+}
+
 const SIGNED_IN_HINT_KEY = "tb_signed_in_hint";
 
 function renderHeaderSignedIn(signInBtn, signUpBtn) {
   signUpBtn.style.display = "none";
   signInBtn.textContent = "Sign Out";
   signInBtn.onclick = () => signOutEverywhere();
+  const accountWrap = document.querySelector(".header-actions__account");
+  if (accountWrap) accountWrap.hidden = false;
 }
 
 function navigateWithFade(url) {
@@ -92,6 +112,122 @@ function renderHeaderSignedOut(signInBtn, signUpBtn) {
   signUpBtn.onclick = () => {
     navigateWithFade(`/login.html#mode=signup&next=${encodeURIComponent(next)}`);
   };
+  const accountWrap = document.querySelector(".header-actions__account");
+  if (accountWrap) {
+    accountWrap.hidden = true;
+    closeAccountMenu();
+  }
+}
+
+function closeAccountMenu() {
+  const btn = document.querySelector(".header-actions__account-btn");
+  const menu = document.querySelector(".account-menu");
+  if (!btn || !menu) return;
+  menu.hidden = true;
+  btn.setAttribute("aria-expanded", "false");
+}
+
+function wireAccountMenu() {
+  const wrap = document.querySelector(".header-actions__account");
+  const btn = document.querySelector(".header-actions__account-btn");
+  const menu = document.querySelector(".account-menu");
+  const deleteItem = document.querySelector(".account-menu__delete");
+  if (!wrap || !btn || !menu || !deleteItem) return;
+
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = !menu.hidden;
+    if (isOpen) {
+      closeAccountMenu();
+    } else {
+      menu.hidden = false;
+      btn.setAttribute("aria-expanded", "true");
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!wrap.contains(e.target)) closeAccountMenu();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeAccountMenu();
+  });
+
+  deleteItem.addEventListener("click", () => {
+    closeAccountMenu();
+    openDeleteAccountModal();
+  });
+}
+
+let deleteModalEls = null;
+
+function buildDeleteAccountModal() {
+  const overlay = document.createElement("div");
+  overlay.className = "tb-modal-overlay";
+  overlay.hidden = true;
+  overlay.innerHTML = `
+    <div class="tb-modal" role="dialog" aria-modal="true" aria-labelledby="tb-delete-modal-title">
+      <h2 id="tb-delete-modal-title">Delete your account?</h2>
+      <p class="tb-modal__warning">This permanently deletes your account and everything tied to it &mdash; profile info, lesson progress, and quiz scores. This cannot be undone, so back up anything you want to keep before continuing.</p>
+      <label class="tb-modal__label" for="tb-delete-confirm-input">Type <strong>delete</strong> to confirm</label>
+      <input type="text" id="tb-delete-confirm-input" class="tb-modal__input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="delete">
+      <p class="tb-modal__error" hidden></p>
+      <div class="tb-modal__actions">
+        <button type="button" class="btn btn-sm btn-light tb-modal__cancel">Cancel</button>
+        <button type="button" class="btn btn-sm tb-modal__delete-btn" disabled>Delete Account</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  const modal = overlay.querySelector(".tb-modal");
+  const input = overlay.querySelector(".tb-modal__input");
+  const errorEl = overlay.querySelector(".tb-modal__error");
+  const cancelBtn = overlay.querySelector(".tb-modal__cancel");
+  const confirmBtn = overlay.querySelector(".tb-modal__delete-btn");
+
+  const close = () => {
+    overlay.hidden = true;
+    input.value = "";
+    errorEl.hidden = true;
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = "Delete Account";
+  };
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) close();
+  });
+  modal.addEventListener("click", (e) => e.stopPropagation());
+  cancelBtn.addEventListener("click", close);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !overlay.hidden) close();
+  });
+
+  input.addEventListener("input", () => {
+    confirmBtn.disabled = input.value.trim().toLowerCase() !== "delete";
+  });
+
+  confirmBtn.addEventListener("click", async () => {
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = "Deleting…";
+    errorEl.hidden = true;
+    try {
+      await deleteAccountEverywhere();
+    } catch (e) {
+      errorEl.textContent = e.message || "Could not delete account. Please try again.";
+      errorEl.hidden = false;
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = "Delete Account";
+    }
+  });
+
+  return { overlay, input };
+}
+
+function openDeleteAccountModal() {
+  if (!deleteModalEls) deleteModalEls = buildDeleteAccountModal();
+  deleteModalEls.overlay.hidden = false;
+  deleteModalEls.input.focus();
 }
 
 function wireHeaderButtons() {
@@ -120,6 +256,7 @@ function wireHeaderButtons() {
 }
 
 wireHeaderButtons();
+wireAccountMenu();
 
 // Bridge so classic (non-module) scripts — lesson-parts.js, hotspot.js,
 // quiz.js — can sync progress to Firestore under the signed-in user without

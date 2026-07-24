@@ -524,6 +524,147 @@ body.is-leaving #main {
   box-shadow: 0 6px 16px rgba(199, 67, 26, 0.45);
 }
 
+.header-actions__account {
+  position: relative;
+}
+
+.header-actions__account-btn {
+  background: transparent;
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.header-actions__account-btn:hover,
+.header-actions__account-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.account-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  background: var(--color-surface);
+  border: 1px solid rgba(18, 21, 26, 0.1);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  padding: 0.4rem;
+  z-index: 20;
+}
+
+.account-menu__delete {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-accent-strong);
+  cursor: pointer;
+  transition: background-color 0.15s var(--ease-premium);
+}
+
+.account-menu__delete:hover,
+.account-menu__delete:focus-visible {
+  background: var(--color-accent-tint);
+}
+
+/* Delete-account confirmation modal */
+.tb-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: rgba(18, 21, 26, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.tb-modal {
+  width: 100%;
+  max-width: 440px;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-6, 1.75rem);
+  padding: 1.75rem;
+}
+
+.tb-modal h2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  color: var(--color-ink);
+  margin: 0 0 0.75rem;
+}
+
+.tb-modal__warning {
+  font-size: var(--text-sm);
+  color: var(--color-slate);
+  line-height: 1.5;
+  margin: 0 0 1.1rem;
+}
+
+.tb-modal__label {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--color-ink);
+  margin-bottom: 0.4rem;
+}
+
+.tb-modal__input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgba(18, 21, 26, 0.2);
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.6rem;
+  box-sizing: border-box;
+}
+
+.tb-modal__input:focus-visible {
+  outline: 2px solid var(--color-accent-strong);
+  outline-offset: 1px;
+}
+
+.tb-modal__error {
+  font-size: var(--text-xs);
+  color: var(--color-accent-strong);
+  margin: 0 0 0.6rem;
+}
+
+.tb-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+.tb-modal__delete-btn {
+  background: var(--color-accent-strong);
+  color: #FFFFFF;
+  border-color: var(--color-accent-strong);
+}
+
+.tb-modal__delete-btn:hover:not(:disabled),
+.tb-modal__delete-btn:focus-visible:not(:disabled) {
+  background: #a8360f;
+  border-color: #a8360f;
+}
+
+.tb-modal__delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Updates badge */
 .updates-badge {
   position: absolute;
