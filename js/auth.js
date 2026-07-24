@@ -8,6 +8,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  getAdditionalUserInfo,
   sendPasswordResetEmail,
   setPersistence,
   browserLocalPersistence,
@@ -30,11 +31,11 @@ function safeNextPath(rawNext) {
   return "/index.html";
 }
 
-async function ensureUserProfile(user) {
+async function ensureUserProfile(user, extra = {}) {
   try {
     await setDoc(
       doc(db, "users", user.uid),
-      { email: user.email, updatedAt: serverTimestamp() },
+      { email: user.email, ...extra, updatedAt: serverTimestamp() },
       { merge: true }
     );
   } catch (e) {}
@@ -86,10 +87,10 @@ function renderHeaderSignedOut(signInBtn, signUpBtn) {
   signInBtn.textContent = "Sign In";
   const next = safeNextPath(window.location.pathname);
   signInBtn.onclick = () => {
-    navigateWithFade(`/login.html?next=${encodeURIComponent(next)}`);
+    navigateWithFade(`/login.html#next=${encodeURIComponent(next)}`);
   };
   signUpBtn.onclick = () => {
-    navigateWithFade(`/login.html?mode=signup&next=${encodeURIComponent(next)}`);
+    navigateWithFade(`/login.html#mode=signup&next=${encodeURIComponent(next)}`);
   };
 }
 
@@ -204,6 +205,7 @@ export {
   createUserWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  getAdditionalUserInfo,
   sendPasswordResetEmail,
   setPersistence,
   browserLocalPersistence,

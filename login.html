@@ -13,6 +13,30 @@
   <link rel="stylesheet" href="css/styles.css">
 
   <style>
+    #main {
+      position: relative;
+    }
+    .auth-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .auth-grid {
+      position: absolute;
+      inset: -64px;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(18, 21, 26, 0.16) 0 1.5px, transparent 1.5px 64px),
+        repeating-linear-gradient(90deg, rgba(18, 21, 26, 0.16) 0 1.5px, transparent 1.5px 64px);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 40%, transparent 90%);
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 40%, transparent 90%);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .auth-grid {
+        animation: grid-flow 14s linear infinite;
+      }
+    }
     #main.js-anim {
       opacity: 0;
       transform: translateY(14px);
@@ -29,16 +53,29 @@
         transform: none;
       }
     }
+    body {
+      padding-bottom: 0;
+    }
     .auth-shell {
-      max-width: 420px;
+      position: relative;
+      z-index: 1;
+      max-width: 400px;
+      width: 100%;
       margin: 0 auto;
-      padding: 3rem 1.25rem 4rem;
+      padding: 1.25rem 1.25rem 1.5rem;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .auth-shell.auth-shell--top {
+      justify-content: flex-start;
     }
     .auth-card {
       background: var(--color-surface);
       border: 1px solid var(--color-line);
       border-radius: var(--radius-md, 12px);
-      padding: 2rem;
+      padding: 1.35rem 1.5rem;
       box-shadow: var(--shadow-sm);
       transition: opacity 0.22s var(--ease-premium, ease), transform 0.22s var(--ease-premium, ease);
     }
@@ -55,28 +92,33 @@
       }
     }
     .auth-card h1 {
-      margin: 0 0 0.35rem;
-      font-size: var(--text-xl, 1.5rem);
+      margin: 0 0 0.2rem;
+      font-size: var(--text-lg, 1.25rem);
     }
     .auth-card p.auth-sub {
-      margin: 0 0 1.5rem;
+      margin: 0 0 0.85rem;
       color: var(--color-slate);
       font-size: var(--text-sm);
     }
     .auth-field {
-      margin-bottom: 1rem;
+      margin-bottom: 0.55rem;
+    }
+    .auth-field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
     }
     .auth-field label {
       display: block;
-      font-size: var(--text-sm);
+      font-size: var(--text-xs, 0.8rem);
       font-weight: 600;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.2rem;
       color: var(--color-ink);
     }
     .auth-field input {
       width: 100%;
-      padding: 0.65rem 0.75rem;
-      font-size: var(--text-base);
+      padding: 0.45rem 0.6rem;
+      font-size: var(--text-sm, 0.9rem);
       border: 1px solid var(--color-line);
       border-radius: var(--radius-sm);
       background: var(--color-paper);
@@ -88,13 +130,13 @@
     }
     .auth-submit {
       width: 100%;
-      margin-top: 0.5rem;
+      margin-top: 0.35rem;
     }
     .auth-row {
       display: flex;
       align-items: center;
-      margin: -0.5rem 0 0;
-      font-size: var(--text-sm);
+      margin: -0.15rem 0 0.5rem;
+      font-size: var(--text-xs, 0.8rem);
     }
     .auth-remember {
       display: inline-flex;
@@ -108,9 +150,9 @@
       cursor: pointer;
     }
     .auth-forgot {
-      margin: 0.65rem 0 0;
+      margin: 0.5rem 0 0;
       text-align: center;
-      font-size: var(--text-sm);
+      font-size: var(--text-xs, 0.8rem);
     }
     .auth-forgot button {
       background: none;
@@ -126,9 +168,9 @@
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      margin: 1.5rem 0;
+      margin: 0.75rem 0;
       color: var(--color-slate);
-      font-size: var(--text-sm);
+      font-size: var(--text-xs, 0.8rem);
     }
     .auth-divider::before,
     .auth-divider::after {
@@ -143,17 +185,17 @@
       align-items: center;
       justify-content: center;
       gap: 0.6rem;
-      padding: 0.85rem 1.15rem;
+      padding: 0.55rem 1.15rem;
       border: 1px solid var(--color-line);
     }
     .auth-google svg {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       flex-shrink: 0;
     }
     .auth-toggle {
-      margin-top: 1.5rem;
-      font-size: var(--text-sm);
+      margin-top: 0.85rem;
+      font-size: var(--text-xs, 0.8rem);
       text-align: center;
       color: var(--color-slate);
     }
@@ -169,12 +211,12 @@
     }
     .auth-error {
       display: none;
-      margin-bottom: 1rem;
-      padding: 0.65rem 0.85rem;
+      margin-bottom: 0.65rem;
+      padding: 0.5rem 0.7rem;
       border-radius: var(--radius-sm);
       background: var(--color-accent-tint);
       color: var(--color-accent-strong);
-      font-size: var(--text-sm);
+      font-size: var(--text-xs, 0.8rem);
     }
     .auth-error.is-visible {
       display: block;
@@ -182,6 +224,18 @@
     .auth-error.is-success {
       background: rgba(46, 139, 87, 0.12);
       color: var(--color-success);
+    }
+    .auth-signup-fields {
+      display: none;
+    }
+    .auth-signup-fields.is-visible {
+      display: block;
+    }
+    .auth-hint {
+      margin: 0.2rem 0 0;
+      font-size: var(--text-xs, 0.75rem);
+      line-height: 1.3;
+      color: var(--color-slate);
     }
   </style>
 </head>
@@ -196,7 +250,10 @@
   </header>
 
   <main id="main">
-    <div class="auth-shell">
+    <div class="auth-bg" aria-hidden="true">
+      <div class="auth-grid"></div>
+    </div>
+    <div class="auth-shell" id="auth-shell">
       <div class="auth-card" id="auth-card">
         <h1 id="auth-heading">Sign in</h1>
         <p class="auth-sub" id="auth-sub">Sign in and keep improving your skills.</p>
@@ -204,13 +261,34 @@
         <div class="auth-error" id="auth-error"></div>
 
         <form id="auth-form" novalidate>
+          <div class="auth-signup-fields" id="auth-signup-fields">
+            <div class="auth-field-row">
+              <div class="auth-field">
+                <label for="auth-first-name">First name</label>
+                <input type="text" id="auth-first-name" name="firstName" autocomplete="given-name">
+              </div>
+              <div class="auth-field">
+                <label for="auth-last-name">Last name</label>
+                <input type="text" id="auth-last-name" name="lastName" autocomplete="family-name">
+              </div>
+            </div>
+            <div class="auth-field">
+              <label for="auth-phone">Phone <span style="font-weight:400;color:var(--color-slate);">(optional)</span></label>
+              <input type="tel" id="auth-phone" name="phone" autocomplete="tel">
+            </div>
+          </div>
           <div class="auth-field">
             <label for="auth-email">Email</label>
             <input type="email" id="auth-email" name="email" autocomplete="email" required>
           </div>
           <div class="auth-field">
-            <label for="auth-password">Password</label>
-            <input type="password" id="auth-password" name="password" autocomplete="current-password" minlength="6" required>
+            <label for="auth-password" id="auth-password-label">Password</label>
+            <input type="password" id="auth-password" name="password" autocomplete="current-password" minlength="8" required>
+            <p class="auth-hint auth-signup-fields">At least 8 characters, with a number and a special character.</p>
+          </div>
+          <div class="auth-field auth-signup-fields" id="auth-confirm-password-field">
+            <label for="auth-confirm-password">Confirm password</label>
+            <input type="password" id="auth-confirm-password" name="confirmPassword" autocomplete="new-password">
           </div>
           <div class="auth-row" id="auth-row">
             <label class="auth-remember">
@@ -266,6 +344,7 @@
       createUserWithEmailAndPassword,
       signInWithPopup,
       GoogleAuthProvider,
+      getAdditionalUserInfo,
       sendPasswordResetEmail,
       setPersistence,
       browserLocalPersistence,
@@ -273,10 +352,11 @@
       onAuthStateChanged,
     } from "./js/auth.js";
 
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(window.location.hash.slice(1));
     const nextPath = safeNextPath(params.get("next"));
     let mode = params.get("mode") === "signup" ? "signup" : "signin";
 
+    const shell = document.getElementById("auth-shell");
     const card = document.getElementById("auth-card");
     const heading = document.getElementById("auth-heading");
     const sub = document.getElementById("auth-sub");
@@ -290,6 +370,15 @@
     const googleBtn = document.getElementById("auth-google");
     const forgotBtn = document.getElementById("auth-forgot-btn");
     const rememberInput = document.getElementById("auth-remember");
+    const signupFieldEls = document.querySelectorAll(".auth-signup-fields");
+    const firstNameInput = document.getElementById("auth-first-name");
+    const lastNameInput = document.getElementById("auth-last-name");
+    const phoneInput = document.getElementById("auth-phone");
+    const confirmPasswordInput = document.getElementById("auth-confirm-password");
+
+    const PASSWORD_RULE = /^(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+    const PASSWORD_HINT =
+      "Password must be at least 8 characters and include a number and a special character.";
 
     function applyMode() {
       if (mode === "signup") {
@@ -299,6 +388,9 @@
         toggleCopy.textContent = "Already have an account?";
         toggleBtn.textContent = "Sign in";
         forgotBtn.style.display = "none";
+        signupFieldEls.forEach((el) => el.classList.add("is-visible"));
+        passwordInput.setAttribute("autocomplete", "new-password");
+        shell.classList.add("auth-shell--top");
       } else {
         heading.textContent = "Sign in";
         sub.textContent = "Sign in and keep improving your skills.";
@@ -306,6 +398,9 @@
         toggleCopy.textContent = "Don't have an account?";
         toggleBtn.textContent = "Sign up";
         forgotBtn.style.display = "";
+        signupFieldEls.forEach((el) => el.classList.remove("is-visible"));
+        passwordInput.setAttribute("autocomplete", "current-password");
+        shell.classList.remove("auth-shell--top");
       }
     }
     applyMode();
@@ -340,9 +435,9 @@
       errorBox.classList.add("is-visible", "is-success");
     }
 
-    async function afterAuth(user) {
+    async function afterAuth(user, extraProfile) {
       await startSession(user);
-      await ensureUserProfile(user);
+      await ensureUserProfile(user, extraProfile);
       window.location.href = nextPath;
     }
 
@@ -351,6 +446,26 @@
       errorBox.classList.remove("is-visible");
       const email = emailInput.value.trim();
       const password = passwordInput.value;
+      const firstName = firstNameInput.value.trim();
+      const lastName = lastNameInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const confirmPassword = confirmPasswordInput.value;
+
+      if (mode === "signup") {
+        if (!firstName || !lastName) {
+          showError("Please fill in your first name and last name.");
+          return;
+        }
+        if (!PASSWORD_RULE.test(password)) {
+          showError(PASSWORD_HINT);
+          return;
+        }
+        if (password !== confirmPassword) {
+          showError("Passwords do not match.");
+          return;
+        }
+      }
+
       submitBtn.disabled = true;
       submitBtn.textContent = mode === "signup" ? "Creating account…" : "Signing in…";
       try {
@@ -362,7 +477,10 @@
           mode === "signup"
             ? await createUserWithEmailAndPassword(auth, email, password)
             : await signInWithEmailAndPassword(auth, email, password);
-        await afterAuth(credential.user);
+        await afterAuth(
+          credential.user,
+          mode === "signup" ? { firstName, lastName, phone: phone || null } : undefined
+        );
       } catch (err) {
         showError(err.message || "Something went wrong. Please try again.");
         submitBtn.disabled = false;
@@ -403,7 +521,13 @@
         );
         const provider = new GoogleAuthProvider();
         const credential = await signInWithPopup(auth, provider);
-        await afterAuth(credential.user);
+        let extraProfile;
+        if (getAdditionalUserInfo(credential)?.isNewUser) {
+          const displayName = credential.user.displayName || "";
+          const [firstName, ...rest] = displayName.split(" ");
+          extraProfile = { firstName: firstName || "", lastName: rest.join(" "), phone: null };
+        }
+        await afterAuth(credential.user, extraProfile);
       } catch (err) {
         showError(err.message || "Something went wrong. Please try again.");
         googleBtn.disabled = false;
