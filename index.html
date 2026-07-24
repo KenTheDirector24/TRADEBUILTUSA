@@ -121,5 +121,8 @@
 
   <script src="js/main.js"></script>
   <script type="module" src="js/auth.js"></script>
+  <script>
+    fetch("/api/track-view", { method: "POST" }).catch(function () {});
+  </script>
 </body>
 </html>
