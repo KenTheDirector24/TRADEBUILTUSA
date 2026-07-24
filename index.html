@@ -121,8 +121,10 @@
 
   <script src="js/main.js"></script>
   <script type="module" src="js/auth.js"></script>
-  <script>
-    fetch("/api/track-view", { method: "POST" }).catch(function () {});
+  <script type="module">
+    import { getApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js";
+    getAnalytics(getApp());
   </script>
 </body>
 </html>

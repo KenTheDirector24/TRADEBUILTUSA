@@ -11,4 +11,5 @@ export const firebaseConfig = {
   storageBucket: "tradebuilt-usa.firebasestorage.app",
   messagingSenderId: "381451773725",
   appId: "1:381451773725:web:4811d6055f926fa09b63f4",
+  measurementId: "G-N8FM29EVYG",
 };
