@@ -920,6 +920,18 @@ body.is-leaving #main {
   padding: var(--space-6) 0 var(--space-12);
 }
 
+.hub:has(.hub__codex-row) {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6) 0 var(--space-4);
+}
+
+.hub:has(.hub__codex-row) .container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
 .hub__bg {
   position: absolute;
   inset: 0;
@@ -965,33 +977,57 @@ body.is-leaving #main {
   align-items: center;
   width: fit-content;
   max-width: none;
-  margin: calc(var(--space-6) * -1) 0 var(--space-8);
+  margin: 0;
   text-align: center;
 }
 
 .hub__codex-row {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  gap: var(--space-10);
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.hub:has(.hub__codex-row) .hub__codex-row {
+  flex: 1 1 auto;
+}
+
+@media (min-width: 640px) {
+  .hub__codex-row {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    justify-content: center;
+    align-content: center;
+    gap: clamp(0.75rem, 3vh, 2.5rem);
+    position: relative;
+  }
+
+  .hub__codex-row .hub__header--icon-only:nth-child(odd)::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: calc(clamp(0.75rem, 3vh, 2.5rem) / -2);
+    width: 1px;
+    background: var(--color-line);
+    pointer-events: none;
+  }
+
+  .hub__codex-row .hub__header--icon-only:nth-child(-n+2)::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(clamp(0.75rem, 3vh, 2.5rem) / -2);
+    height: 1px;
+    background: var(--color-line);
+    pointer-events: none;
+  }
 }
 
 .hub__codex-row .hub__header--icon-only {
   position: relative;
   margin: 0;
-}
-
-@media (min-width: 1152px) {
-  .hub__codex-row .hub__header--icon-only:not(:first-child)::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc(var(--space-10) / -2);
-    width: 1px;
-    background: var(--color-line);
-  }
 }
 
 .hub__codex-row .hub__header--icon-only:nth-child(odd) .hub__codex-cover {
@@ -1007,6 +1043,10 @@ body.is-leaving #main {
   width: clamp(110px, 16vw, 170px);
   margin: 0 auto var(--space-5);
   animation: hub-float 5s ease-in-out infinite;
+}
+
+.hub__codex-row .hub__codex-cover {
+  width: clamp(100px, 15vh, 160px);
 }
 
 .hub__header--icon-only .hub__codex-cover {
@@ -1029,6 +1069,16 @@ body.is-leaving #main {
   color: var(--color-slate);
   font-size: var(--text-sm);
   line-height: 1.5;
+}
+
+.hub__codex-row .hub__codex-desc {
+  max-width: 260px;
+  font-size: var(--text-xs);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .hub__codex-cover img {
