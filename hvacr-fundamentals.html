@@ -60,6 +60,8 @@
                 signInBtn.textContent = "Sign Out";
                 signInBtn.classList.add("header-actions__signin--signed-in");
               }
+              var accountLink = document.querySelector(".header-actions__account");
+              if (accountLink) accountLink.hidden = false;
             }
           } catch (e) {}
         })();
