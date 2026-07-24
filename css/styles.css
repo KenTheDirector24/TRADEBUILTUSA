@@ -540,6 +540,10 @@ body.is-leaving #main {
   border-color: rgba(255, 255, 255, 0.35);
 }
 
+.header-actions__account[hidden] {
+  display: none;
+}
+
 .header-actions__account:hover,
 .header-actions__account:focus-visible {
   background: rgba(255, 255, 255, 0.08);
