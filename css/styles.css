@@ -1025,6 +1025,42 @@ body.is-leaving #main {
   }
 }
 
+@media (min-width: 900px) {
+  .hub__codex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: clamp(0.75rem, 2.5vw, 1.75rem);
+    margin-top: clamp(1rem, 4vh, 2.5rem);
+  }
+
+  .hub__codex-row .hub__header--icon-only {
+    flex: 0 1 auto;
+  }
+
+  .hub__codex-row .hub__header--icon-only::after,
+  .hub__codex-row .hub__header--icon-only:nth-child(-n+2)::after {
+    content: none;
+  }
+
+  .hub__codex-row .hub__header--icon-only::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: calc(clamp(0.75rem, 2.5vw, 1.75rem) / -2);
+    width: 1px;
+    background: var(--color-line);
+    pointer-events: none;
+  }
+
+  .hub__codex-row .hub__header--icon-only:last-child::before {
+    content: none;
+  }
+}
+
 .hub__codex-row .hub__header--icon-only {
   position: relative;
   margin: 0;
@@ -1047,6 +1083,18 @@ body.is-leaving #main {
 
 .hub__codex-row .hub__codex-cover {
   width: clamp(100px, 15vh, 160px);
+}
+
+@media (min-width: 900px) {
+  .hub__codex-row .hub__codex-cover {
+    width: auto;
+  }
+
+  .hub__codex-row .hub__codex-cover img {
+    width: auto;
+    height: clamp(160px, 44vh, 360px);
+    max-width: 18vw;
+  }
 }
 
 .hub__header--icon-only .hub__codex-cover {
@@ -1081,21 +1129,31 @@ body.is-leaving #main {
   overflow: hidden;
 }
 
+@media (min-width: 900px) {
+  .hub__codex-row .hub__codex-desc {
+    max-width: 260px;
+    font-size: var(--text-sm);
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+}
+
 .hub__codex-cover img {
   display: block;
   width: 100%;
   height: auto;
   border-radius: 6px;
-  transform: rotate(-4deg);
   filter: drop-shadow(0 16px 26px rgba(18, 21, 26, 0.3));
   transition: transform 0.25s var(--ease-premium), filter 0.25s var(--ease-premium);
+  backface-visibility: hidden;
 }
 
 .hub__codex-cover:hover img,
 .hub__codex-cover:focus-visible img,
 .eyebrow:hover ~ .hub__codex-cover img,
 .eyebrow:focus-visible ~ .hub__codex-cover img {
-  transform: rotate(0deg) scale(1.06);
+  transform: scale(1.06);
   filter: drop-shadow(0 20px 30px rgba(199, 67, 26, 0.35));
 }
 
