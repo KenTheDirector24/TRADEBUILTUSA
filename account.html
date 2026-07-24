@@ -24,10 +24,34 @@
       overflow: hidden;
     }
     #main {
+      position: relative;
       overflow: hidden;
       min-height: 0;
     }
+    .account-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .account-grid {
+      position: absolute;
+      inset: -64px;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(18, 21, 26, 0.16) 0 1.5px, transparent 1.5px 64px),
+        repeating-linear-gradient(90deg, rgba(18, 21, 26, 0.16) 0 1.5px, transparent 1.5px 64px);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 40%, transparent 90%);
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 40%, transparent 90%);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .account-grid {
+        animation: grid-flow 14s linear infinite;
+      }
+    }
     .account-shell {
+      position: relative;
+      z-index: 1;
       max-width: 520px;
       width: 100%;
       height: 100%;
@@ -284,6 +308,9 @@
   </header>
 
   <main id="main">
+    <div class="account-bg" aria-hidden="true">
+      <div class="account-grid"></div>
+    </div>
     <div class="account-shell">
       <div class="account-card">
         <h1>My Account</h1>
