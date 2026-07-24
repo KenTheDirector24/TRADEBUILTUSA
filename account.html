@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Account | TradeBuilt</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/favicon-180.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    body {
+      padding-bottom: calc(var(--footer-height, 2.25rem) + var(--space-2));
+    }
+    .account-shell {
+      max-width: 520px;
+      width: 100%;
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-5) var(--space-10);
+    }
+    .account-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-md, 12px);
+      padding: 1.5rem 1.5rem 1.75rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .account-card h1 {
+      margin: 0 0 0.2rem;
+      font-size: var(--text-xl);
+    }
+    .account-sub {
+      margin: 0 0 1.25rem;
+      color: var(--color-slate);
+      font-size: var(--text-sm);
+    }
+    .account-status {
+      margin-bottom: 1rem;
+      padding: 0.5rem 0.7rem;
+      border-radius: var(--radius-sm);
+      background: rgba(46, 139, 87, 0.12);
+      color: var(--color-success);
+      font-size: var(--text-xs);
+    }
+    .account-status.is-error {
+      background: var(--color-accent-tint);
+      color: var(--color-accent-strong);
+    }
+    .account-avatar-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--color-line);
+    }
+    .account-avatar {
+      position: relative;
+      flex: 0 0 auto;
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--color-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .account-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .account-avatar__initials {
+      font-family: var(--font-heading);
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: #fff;
+    }
+    .account-avatar-actions {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .account-hint {
+      margin: 0.4rem 0 0;
+      font-size: var(--text-xs, 0.75rem);
+      color: var(--color-slate);
+    }
+    .account-field {
+      margin-bottom: 0.75rem;
+    }
+    .account-field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+    .account-field label {
+      display: block;
+      font-size: var(--text-xs, 0.8rem);
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: var(--color-ink);
+    }
+    .account-field input {
+      width: 100%;
+      padding: 0.5rem 0.65rem;
+      font-size: var(--text-sm, 0.9rem);
+      font-family: var(--font-body);
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-sm);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      box-sizing: border-box;
+    }
+    .account-field input:disabled {
+      color: var(--color-slate);
+      background: rgba(150, 140, 120, 0.08);
+    }
+    .account-field input:focus-visible {
+      outline: 2px solid var(--color-accent-strong);
+    }
+    .account-save-btn {
+      width: 100%;
+      margin-top: 0.35rem;
+    }
+    .account-danger-zone {
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--color-line);
+    }
+    .account-danger-zone h2 {
+      font-size: var(--text-base);
+      margin: 0 0 0.3rem;
+    }
+    .account-danger-zone p {
+      margin: 0 0 0.85rem;
+      font-size: var(--text-xs, 0.8rem);
+      color: var(--color-slate);
+    }
+    .account-delete-btn {
+      background: transparent;
+      color: var(--color-accent-strong);
+      border-color: var(--color-accent-strong);
+    }
+    .account-delete-btn:hover {
+      background: var(--color-accent-tint);
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-sentinel" id="nav-sentinel" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="index.html">
+        <img src="assets/img/tradebuilt-logo.png" alt="TradeBuilt" width="2172" height="724">
+        <span class="logo__tagline">Skilled Trades Learning Platform</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="hvacr.html">HVAC/R</a>
+        <span class="site-nav__disabled" tabindex="0">Electrician<span class="site-nav__tooltip">In Development</span></span>
+        <span class="site-nav__disabled" tabindex="0">Resources<span class="site-nav__tooltip">Coming Soon</span></span>
+        <span class="site-nav__disabled" tabindex="0">Store<span class="site-nav__tooltip">Coming Soon</span></span>
+        <span class="site-nav__disabled" tabindex="0">Follow Us<span class="site-nav__tooltip">Coming Soon</span></span>
+      </nav>
+      <div class="header-actions">
+        <button type="button" class="btn btn-sm header-actions__signin">Sign In</button>
+        <button type="button" class="btn btn-sm header-actions__signup">Sign Up</button>
+        <div class="header-actions__account" hidden>
+          <button type="button" class="btn btn-sm header-actions__account-btn" aria-haspopup="true" aria-expanded="false">Account</button>
+          <div class="account-menu" hidden>
+            <a href="account.html" class="account-menu__link" aria-current="page">My Account</a>
+            <button type="button" class="account-menu__delete">Delete Account</button>
+          </div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          try {
+            if (localStorage.getItem("tb_signed_in_hint") === "1") {
+              var signInBtn = document.querySelector(".header-actions__signin");
+              var signUpBtn = document.querySelector(".header-actions__signup");
+              if (signInBtn && signUpBtn) {
+                signUpBtn.style.display = "none";
+                signInBtn.textContent = "Sign Out";
+                signInBtn.classList.add("header-actions__signin--signed-in");
+              }
+            }
+          } catch (e) {}
+        })();
+      </script>
+      <div class="updates-badge">
+        <img src="assets/img/Updates.png" alt="New updates weekly">
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="account-shell">
+      <div class="account-card">
+        <h1>My Account</h1>
+        <p class="account-sub">Update your profile info and manage your account.</p>
+
+        <div class="account-status" id="account-status" hidden></div>
+
+        <section class="account-avatar-section">
+          <div class="account-avatar" id="account-avatar">
+            <img id="account-avatar-img" alt="" hidden>
+            <span class="account-avatar__initials" id="account-avatar-initials"></span>
+          </div>
+          <div class="account-avatar-actions">
+            <button type="button" class="btn btn-light btn-sm" id="account-photo-btn">Change Photo</button>
+            <input type="file" id="account-photo-input" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+            <p class="account-hint">JPG, PNG, WEBP or GIF. Max 5MB.</p>
+          </div>
+        </section>
+
+        <form id="account-form" novalidate>
+          <div class="account-field-row">
+            <div class="account-field">
+              <label for="account-first-name">First name</label>
+              <input type="text" id="account-first-name" name="firstName" autocomplete="given-name">
+            </div>
+            <div class="account-field">
+              <label for="account-last-name">Last name</label>
+              <input type="text" id="account-last-name" name="lastName" autocomplete="family-name">
+            </div>
+          </div>
+          <div class="account-field">
+            <label for="account-phone">Phone</label>
+            <input type="tel" id="account-phone" name="phone" autocomplete="tel">
+          </div>
+          <div class="account-field">
+            <label for="account-email">Email</label>
+            <input type="email" id="account-email" disabled>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm account-save-btn" id="account-save-btn">Save Changes</button>
+        </form>
+
+        <div class="account-danger-zone">
+          <h2>Danger Zone</h2>
+          <p>Permanently delete your account and everything associated with it. This cannot be undone.</p>
+          <button type="button" class="btn btn-sm account-delete-btn" id="account-delete-btn">Delete Account</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__legal">
+      <p>&copy; 2026 TradeBuilt. All rights reserved. &middot; Created by Kenneth J. Thompson &middot; <span class="site-footer__veteran">Veteran Owned 🇺🇸</span></p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module">
+    import {
+      auth,
+      db,
+      storage,
+      doc,
+      getDoc,
+      setDoc,
+      serverTimestamp,
+      storageRef,
+      uploadBytes,
+      getDownloadURL,
+      ensureUserProfile,
+      openDeleteAccountModal,
+      safeNextPath,
+      onAuthStateChanged,
+    } from "./js/auth.js";
+
+    const statusBox = document.getElementById("account-status");
+    const avatarImg = document.getElementById("account-avatar-img");
+    const avatarInitials = document.getElementById("account-avatar-initials");
+    const photoBtn = document.getElementById("account-photo-btn");
+    const photoInput = document.getElementById("account-photo-input");
+    const form = document.getElementById("account-form");
+    const firstNameInput = document.getElementById("account-first-name");
+    const lastNameInput = document.getElementById("account-last-name");
+    const phoneInput = document.getElementById("account-phone");
+    const emailInput = document.getElementById("account-email");
+    const saveBtn = document.getElementById("account-save-btn");
+    const deleteBtn = document.getElementById("account-delete-btn");
+
+    let currentUser = null;
+    let currentPhotoURL = "";
+    let statusTimeout = null;
+
+    function showStatus(message, isError) {
+      statusBox.textContent = message;
+      statusBox.classList.toggle("is-error", !!isError);
+      statusBox.hidden = false;
+      window.clearTimeout(statusTimeout);
+      statusTimeout = window.setTimeout(() => {
+        statusBox.hidden = true;
+      }, 4000);
+    }
+
+    function initialsFrom(firstName, lastName, email) {
+      const a = (firstName || "").trim().charAt(0);
+      const b = (lastName || "").trim().charAt(0);
+      if (a || b) return (a + b).toUpperCase();
+      return (email || "?").trim().charAt(0).toUpperCase();
+    }
+
+    function renderAvatar(photoURL, firstName, lastName, email) {
+      currentPhotoURL = photoURL || "";
+      if (currentPhotoURL) {
+        avatarImg.src = currentPhotoURL;
+        avatarImg.hidden = false;
+        avatarInitials.hidden = true;
+      } else {
+        avatarImg.hidden = true;
+        avatarImg.removeAttribute("src");
+        avatarInitials.hidden = false;
+        avatarInitials.textContent = initialsFrom(firstName, lastName, email);
+      }
+    }
+
+    async function loadProfile(user) {
+      emailInput.value = user.email || "";
+      const snap = await getDoc(doc(db, "users", user.uid));
+      const data = snap.exists() ? snap.data() : {};
+
+      let firstName = data.firstName;
+      let lastName = data.lastName;
+      if (!firstName && !lastName && user.displayName) {
+        const parts = user.displayName.trim().split(/\s+/);
+        firstName = parts[0] || "";
+        lastName = parts.slice(1).join(" ");
+      }
+
+      firstNameInput.value = firstName || "";
+      lastNameInput.value = lastName || "";
+      phoneInput.value = data.phone || "";
+      renderAvatar(data.photoURL || user.photoURL || "", firstNameInput.value, lastNameInput.value, user.email);
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        const next = safeNextPath(window.location.pathname);
+        window.location.href = `/login.html#next=${encodeURIComponent(next)}`;
+        return;
+      }
+      currentUser = user;
+      loadProfile(user).catch(() => showStatus("Could not load your profile.", true));
+    });
+
+    photoBtn.addEventListener("click", () => photoInput.click());
+
+    photoInput.addEventListener("change", async () => {
+      const file = photoInput.files && photoInput.files[0];
+      photoInput.value = "";
+      if (!file || !currentUser) return;
+
+      if (!file.type.startsWith("image/")) {
+        showStatus("Please choose an image file.", true);
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        showStatus("Image must be smaller than 5MB.", true);
+        return;
+      }
+
+      photoBtn.disabled = true;
+      photoBtn.textContent = "Uploading…";
+      try {
+        const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+        const fileRef = storageRef(storage, `user-profile-pictures/${currentUser.uid}/profile-picture.${ext}`);
+        await uploadBytes(fileRef, file, { contentType: file.type });
+        const photoURL = await getDownloadURL(fileRef);
+        await setDoc(doc(db, "users", currentUser.uid), { photoURL, updatedAt: serverTimestamp() }, { merge: true });
+        renderAvatar(photoURL, firstNameInput.value, lastNameInput.value, currentUser.email);
+        showStatus("Profile picture updated.");
+      } catch (err) {
+        showStatus(err.message || "Could not upload photo. Please try again.", true);
+      } finally {
+        photoBtn.disabled = false;
+        photoBtn.textContent = "Change Photo";
+      }
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!currentUser) return;
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Saving…";
+      try {
+        const firstName = firstNameInput.value.trim();
+        const lastName = lastNameInput.value.trim();
+        const phone = phoneInput.value.trim();
+        await ensureUserProfile(currentUser, { firstName, lastName, phone: phone || null });
+        renderAvatar(currentPhotoURL, firstName, lastName, currentUser.email);
+        showStatus("Changes saved.");
+      } catch (err) {
+        showStatus(err.message || "Could not save changes. Please try again.", true);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save Changes";
+      }
+    });
+
+    deleteBtn.addEventListener("click", () => openDeleteAccountModal());
+  </script>
+</body>
+</html>

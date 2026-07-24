@@ -564,6 +564,7 @@ body.is-leaving #main {
   z-index: 20;
 }
 
+.account-menu__link,
 .account-menu__delete {
   display: block;
   width: 100%;
@@ -575,11 +576,21 @@ body.is-leaving #main {
   font-family: var(--font-body);
   font-size: var(--text-sm);
   font-weight: 600;
-  color: var(--color-accent-strong);
   cursor: pointer;
+  text-decoration: none;
   transition: background-color 0.15s var(--ease-premium);
 }
 
+.account-menu__link {
+  color: var(--color-ink);
+}
+
+.account-menu__delete {
+  color: var(--color-accent-strong);
+}
+
+.account-menu__link:hover,
+.account-menu__link:focus-visible,
 .account-menu__delete:hover,
 .account-menu__delete:focus-visible {
   background: var(--color-accent-tint);

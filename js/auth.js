@@ -21,10 +21,17 @@ import {
   getDoc,
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {
+  getStorage,
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 function safeNextPath(rawNext) {
   if (typeof rawNext === "string" && /^\/(?!\/)/.test(rawNext)) return rawNext;
@@ -336,10 +343,21 @@ window.TB.hydratePageProgress = hydratePageProgress;
 
 export {
   auth,
+  db,
+  storage,
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+  storageRef,
+  uploadBytes,
+  getDownloadURL,
   startSession,
   ensureUserProfile,
   endSession,
   signOutEverywhere,
+  deleteAccountEverywhere,
+  openDeleteAccountModal,
   safeNextPath,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,

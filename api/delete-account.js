@@ -1,4 +1,4 @@
-import { adminAuth, adminDb } from "./_firebaseAdmin.js";
+import { adminAuth, adminDb, adminStorage } from "./_firebaseAdmin.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -23,6 +23,7 @@ export default async function handler(req, res) {
 
   try {
     await adminDb().recursiveDelete(adminDb().doc(`users/${uid}`));
+    await adminStorage().bucket().deleteFiles({ prefix: `user-profile-pictures/${uid}/` }).catch(() => {});
     await adminAuth().deleteUser(uid);
   } catch (e) {
     res.status(500).json({ error: "Could not delete account" });

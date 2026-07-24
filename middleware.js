@@ -7,6 +7,7 @@ const AUDIENCE = "tradebuilt-session";
 
 export const config = {
   matcher: [
+    "/account.html",
     "/hvacr.html",
     "/hvacr-codex.html",
     "/hvacr-fundamentals.html",
