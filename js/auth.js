@@ -140,8 +140,7 @@ function wireAccountMenu() {
   const wrap = document.querySelector(".header-actions__account");
   const btn = document.querySelector(".header-actions__account-btn");
   const menu = document.querySelector(".account-menu");
-  const deleteItem = document.querySelector(".account-menu__delete");
-  if (!wrap || !btn || !menu || !deleteItem) return;
+  if (!wrap || !btn || !menu) return;
 
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -160,11 +159,6 @@ function wireAccountMenu() {
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeAccountMenu();
-  });
-
-  deleteItem.addEventListener("click", () => {
-    closeAccountMenu();
-    openDeleteAccountModal();
   });
 }
 

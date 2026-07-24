@@ -154,6 +154,67 @@
     .account-delete-btn:hover {
       background: var(--color-accent-tint);
     }
+    .crop-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      background: rgba(18, 21, 26, 0.55);
+      backdrop-filter: blur(2px);
+    }
+    .crop-overlay[hidden] {
+      display: none;
+    }
+    .crop-modal {
+      width: 100%;
+      max-width: 360px;
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .crop-modal h2 {
+      font-family: var(--font-heading);
+      font-size: var(--text-lg);
+      color: var(--color-ink);
+      margin: 0 0 1rem;
+    }
+    .crop-stage {
+      width: 280px;
+      height: 280px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      overflow: hidden;
+      background:
+        repeating-conic-gradient(#e5e0d8 0% 25%, #ede8e0 0% 50%) 50% / 20px 20px;
+      cursor: grab;
+      touch-action: none;
+    }
+    .crop-stage:active {
+      cursor: grabbing;
+    }
+    .crop-stage canvas {
+      display: block;
+    }
+    .crop-zoom-label {
+      display: block;
+      font-size: var(--text-xs, 0.75rem);
+      color: var(--color-slate);
+      margin-bottom: 0.35rem;
+    }
+    .crop-zoom {
+      width: 100%;
+      margin-bottom: 1.1rem;
+    }
+    .crop-actions {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+    }
   </style>
 </head>
 <body>
@@ -181,7 +242,6 @@
           <button type="button" class="btn btn-sm header-actions__account-btn" aria-haspopup="true" aria-expanded="false">Account</button>
           <div class="account-menu" hidden>
             <a href="account.html" class="account-menu__link" aria-current="page">My Account</a>
-            <button type="button" class="account-menu__delete">Delete Account</button>
           </div>
         </div>
       </div>
@@ -222,7 +282,7 @@
           <div class="account-avatar-actions">
             <button type="button" class="btn btn-light btn-sm" id="account-photo-btn">Change Photo</button>
             <input type="file" id="account-photo-input" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
-            <p class="account-hint">JPG, PNG, WEBP or GIF. Max 5MB.</p>
+            <p class="account-hint">JPG, PNG, WEBP or GIF. Max 5MB. You'll be able to crop it before saving.</p>
           </div>
         </section>
 
@@ -256,6 +316,21 @@
       </div>
     </div>
   </main>
+
+  <div class="crop-overlay" id="crop-overlay" hidden>
+    <div class="crop-modal" role="dialog" aria-modal="true" aria-labelledby="crop-modal-title">
+      <h2 id="crop-modal-title">Crop your photo</h2>
+      <div class="crop-stage" id="crop-stage">
+        <canvas id="crop-canvas" width="280" height="280"></canvas>
+      </div>
+      <label class="crop-zoom-label" for="crop-zoom">Zoom</label>
+      <input type="range" class="crop-zoom" id="crop-zoom" min="0" max="100" value="0" step="1">
+      <div class="crop-actions">
+        <button type="button" class="btn btn-sm btn-light" id="crop-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-sm btn-primary" id="crop-save-btn">Save Photo</button>
+      </div>
+    </div>
+  </div>
 
   <footer class="site-footer">
     <div class="site-footer__legal">
@@ -295,6 +370,132 @@
     const emailInput = document.getElementById("account-email");
     const saveBtn = document.getElementById("account-save-btn");
     const deleteBtn = document.getElementById("account-delete-btn");
+
+    const cropOverlay = document.getElementById("crop-overlay");
+    const cropStage = document.getElementById("crop-stage");
+    const cropCanvas = document.getElementById("crop-canvas");
+    const cropCtx = cropCanvas.getContext("2d");
+    const cropZoom = document.getElementById("crop-zoom");
+    const cropCancelBtn = document.getElementById("crop-cancel-btn");
+    const cropSaveBtn = document.getElementById("crop-save-btn");
+
+    const CROP_SIZE = 280;
+    const OUTPUT_SIZE = 480;
+
+    let cropImg = null;
+    let cropMinScale = 1;
+    let cropScale = 1;
+    let cropOffsetX = 0;
+    let cropOffsetY = 0;
+    let cropDragging = false;
+    let cropDragStart = null;
+    let cropResolve = null;
+
+    function clampCropOffset() {
+      const w = cropImg.naturalWidth * cropScale;
+      const h = cropImg.naturalHeight * cropScale;
+      cropOffsetX = Math.min(0, Math.max(CROP_SIZE - w, cropOffsetX));
+      cropOffsetY = Math.min(0, Math.max(CROP_SIZE - h, cropOffsetY));
+    }
+
+    function drawCrop() {
+      cropCtx.clearRect(0, 0, CROP_SIZE, CROP_SIZE);
+      cropCtx.drawImage(
+        cropImg,
+        cropOffsetX,
+        cropOffsetY,
+        cropImg.naturalWidth * cropScale,
+        cropImg.naturalHeight * cropScale
+      );
+    }
+
+    function openCropModal(file) {
+      return new Promise((resolve) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          cropImg = img;
+          cropMinScale = Math.max(CROP_SIZE / img.naturalWidth, CROP_SIZE / img.naturalHeight);
+          cropScale = cropMinScale;
+          cropOffsetX = (CROP_SIZE - img.naturalWidth * cropScale) / 2;
+          cropOffsetY = (CROP_SIZE - img.naturalHeight * cropScale) / 2;
+          cropZoom.value = "0";
+          drawCrop();
+          cropOverlay.hidden = false;
+          cropResolve = resolve;
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          resolve(null);
+        };
+        img.src = url;
+      });
+    }
+
+    function closeCropModal(result) {
+      cropOverlay.hidden = true;
+      if (cropImg) URL.revokeObjectURL(cropImg.src);
+      cropImg = null;
+      const resolve = cropResolve;
+      cropResolve = null;
+      if (resolve) resolve(result);
+    }
+
+    cropZoom.addEventListener("input", () => {
+      if (!cropImg) return;
+      const t = Number(cropZoom.value) / 100;
+      const newScale = cropMinScale * (1 + t * 2);
+      const imgCenterX = (CROP_SIZE / 2 - cropOffsetX) / cropScale;
+      const imgCenterY = (CROP_SIZE / 2 - cropOffsetY) / cropScale;
+      cropScale = newScale;
+      cropOffsetX = CROP_SIZE / 2 - imgCenterX * cropScale;
+      cropOffsetY = CROP_SIZE / 2 - imgCenterY * cropScale;
+      clampCropOffset();
+      drawCrop();
+    });
+
+    cropStage.addEventListener("pointerdown", (e) => {
+      if (!cropImg) return;
+      cropDragging = true;
+      cropDragStart = { x: e.clientX, y: e.clientY, offsetX: cropOffsetX, offsetY: cropOffsetY };
+      cropStage.setPointerCapture(e.pointerId);
+    });
+    cropStage.addEventListener("pointermove", (e) => {
+      if (!cropDragging) return;
+      cropOffsetX = cropDragStart.offsetX + (e.clientX - cropDragStart.x);
+      cropOffsetY = cropDragStart.offsetY + (e.clientY - cropDragStart.y);
+      clampCropOffset();
+      drawCrop();
+    });
+    function endCropDrag() {
+      cropDragging = false;
+    }
+    cropStage.addEventListener("pointerup", endCropDrag);
+    cropStage.addEventListener("pointercancel", endCropDrag);
+
+    cropCancelBtn.addEventListener("click", () => closeCropModal(null));
+    cropOverlay.addEventListener("click", (e) => {
+      if (e.target === cropOverlay) closeCropModal(null);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !cropOverlay.hidden) closeCropModal(null);
+    });
+
+    cropSaveBtn.addEventListener("click", () => {
+      const ratio = OUTPUT_SIZE / CROP_SIZE;
+      const outputCanvas = document.createElement("canvas");
+      outputCanvas.width = OUTPUT_SIZE;
+      outputCanvas.height = OUTPUT_SIZE;
+      const outCtx = outputCanvas.getContext("2d");
+      outCtx.drawImage(
+        cropImg,
+        cropOffsetX * ratio,
+        cropOffsetY * ratio,
+        cropImg.naturalWidth * cropScale * ratio,
+        cropImg.naturalHeight * cropScale * ratio
+      );
+      outputCanvas.toBlob((blob) => closeCropModal(blob), "image/jpeg", 0.92);
+    });
 
     let currentUser = null;
     let currentPhotoURL = "";
@@ -376,12 +577,14 @@
         return;
       }
 
+      const blob = await openCropModal(file);
+      if (!blob) return;
+
       photoBtn.disabled = true;
       photoBtn.textContent = "Uploading…";
       try {
-        const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
-        const fileRef = storageRef(storage, `user-profile-pictures/${currentUser.uid}/profile-picture.${ext}`);
-        await uploadBytes(fileRef, file, { contentType: file.type });
+        const fileRef = storageRef(storage, `user-profile-pictures/${currentUser.uid}/profile-picture.jpg`);
+        await uploadBytes(fileRef, blob, { contentType: "image/jpeg" });
         const photoURL = await getDownloadURL(fileRef);
         await setDoc(doc(db, "users", currentUser.uid), { photoURL, updatedAt: serverTimestamp() }, { merge: true });
         renderAvatar(photoURL, firstNameInput.value, lastNameInput.value, currentUser.email);

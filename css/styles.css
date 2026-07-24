@@ -564,8 +564,7 @@ body.is-leaving #main {
   z-index: 20;
 }
 
-.account-menu__link,
-.account-menu__delete {
+.account-menu__link {
   display: block;
   width: 100%;
   text-align: left;
@@ -579,20 +578,11 @@ body.is-leaving #main {
   cursor: pointer;
   text-decoration: none;
   transition: background-color 0.15s var(--ease-premium);
-}
-
-.account-menu__link {
   color: var(--color-ink);
 }
 
-.account-menu__delete {
-  color: var(--color-accent-strong);
-}
-
 .account-menu__link:hover,
-.account-menu__link:focus-visible,
-.account-menu__delete:hover,
-.account-menu__delete:focus-visible {
+.account-menu__link:focus-visible {
   background: var(--color-accent-tint);
 }
 
