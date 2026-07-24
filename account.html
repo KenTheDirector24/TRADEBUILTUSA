@@ -158,7 +158,8 @@
       margin-bottom: 0.2rem;
       color: var(--color-ink);
     }
-    .account-field input {
+    .account-field input,
+    .account-field select {
       width: 100%;
       padding: 0.4rem 0.6rem;
       font-size: var(--text-sm, 0.9rem);
@@ -388,6 +389,14 @@
             <label for="account-school">School / College</label>
             <input type="text" id="account-school" name="school" autocomplete="organization">
           </div>
+          <div class="account-field">
+            <label for="account-trade">Skilled trade</label>
+            <select id="account-trade" name="skilledTrade">
+              <option value="">Select a trade</option>
+              <option value="hvac">HVAC</option>
+              <option value="electrician">Electrician</option>
+            </select>
+          </div>
           <button type="submit" class="btn btn-primary btn-sm account-save-btn" id="account-save-btn">Save Changes</button>
         </form>
 
@@ -461,6 +470,7 @@
     const stateInput = document.getElementById("account-state");
     const zipInput = document.getElementById("account-zip");
     const schoolInput = document.getElementById("account-school");
+    const tradeInput = document.getElementById("account-trade");
     const saveBtn = document.getElementById("account-save-btn");
     const deleteBtn = document.getElementById("account-delete-btn");
 
@@ -648,6 +658,7 @@
       stateInput.value = data.state || "";
       zipInput.value = data.zip || "";
       schoolInput.value = data.school || "";
+      tradeInput.value = data.skilledTrade || "";
       renderAvatar(data.photoURL || user.photoURL || "", firstNameInput.value, lastNameInput.value, user.email);
     }
 
@@ -724,6 +735,7 @@
         const state = stateInput.value.trim();
         const zip = zipInput.value.trim();
         const school = schoolInput.value.trim();
+        const skilledTrade = tradeInput.value.trim();
         await ensureUserProfile(currentUser, {
           firstName,
           lastName,
@@ -735,6 +747,7 @@
           state: state || null,
           zip: zip || null,
           school: school || null,
+          skilledTrade: skilledTrade || null,
         });
         renderAvatar(currentPhotoURL, firstName, lastName, currentUser.email);
         showStatus("Changes saved.");
