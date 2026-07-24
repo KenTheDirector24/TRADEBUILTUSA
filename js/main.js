@@ -241,6 +241,9 @@
 
     var tetherActive = false;
     var pointerActive = false;
+    var userInteracted = false;
+    var tetherHintTimeout = null;
+    var tetherHintHideTimeout = null;
 
     var showTethers = function () {
       positionTethers();
@@ -270,6 +273,30 @@
         t.dot.style.opacity = '0';
       });
     };
+
+    var cancelTetherHint = function () {
+      userInteracted = true;
+      if (tetherHintTimeout) {
+        window.clearTimeout(tetherHintTimeout);
+        tetherHintTimeout = null;
+      }
+      if (tetherHintHideTimeout) {
+        window.clearTimeout(tetherHintHideTimeout);
+        tetherHintHideTimeout = null;
+      }
+      if (tetherActive && !pointerActive) {
+        hideTethers();
+      }
+    };
+
+    document.addEventListener('pointerdown', function (e) {
+      if (e.target !== bag && !bag.contains(e.target)) {
+        cancelTetherHint();
+      }
+    }, true);
+    document.addEventListener('keydown', function () {
+      cancelTetherHint();
+    }, true);
 
     bag.addEventListener('mouseenter', function () {
       pointerActive = true;
@@ -303,12 +330,14 @@
 
     positionTethers();
 
-    window.setTimeout(function () {
-      if (pointerActive) {
+    tetherHintTimeout = window.setTimeout(function () {
+      tetherHintTimeout = null;
+      if (pointerActive || userInteracted) {
         return;
       }
       showTethers();
-      window.setTimeout(function () {
+      tetherHintHideTimeout = window.setTimeout(function () {
+        tetherHintHideTimeout = null;
         if (!pointerActive) {
           hideTethers();
         }
