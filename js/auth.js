@@ -189,7 +189,7 @@ function renderHeroCta(user) {
   const heroCta = document.getElementById("hero-cta");
   if (!heroCta) return;
   if (user) {
-    heroCta.textContent = "Upcoming Updates";
+    heroCta.textContent = "Upcoming Updates!";
     heroCta.setAttribute("href", "updates.html");
   } else {
     heroCta.textContent = "Join Today!";
