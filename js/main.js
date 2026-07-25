@@ -388,8 +388,68 @@
   // Achievement-unlock celebration. Root-absolute image path since this
   // script runs from multiple directory depths (e.g. quizzes/*.html).
   var ACHIEVEMENT_INFO = {
-    recruit: { title: 'TradeBuilt Recruit', img: '/assets/Achievements/TradeBuiltRecruit.webp' },
+    recruit: {
+      title: 'TradeBuilt Recruit',
+      desc: 'Awarded for joining TradeBuilt.',
+      img: '/assets/Achievements/TradeBuiltRecruit.webp',
+    },
   };
+
+  // Builds a jagged polyline (as an SVG "points" string) from (x1,y1) to
+  // (x2,y2), nudging interior points sideways so it reads as a lightning
+  // bolt rather than a straight line.
+  function buildBoltPoints(x1, y1, x2, y2, segments, jitter) {
+    var dx = x2 - x1;
+    var dy = y2 - y1;
+    var len = Math.sqrt(dx * dx + dy * dy) || 1;
+    var nx = -dy / len;
+    var ny = dx / len;
+    var pts = [];
+    for (var i = 0; i <= segments; i++) {
+      var t = i / segments;
+      var x = x1 + dx * t;
+      var y = y1 + dy * t;
+      if (i > 0 && i < segments) {
+        var offset = (Math.random() * 2 - 1) * jitter;
+        x += nx * offset;
+        y += ny * offset;
+      }
+      pts.push(x.toFixed(1) + ',' + y.toFixed(1));
+    }
+    return pts.join(' ');
+  }
+
+  function buildLightningFlash() {
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var cx = w / 2;
+    var cy = h * 0.4;
+    var edgePoints = [
+      [0, h * 0.35],
+      [w, h * 0.3],
+      [w * 0.5, 0],
+      [0, h * 0.8],
+      [w, h * 0.75],
+    ];
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('class', 'achievement-unlock-flash');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('width', w);
+    svg.setAttribute('height', h);
+    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+
+    edgePoints.forEach(function (edge, i) {
+      var poly = document.createElementNS(svgNS, 'polyline');
+      poly.setAttribute('points', buildBoltPoints(edge[0], edge[1], cx, cy, 6, 22));
+      poly.setAttribute('pathLength', '100');
+      poly.setAttribute('class', 'achievement-bolt');
+      poly.style.animationDelay = (i * 0.09).toFixed(2) + 's';
+      svg.appendChild(poly);
+    });
+
+    return svg;
+  }
 
   function showAchievementUnlock(id) {
     var info = ACHIEVEMENT_INFO[id];
@@ -408,33 +468,28 @@
       '  <img class="achievement-unlock-badge" src="' + info.img + '" alt="" width="512" height="512">' +
       '  <p class="achievement-unlock-eyebrow">Achievement Unlocked!</p>' +
       '  <h2 class="achievement-unlock-title">' + info.title + '</h2>' +
+      '  <p class="achievement-unlock-desc">' + info.desc + '</p>' +
       '  <button type="button" class="btn btn-primary btn-sm achievement-unlock-dismiss">Congratulations!</button>' +
       '</div>';
+    var flash = buildLightningFlash();
+    overlay.insertBefore(flash, overlay.firstChild);
     document.body.appendChild(overlay);
+    flash.addEventListener('animationend', function () {
+      flash.remove();
+    });
 
-    var autoDismiss = window.setTimeout(close, 6000);
-
-    function close() {
-      window.clearTimeout(autoDismiss);
-      document.removeEventListener('keydown', onKeydown);
-      if (overlay.parentNode) {
-        overlay.parentNode.removeChild(overlay);
-      }
-    }
-
-    function onKeydown(e) {
-      if (e.key === 'Escape') {
-        close();
-      }
-    }
-
-    overlay.querySelector('.achievement-unlock-dismiss').addEventListener('click', close);
-    overlay.addEventListener('click', function (e) {
-      if (e.target === overlay) {
-        close();
+    var badge = overlay.querySelector('.achievement-unlock-badge');
+    badge.addEventListener('animationend', function onSpinInEnd(e) {
+      if (e.animationName === 'achievement-badge-spin-in') {
+        badge.classList.add('is-idle');
+        badge.removeEventListener('animationend', onSpinInEnd);
       }
     });
-    document.addEventListener('keydown', onKeydown);
+
+    overlay.querySelector('.achievement-unlock-dismiss').addEventListener('click', function () {
+      overlay.remove();
+      flash.remove();
+    });
   }
 
   (function checkPendingAchievement() {
