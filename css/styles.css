@@ -934,11 +934,27 @@ body.is-leaving #main {
 
 /* Values strip */
 .values {
+  position: relative;
   flex: 0 0 auto;
   padding: clamp(0.65rem, 2.9vh, var(--space-8)) 0;
   border-top: 1px solid var(--color-line);
   border-bottom: 1px solid var(--color-line);
   background: var(--color-surface);
+  overflow: hidden;
+}
+
+.values::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("../assets/img/Flag.png") center 30% / cover no-repeat;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.values > .container {
+  position: relative;
+  z-index: 1;
 }
 
 .values__grid {
