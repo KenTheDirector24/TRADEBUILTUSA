@@ -13,6 +13,7 @@
 
   var SCORE_KEY = 'tb:quiz-score:' + window.location.pathname;
   var ANSWERS_KEY = 'tb:quiz-answers:' + window.location.pathname;
+  var HISTORY_KEY = 'tb:quiz-history:' + window.location.pathname;
   var cloudPageId = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '').replace(/^\//, '').replace(/\//g, '-') || 'index';
 
   var readSavedAnswers = function () {
@@ -25,8 +26,21 @@
     }
   };
 
+  var readHistory = function () {
+    try {
+      var raw = window.localStorage.getItem(HISTORY_KEY);
+      var parsed = raw ? JSON.parse(raw) : null;
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  };
+
   // Maps question index -> index of the option chosen for it.
   var answers = readSavedAnswers();
+  // Most recent attempt first. Recorded once per completion — see historyRecorded below.
+  var history = readHistory();
+  var historyRecorded = false;
 
   var saveAnswers = function () {
     try {
@@ -62,6 +76,19 @@
             window.localStorage.setItem(SCORE_KEY, cloudScore);
           } else {
             window.localStorage.removeItem(SCORE_KEY);
+          }
+        } catch (e) {}
+        changed = true;
+      }
+
+      var localHistory = readHistory();
+      var cloudHistory = Array.isArray(data.attempts) ? data.attempts : [];
+      if (JSON.stringify(cloudHistory) !== JSON.stringify(localHistory)) {
+        try {
+          if (cloudHistory.length) {
+            window.localStorage.setItem(HISTORY_KEY, JSON.stringify(cloudHistory));
+          } else {
+            window.localStorage.removeItem(HISTORY_KEY);
           }
         } catch (e) {}
         changed = true;
@@ -108,6 +135,51 @@
   // ran, so nudge it to re-check the current question's unlocked state.
   document.dispatchEvent(new CustomEvent('quiz:answered'));
 
+  var renderHistory = function () {
+    if (!resultsPart) {
+      return;
+    }
+    var wrap = resultsPart.querySelector('.quiz-history');
+    if (!history.length) {
+      if (wrap) {
+        wrap.remove();
+      }
+      return;
+    }
+    if (!wrap) {
+      wrap = document.createElement('div');
+      wrap.className = 'quiz-history';
+      var heading = document.createElement('p');
+      heading.className = 'quiz-history__heading';
+      heading.textContent = 'Recent attempts';
+      var list = document.createElement('ul');
+      list.className = 'quiz-history__list';
+      wrap.appendChild(heading);
+      wrap.appendChild(list);
+      if (retakeBtn) {
+        retakeBtn.parentNode.insertBefore(wrap, retakeBtn);
+      } else {
+        resultsPart.querySelector('.quiz-results').appendChild(wrap);
+      }
+    }
+    var listEl = wrap.querySelector('.quiz-history__list');
+    listEl.innerHTML = '';
+    history.slice(0, 3).forEach(function (entry) {
+      var item = document.createElement('li');
+      item.className = 'quiz-history__item';
+      var scoreSpan = document.createElement('span');
+      scoreSpan.className = 'quiz-history__score';
+      scoreSpan.textContent = entry.score;
+      var dateSpan = document.createElement('span');
+      dateSpan.className = 'quiz-history__date';
+      var when = new Date(entry.at);
+      dateSpan.textContent = isNaN(when.getTime()) ? '' : when.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      item.appendChild(scoreSpan);
+      item.appendChild(dateSpan);
+      listEl.appendChild(item);
+    });
+  };
+
   // skipCloud: true when this is just re-rendering a restored score on page
   // load, not a real completion — avoids re-pushing stale local data to
   // Firestore on every visit, which would silently undo a cloud-side delete.
@@ -128,9 +200,22 @@
     try {
       window.localStorage.setItem(SCORE_KEY, scoreValue);
     } catch (e) {}
-    if (!skipCloud && window.TB && window.TB.saveCloudProgress) {
-      window.TB.saveCloudProgress('quizzes', cloudPageId, { quizScore: scoreValue });
+    if (!skipCloud) {
+      // historyRecorded guards against re-appending when the results panel
+      // is simply revisited (e.g. Previous/Next) without an actual retake.
+      if (!historyRecorded) {
+        historyRecorded = true;
+        history.unshift({ score: scoreValue, at: new Date().toISOString() });
+        history = history.slice(0, 5);
+        try {
+          window.localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+        } catch (e) {}
+      }
+      if (window.TB && window.TB.saveCloudProgress) {
+        window.TB.saveCloudProgress('quizzes', cloudPageId, { quizScore: scoreValue, attempts: history });
+      }
     }
+    renderHistory();
   };
 
   if (resultsPart) {
