@@ -946,10 +946,22 @@ body.is-leaving #main {
 .values::before {
   content: "";
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background: url("../assets/img/Flag.png") center 30% / cover no-repeat;
   opacity: 0.12;
   pointer-events: none;
+}
+
+@media (max-width: 1023px) {
+  .values::before {
+    top: 50%;
+    bottom: auto;
+    height: clamp(150px, 34vw, 260px);
+    transform: translateY(-50%);
+  }
 }
 
 .values > .container {
