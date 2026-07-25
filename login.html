@@ -328,6 +328,9 @@
   <script type="module">
     import {
       auth,
+      db,
+      doc,
+      getDoc,
       startSession,
       ensureUserProfile,
       setProfileHint,
@@ -430,14 +433,14 @@
     async function afterAuth(user, extraProfile) {
       await startSession(user);
       await ensureUserProfile(user, extraProfile);
-      if (extraProfile) {
-        setProfileHint({
-          firstName: extraProfile.firstName || "",
-          lastName: extraProfile.lastName || "",
-          photoURL: user.photoURL || "",
-          email: user.email || "",
-        });
-      }
+      const snap = await getDoc(doc(db, "users", user.uid)).catch(() => null);
+      const data = (snap && snap.exists()) ? snap.data() : {};
+      setProfileHint({
+        firstName: data.firstName || (extraProfile && extraProfile.firstName) || "",
+        lastName: data.lastName || (extraProfile && extraProfile.lastName) || "",
+        photoURL: data.photoURL || user.photoURL || "",
+        email: user.email || "",
+      });
       window.location.href = nextPath;
     }
 
