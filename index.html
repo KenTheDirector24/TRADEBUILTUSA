@@ -88,7 +88,20 @@
         <div class="hero__inner">
           <h1 id="hero-heading">Master the Skills.<br>Build the Future.</h1>
           <p class="hero__subhead">TradeBuilt is an online learning platform built for skilled trades professionals. Whether you're just getting started or expanding your expertise, you'll find practical lessons, detailed illustrations, quizzes, simulations, and industry updates designed to help you build real-world knowledge.</p>
-          <a class="btn btn-primary btn-lg" href="login.html#mode=signup">Join Today!</a>
+          <a class="btn btn-primary btn-lg hero__cta" id="hero-cta" href="login.html#mode=signup">Join Today!</a>
+          <script>
+            (function () {
+              try {
+                if (localStorage.getItem("tb_signed_in_hint") === "1") {
+                  var heroCta = document.getElementById("hero-cta");
+                  if (heroCta) {
+                    heroCta.textContent = "Upcoming Updates";
+                    heroCta.setAttribute("href", "updates.html");
+                  }
+                }
+              } catch (e) {}
+            })();
+          </script>
         </div>
       </div>
     </section>

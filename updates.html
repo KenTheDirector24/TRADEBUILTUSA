@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TradeBuilt | Upcoming Updates</title>
+  <meta name="description" content="See what's coming next to TradeBuilt — new courses, tools, and features currently in the works.">
+  <meta name="theme-color" content="#14181F">
+
+  <meta property="og:title" content="Upcoming Updates — TradeBuilt">
+  <meta property="og:description" content="See what's coming next to TradeBuilt — new courses, tools, and features currently in the works.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Upcoming Updates — TradeBuilt">
+  <meta name="twitter:description" content="See what's coming next to TradeBuilt — new courses, tools, and features currently in the works.">
+
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/favicon-180.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="nav-sentinel" id="nav-sentinel" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="index.html">
+        <img src="assets/img/tradebuilt-logo.png" alt="TradeBuilt" width="2172" height="724">
+        <span class="logo__tagline">Skilled Trades Learning Platform</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="hvacr.html">HVAC/R</a>
+        <span class="site-nav__disabled" tabindex="0">Electrician<span class="site-nav__tooltip">In Development</span></span>
+        <span class="site-nav__disabled" tabindex="0">Resources<span class="site-nav__tooltip">Coming Soon</span></span>
+        <span class="site-nav__disabled" tabindex="0">Store<span class="site-nav__tooltip">Coming Soon</span></span>
+      </nav>
+      <div class="header-actions">
+        <button type="button" class="btn btn-sm header-actions__signin">Sign In</button>
+        <button type="button" class="btn btn-sm header-actions__signup">Sign Up</button>
+        <a href="account.html" class="btn btn-sm header-actions__account" hidden>Account</a>
+      </div>
+      <script>
+        (function () {
+          try {
+            if (localStorage.getItem("tb_signed_in_hint") === "1") {
+              var signInBtn = document.querySelector(".header-actions__signin");
+              var signUpBtn = document.querySelector(".header-actions__signup");
+              if (signInBtn && signUpBtn) {
+                signUpBtn.style.display = "none";
+                signInBtn.textContent = "Sign Out";
+                signInBtn.classList.add("header-actions__signin--signed-in");
+              }
+              var accountLink = document.querySelector(".header-actions__account");
+              if (accountLink) accountLink.hidden = false;
+            }
+          } catch (e) {}
+        })();
+      </script>
+      <div class="updates-badge">
+        <img src="assets/img/Updates.png" alt="New updates weekly">
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="follow" id="updates" aria-labelledby="updates-heading">
+      <div class="container follow__inner" data-reveal>
+        <p class="eyebrow eyebrow--light">Coming soon</p>
+        <h2 id="updates-heading">Upcoming Updates</h2>
+        <p class="follow__subhead">This page will show what's currently in the works at TradeBuilt — new courses, tools, and features. It's not ready yet, but check back soon.</p>
+        <a class="btn btn-light btn-lg" href="index.html">Back to Home</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__legal">
+      <p>&copy; 2026 TradeBuilt USA. All rights reserved. &middot; <span class="site-footer__veteran">Veteran Owned and Operated<svg class="site-footer__flag" viewBox="0 0 7410 3900" role="img" aria-label="US flag"><rect width="7410" height="3900" fill="#b22234"/><g fill="#fff"><rect y="300" width="7410" height="300"/><rect y="900" width="7410" height="300"/><rect y="1500" width="7410" height="300"/><rect y="2100" width="7410" height="300"/><rect y="2700" width="7410" height="300"/><rect y="3300" width="7410" height="300"/></g><rect width="2964" height="2100" fill="#3c3b6e"/></svg></span></p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>

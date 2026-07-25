@@ -185,6 +185,18 @@ function navigateWithFade(url) {
   }, 280);
 }
 
+function renderHeroCta(user) {
+  const heroCta = document.getElementById("hero-cta");
+  if (!heroCta) return;
+  if (user) {
+    heroCta.textContent = "Upcoming Updates";
+    heroCta.setAttribute("href", "updates.html");
+  } else {
+    heroCta.textContent = "Join Today!";
+    heroCta.setAttribute("href", "login.html#mode=signup");
+  }
+}
+
 function renderHeaderSignedOut(signInBtn, signUpBtn) {
   signUpBtn.style.display = "";
   signInBtn.textContent = "Sign In";
@@ -303,6 +315,7 @@ function wireHeaderButtons() {
       clearProfileHint();
       renderHeaderSignedOut(signInBtn, signUpBtn);
     }
+    renderHeroCta(user);
   });
 }
 
