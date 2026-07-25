@@ -1555,6 +1555,32 @@ body.is-leaving #main {
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
+  transition: transform 0.25s var(--ease-premium), box-shadow 0.25s var(--ease-premium), border-color 0.25s var(--ease-premium);
+}
+
+.badge-card:not(.badge-card--locked):hover,
+.badge-card:not(.badge-card--locked):focus-within {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-accent-gold);
+}
+
+.badge-card__img-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+}
+
+.badge-card:not(.badge-card--locked) .badge-card__img-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -16px;
+  background: radial-gradient(circle, rgba(255, 176, 32, 0.35) 0%, transparent 70%);
+  filter: blur(4px);
+  z-index: -1;
 }
 
 .badge-card__img {
