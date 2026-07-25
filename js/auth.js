@@ -321,6 +321,31 @@ function wireHeaderButtons() {
 
 wireHeaderButtons();
 
+// Sitewide auth-gate for nav links (e.g. Achievements) and any other
+// .js-auth-gate links a page adds — redirects a signed-out click to sign in,
+// then back to the originally-requested page. Resolves the link's href
+// through the URL API (not string concatenation) so it works the same from
+// pages nested in a subdirectory, e.g. quizzes/the-refrigeration-cycle.html.
+function wireAuthGateLinks() {
+  const gated = document.querySelectorAll(".js-auth-gate");
+  if (!gated.length) return;
+  let signedIn = localStorage.getItem(SIGNED_IN_HINT_KEY) === "1";
+  onAuthStateChanged(auth, (user) => {
+    signedIn = !!user;
+  });
+  gated.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      if (signedIn) return;
+      event.preventDefault();
+      const target = new URL(link.getAttribute("href"), window.location.href);
+      const next = safeNextPath(target.pathname);
+      window.location.href = `/login.html#next=${encodeURIComponent(next)}`;
+    });
+  });
+}
+
+wireAuthGateLinks();
+
 // Bridge so classic (non-module) scripts — lesson-parts.js, hotspot.js,
 // quiz.js — can sync progress to Firestore under the signed-in user without
 // each needing their own Firebase import. Progress is organized per user as

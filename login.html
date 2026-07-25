@@ -242,7 +242,7 @@
         <a href="hvacr.html">HVAC/R</a>
         <span class="site-nav__disabled" tabindex="0">Electrician<span class="site-nav__tooltip">In Development</span></span>
         <span class="site-nav__disabled" tabindex="0">Resources<span class="site-nav__tooltip">Coming Soon</span></span>
-        <span class="site-nav__disabled" tabindex="0">Store<span class="site-nav__tooltip">Coming Soon</span></span>
+        <a href="achievements.html" class="js-auth-gate">Achievements</a>
       </nav>
       <div class="header-actions" aria-hidden="true"></div>
       <div class="updates-badge">
@@ -430,7 +430,7 @@
       errorBox.classList.add("is-visible", "is-success");
     }
 
-    async function afterAuth(user, extraProfile) {
+    async function afterAuth(user, extraProfile, isNewUser) {
       await startSession(user);
       await ensureUserProfile(user, extraProfile);
       const snap = await getDoc(doc(db, "users", user.uid)).catch(() => null);
@@ -441,6 +441,11 @@
         photoURL: data.photoURL || user.photoURL || "",
         email: user.email || "",
       });
+      if (isNewUser) {
+        try {
+          sessionStorage.setItem("tb:achievement-pending", "recruit");
+        } catch (e) {}
+      }
       window.location.href = nextPath;
     }
 
@@ -482,7 +487,8 @@
             : await signInWithEmailAndPassword(auth, email, password);
         await afterAuth(
           credential.user,
-          mode === "signup" ? { firstName, lastName, phone: phone || null } : undefined
+          mode === "signup" ? { firstName, lastName, phone: phone || null } : undefined,
+          mode === "signup"
         );
       } catch (err) {
         showError(err.message || "Something went wrong. Please try again.");
@@ -524,13 +530,14 @@
         );
         const provider = new GoogleAuthProvider();
         const credential = await signInWithPopup(auth, provider);
+        const isNewUser = !!getAdditionalUserInfo(credential)?.isNewUser;
         let extraProfile;
-        if (getAdditionalUserInfo(credential)?.isNewUser) {
+        if (isNewUser) {
           const displayName = credential.user.displayName || "";
           const [firstName, ...rest] = displayName.split(" ");
           extraProfile = { firstName: firstName || "", lastName: rest.join(" "), phone: null };
         }
-        await afterAuth(credential.user, extraProfile);
+        await afterAuth(credential.user, extraProfile, isNewUser);
       } catch (err) {
         showError(err.message || "Something went wrong. Please try again.");
         googleBtn.disabled = false;

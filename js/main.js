@@ -384,4 +384,74 @@
       window.setTimeout(scheduleWiggle, 1800);
     }
   }
+
+  // Achievement-unlock celebration. Root-absolute image path since this
+  // script runs from multiple directory depths (e.g. quizzes/*.html).
+  var ACHIEVEMENT_INFO = {
+    recruit: { title: 'TradeBuilt Recruit', img: '/assets/Achievements/TradeBuiltRecruit.webp' },
+  };
+
+  function showAchievementUnlock(id) {
+    var info = ACHIEVEMENT_INFO[id];
+    if (!info) {
+      return;
+    }
+
+    var overlay = document.createElement('div');
+    overlay.className = 'achievement-unlock-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Achievement unlocked: ' + info.title);
+    overlay.innerHTML =
+      '<div class="achievement-unlock-modal">' +
+      '  <div class="achievement-unlock-glow" aria-hidden="true"></div>' +
+      '  <img class="achievement-unlock-badge" src="' + info.img + '" alt="" width="512" height="512">' +
+      '  <p class="achievement-unlock-eyebrow">Achievement Unlocked!</p>' +
+      '  <h2 class="achievement-unlock-title">' + info.title + '</h2>' +
+      '  <button type="button" class="btn btn-primary btn-sm achievement-unlock-dismiss">Congratulations!</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    var autoDismiss = window.setTimeout(close, 6000);
+
+    function close() {
+      window.clearTimeout(autoDismiss);
+      document.removeEventListener('keydown', onKeydown);
+      if (overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+      }
+    }
+
+    function onKeydown(e) {
+      if (e.key === 'Escape') {
+        close();
+      }
+    }
+
+    overlay.querySelector('.achievement-unlock-dismiss').addEventListener('click', close);
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) {
+        close();
+      }
+    });
+    document.addEventListener('keydown', onKeydown);
+  }
+
+  (function checkPendingAchievement() {
+    var pending;
+    try {
+      pending = window.sessionStorage.getItem('tb:achievement-pending');
+      if (pending) {
+        window.sessionStorage.removeItem('tb:achievement-pending');
+      }
+    } catch (e) {
+      return;
+    }
+    if (!pending) {
+      return;
+    }
+    window.setTimeout(function () {
+      showAchievementUnlock(pending);
+    }, 400);
+  })();
 })();

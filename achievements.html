@@ -3,16 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TradeBuilt | HVAC/R Quizzes</title>
-  <meta name="description" content="TRADEBUILT: HVAC/R Quizzes.">
-  <meta name="theme-color" content="#14181F">
-
-  <meta property="og:title" content="TRADEBUILT: HVAC/R Quizzes">
-  <meta property="og:description" content="TRADEBUILT: HVAC/R Quizzes.">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="TRADEBUILT: HVAC/R Quizzes">
-  <meta name="twitter:description" content="TRADEBUILT: HVAC/R Quizzes.">
+  <title>Achievements | TradeBuilt</title>
+  <meta name="robots" content="noindex, nofollow">
 
   <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16.png">
@@ -38,10 +30,10 @@
       </a>
       <nav class="site-nav" aria-label="Primary">
         <a href="index.html">Home</a>
-        <a href="hvacr.html" aria-current="page">HVAC/R</a>
+        <a href="hvacr.html">HVAC/R</a>
         <span class="site-nav__disabled" tabindex="0">Electrician<span class="site-nav__tooltip">In Development</span></span>
         <span class="site-nav__disabled" tabindex="0">Resources<span class="site-nav__tooltip">Coming Soon</span></span>
-        <a href="achievements.html" class="js-auth-gate">Achievements</a>
+        <a href="achievements.html" class="js-auth-gate" aria-current="page">Achievements</a>
       </nav>
       <div class="header-actions">
         <button type="button" class="btn btn-sm header-actions__signin">Sign In</button>
@@ -72,21 +64,20 @@
   </header>
 
   <main id="main">
-    <section class="hub" id="hvacr-quizzes" aria-labelledby="hvacr-quizzes-heading">
+    <section class="hub" id="achievements" aria-labelledby="achievements-heading">
       <div class="hub__bg" aria-hidden="true"></div>
       <div class="container">
-        <a class="back-link" href="hvacr.html">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Back to HVAC/R
-        </a>
         <div class="hub__header">
-          <h1 id="hvacr-quizzes-heading">TRADEBUILT: HVAC/R Quizzes</h1>
-          <p class="hub__subhead">Quizzes are in development — check back soon to test your knowledge.</p>
+          <h1 id="achievements-heading">Achievements</h1>
+          <p class="hub__subhead">Earn badges as you build your skills on TradeBuilt.</p>
         </div>
-        <ul class="hub__grid" id="quizzes-grid">
-          <!-- Populated at runtime from assets/data/quizzes.json by js/quizzes-hub.js -->
+        <ul class="badge-grid" id="achievements-grid">
+          <li class="badge-card">
+            <img class="badge-card__img" src="assets/Achievements/TradeBuiltRecruit.webp" alt="TradeBuilt Recruit badge" width="512" height="512">
+            <h2 class="badge-card__title">TradeBuilt Recruit</h2>
+            <p class="badge-card__desc">Awarded for joining TradeBuilt.</p>
+            <span class="badge-card__status">Earned</span>
+          </li>
         </ul>
       </div>
     </section>
@@ -100,6 +91,15 @@
 
   <script src="js/main.js"></script>
   <script type="module" src="js/auth.js"></script>
-  <script src="js/quizzes-hub.js"></script>
+  <script type="module">
+    import { auth, onAuthStateChanged, safeNextPath } from "./js/auth.js";
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        const next = safeNextPath(window.location.pathname);
+        window.location.href = `/login.html#next=${encodeURIComponent(next)}`;
+      }
+    });
+  </script>
 </body>
 </html>
