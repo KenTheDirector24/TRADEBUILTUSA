@@ -950,7 +950,7 @@ body.is-leaving #main {
   right: 0;
   bottom: 0;
   left: 0;
-  background: url("../assets/img/Flag.png") center 30% / cover no-repeat;
+  background: url("../assets/img/Flag.webp") center 30% / cover no-repeat;
   opacity: 0.28;
   pointer-events: none;
 }

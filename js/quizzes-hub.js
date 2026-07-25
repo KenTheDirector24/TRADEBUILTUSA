@@ -15,7 +15,7 @@
   };
 
   var renderCard = function (quiz) {
-    var thumb = quiz.thumb || 'assets/img/Quizzes.png';
+    var thumb = quiz.thumb || 'assets/img/Quizzes.webp';
     var li = document.createElement('li');
     li.innerHTML =
       '<a class="hub-card" href="' + escapeHtml(quiz.href) + '">' +
