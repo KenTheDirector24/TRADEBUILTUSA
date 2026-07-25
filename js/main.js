@@ -464,8 +464,10 @@
     overlay.setAttribute('aria-label', 'Achievement unlocked: ' + info.title);
     overlay.innerHTML =
       '<div class="achievement-unlock-modal">' +
-      '  <div class="achievement-unlock-glow" aria-hidden="true"></div>' +
-      '  <img class="achievement-unlock-badge" src="' + info.img + '" alt="" width="512" height="512">' +
+      '  <div class="achievement-unlock-badge-wrap">' +
+      '    <div class="achievement-unlock-glow" aria-hidden="true"></div>' +
+      '    <img class="achievement-unlock-badge" src="' + info.img + '" alt="" width="512" height="512">' +
+      '  </div>' +
       '  <p class="achievement-unlock-eyebrow">Achievement Unlocked!</p>' +
       '  <h2 class="achievement-unlock-title">' + info.title + '</h2>' +
       '  <p class="achievement-unlock-desc">' + info.desc + '</p>' +
@@ -487,9 +489,58 @@
     });
 
     overlay.querySelector('.achievement-unlock-dismiss').addEventListener('click', function () {
-      overlay.remove();
       flash.remove();
+      suckBadgeIntoNav(overlay, badge);
     });
+  }
+
+  // Flies the unlocked badge (and its glow) into the "Achievements" nav
+  // link as one unit, then removes the overlay once it lands (with a
+  // fallback timer in case the animation event never fires, e.g. the tab
+  // was backgrounded).
+  function suckBadgeIntoNav(overlay, badge) {
+    var navLink = document.querySelector('.site-nav a.js-auth-gate[href$="achievements.html"]');
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var wrap = overlay.querySelector('.achievement-unlock-badge-wrap');
+
+    var cleanedUp = false;
+    function cleanup() {
+      if (cleanedUp) {
+        return;
+      }
+      cleanedUp = true;
+      overlay.remove();
+      if (navLink) {
+        navLink.classList.add('is-achievement-pulse');
+        window.setTimeout(function () {
+          navLink.classList.remove('is-achievement-pulse');
+        }, 700);
+      }
+    }
+
+    if (!navLink || !wrap || reduceMotion) {
+      cleanup();
+      return;
+    }
+
+    var modal = overlay.querySelector('.achievement-unlock-modal');
+    var wrapRect = wrap.getBoundingClientRect();
+    var navRect = navLink.getBoundingClientRect();
+    var dx = (navRect.left + navRect.width / 2) - (wrapRect.left + wrapRect.width / 2);
+    var dy = (navRect.top + navRect.height / 2) - (wrapRect.top + wrapRect.height / 2);
+
+    modal.querySelectorAll('.achievement-unlock-eyebrow, .achievement-unlock-title, .achievement-unlock-desc, .achievement-unlock-dismiss').forEach(function (el) {
+      el.classList.add('achievement-unlock-fade-out');
+    });
+
+    wrap.style.setProperty('--suck-x', dx + 'px');
+    wrap.style.setProperty('--suck-y', dy + 'px');
+    badge.classList.remove('is-idle');
+    wrap.classList.add('is-sucking-in');
+    overlay.classList.add('is-dismissing');
+
+    wrap.addEventListener('animationend', cleanup);
+    window.setTimeout(cleanup, 900);
   }
 
   (function checkPendingAchievement() {
