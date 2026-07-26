@@ -1544,6 +1544,14 @@ body.is-lesson-active .quiz-settings-btn {
   margin: 0;
 }
 
+.hub__note {
+  color: var(--color-slate);
+  font-size: var(--text-sm);
+  font-style: italic;
+  opacity: 0.75;
+  margin: 0.35rem 0 0;
+}
+
 
 .hub__grid {
   display: flex;
