@@ -52,7 +52,44 @@
                 signInBtn.classList.add("header-actions__signin--signed-in");
               }
               var accountLink = document.querySelector(".header-actions__account");
-              if (accountLink) accountLink.hidden = false;
+              if (accountLink) {
+                accountLink.hidden = false;
+                var profile = null;
+                try {
+                  var rawProfile = localStorage.getItem("tb_profile_hint");
+                  profile = rawProfile ? JSON.parse(rawProfile) : null;
+                } catch (e2) {}
+                var firstName = (profile && profile.firstName) || "";
+                var lastName = (profile && profile.lastName) || "";
+                var photoURL = (profile && profile.photoURL) || "";
+                var email = (profile && profile.email) || "";
+                var initA = firstName.trim().charAt(0);
+                var initB = lastName.trim().charAt(0);
+                var initials = (initA || initB) ? (initA + initB).toUpperCase() : (email || "?").trim().charAt(0).toUpperCase();
+                var displayName = firstName || "Account";
+                accountLink.textContent = "";
+                var avatar = document.createElement("span");
+                avatar.className = "header-actions__avatar";
+                if (photoURL) {
+                  var img = document.createElement("img");
+                  img.src = photoURL;
+                  img.alt = "";
+                  avatar.appendChild(img);
+                } else {
+                  var initialsEl = document.createElement("span");
+                  initialsEl.className = "header-actions__avatar-initials";
+                  initialsEl.textContent = initials;
+                  avatar.appendChild(initialsEl);
+                }
+                var nameEl = document.createElement("span");
+                nameEl.className = "header-actions__account-name";
+                nameEl.textContent = displayName;
+                accountLink.appendChild(avatar);
+                accountLink.appendChild(nameEl);
+                accountLink.dataset.tbPhoto = photoURL;
+                accountLink.dataset.tbInitials = initials;
+                accountLink.dataset.tbName = displayName;
+              }
             }
           } catch (e) {}
         })();

@@ -135,6 +135,24 @@ function renderAccountLink(accountLink, profile, email) {
   const firstName = (profile && profile.firstName) || "";
   const lastName = (profile && profile.lastName) || "";
   const photoURL = (profile && profile.photoURL) || "";
+  const initials = initialsFrom(firstName, lastName, email);
+  const displayName = firstName || "Account";
+
+  // The per-page inline bootstrap script already paints this from the
+  // cached profile hint before this module runs, and onAuthStateChanged
+  // re-invokes this after every page load. Skip rebuilding the DOM (which
+  // recreates the <img> and forces a re-decode/repaint) when nothing about
+  // the rendered profile actually changed, so the header doesn't flicker.
+  if (
+    accountLink.dataset.tbPhoto === photoURL &&
+    accountLink.dataset.tbInitials === initials &&
+    accountLink.dataset.tbName === displayName
+  ) {
+    return;
+  }
+  accountLink.dataset.tbPhoto = photoURL;
+  accountLink.dataset.tbInitials = initials;
+  accountLink.dataset.tbName = displayName;
 
   accountLink.textContent = "";
 
@@ -146,15 +164,15 @@ function renderAccountLink(accountLink, profile, email) {
     img.alt = "";
     avatar.appendChild(img);
   } else {
-    const initials = document.createElement("span");
-    initials.className = "header-actions__avatar-initials";
-    initials.textContent = initialsFrom(firstName, lastName, email);
-    avatar.appendChild(initials);
+    const initialsEl = document.createElement("span");
+    initialsEl.className = "header-actions__avatar-initials";
+    initialsEl.textContent = initials;
+    avatar.appendChild(initialsEl);
   }
 
   const nameEl = document.createElement("span");
   nameEl.className = "header-actions__account-name";
-  nameEl.textContent = firstName || "Account";
+  nameEl.textContent = displayName;
 
   accountLink.appendChild(avatar);
   accountLink.appendChild(nameEl);
