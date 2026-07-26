@@ -700,6 +700,12 @@ body.is-leaving #main {
   transform: rotate(45deg);
 }
 
+/* Settings only make sense before the quiz starts — once a question is
+   showing, the gear disappears from the topbar for the rest of the attempt. */
+body.is-lesson-active .quiz-settings-btn {
+  display: none;
+}
+
 .quiz-settings__option {
   display: flex;
   align-items: center;

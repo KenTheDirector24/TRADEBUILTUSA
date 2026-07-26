@@ -199,23 +199,33 @@
     '<span>Randomize answer order</span>' +
     '</label>' +
     '<div class="tb-modal__actions">' +
-    '<button type="button" class="btn btn-sm quiz-settings__close">Done</button>' +
+    '<button type="button" class="btn btn-sm btn-light quiz-settings__cancel">Cancel</button>' +
+    '<button type="button" class="btn btn-sm quiz-settings__save">Save</button>' +
     '</div>' +
     '</div>';
   document.body.appendChild(overlay);
 
   var qCheckbox = overlay.querySelector('.quiz-settings__randomize-q');
   var aCheckbox = overlay.querySelector('.quiz-settings__randomize-a');
-  var closeBtn = overlay.querySelector('.quiz-settings__close');
+  var saveBtn = overlay.querySelector('.quiz-settings__save');
+  var cancelBtn = overlay.querySelector('.quiz-settings__cancel');
 
-  qCheckbox.checked = settings.randomizeQuestions;
-  aCheckbox.checked = settings.randomizeAnswers;
+  var openModal = function () {
+    // Reset the checkboxes to the last-saved settings every time the modal
+    // opens, so an unsaved (cancelled) edit from a previous open doesn't linger.
+    qCheckbox.checked = settings.randomizeQuestions;
+    aCheckbox.checked = settings.randomizeAnswers;
+    overlay.hidden = false;
+  };
 
   var closeModal = function () {
     overlay.hidden = true;
   };
 
-  var onSettingChange = function () {
+  // Checkboxes only stage a choice; nothing is applied until Save is clicked.
+  // Applying (and reloading) on every checkbox click made the modal feel like
+  // it "closed out" after picking just one option.
+  var saveSettings = function () {
     var next = {
       randomizeQuestions: qCheckbox.checked,
       randomizeAnswers: aCheckbox.checked
@@ -223,10 +233,14 @@
     var changed = next.randomizeQuestions !== settings.randomizeQuestions || next.randomizeAnswers !== settings.randomizeAnswers;
     settings = next;
     writeSettings(settings);
+    closeModal();
+    if (!changed) {
+      return;
+    }
     var saved = (window.TB && window.TB.saveCloudProgress) ?
       window.TB.saveCloudProgress('quizzes', cloudPageId, { settings: settings }) :
       Promise.resolve();
-    if (changed && !hasSavedAnswers()) {
+    if (!hasSavedAnswers()) {
       // Wait for the cloud write to land before reloading — otherwise the
       // cloud-hydrate check on the reloaded page can see stale cloud data
       // and revert the setting right back.
@@ -236,12 +250,9 @@
     }
   };
 
-  settingsBtn.addEventListener('click', function () {
-    overlay.hidden = false;
-  });
-  qCheckbox.addEventListener('change', onSettingChange);
-  aCheckbox.addEventListener('change', onSettingChange);
-  closeBtn.addEventListener('click', closeModal);
+  settingsBtn.addEventListener('click', openModal);
+  saveBtn.addEventListener('click', saveSettings);
+  cancelBtn.addEventListener('click', closeModal);
   overlay.addEventListener('click', function (e) {
     if (e.target === overlay) {
       closeModal();
