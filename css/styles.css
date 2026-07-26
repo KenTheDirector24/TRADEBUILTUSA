@@ -1118,6 +1118,12 @@ body.is-leaving #main {
   max-width: 620px;
   margin: 0 auto var(--space-8);
   text-align: center;
+  transition: opacity 0.28s var(--ease-premium), transform 0.28s var(--ease-premium);
+}
+
+.hub__header.is-leaving {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 .hub__header [data-lesson-start] {
@@ -2550,10 +2556,20 @@ body.is-leaving #main {
   width: 100%;
   max-width: 280px;
   margin: 0 auto var(--space-5);
+  transition: opacity 0.28s var(--ease-premium), transform 0.28s var(--ease-premium);
 }
 
 .lesson-progress[hidden] {
   display: none;
+}
+
+.lesson-progress.is-chrome-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.lesson-progress.is-chrome-no-transition {
+  transition: none;
 }
 
 .lesson-progress__steps {
@@ -2801,10 +2817,20 @@ body.is-lesson-active .lesson-part[hidden] {
   justify-content: space-between;
   padding: 0 var(--space-5);
   pointer-events: none;
+  transition: opacity 0.28s var(--ease-premium), transform 0.28s var(--ease-premium);
 }
 
 .lesson-nav-fixed[hidden] {
   display: none;
+}
+
+.lesson-nav-fixed.is-chrome-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.lesson-nav-fixed.is-chrome-no-transition {
+  transition: none;
 }
 
 @media (min-width: 768px) {

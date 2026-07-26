@@ -293,14 +293,45 @@
     progress.setAttribute('aria-valuetext', stepTitles[current]);
   };
 
-  var syncChrome = function () {
+  // animate: true only for a real, in-session transition out of the intro
+  // hero (i.e. clicking "Start Lesson") — the progress bar, bottom nav, and
+  // hero header fade together instead of popping in/out instantly, so it
+  // matches the smooth slide already used for the part content itself.
+  var syncChrome = function (animate) {
     var active = current > -1;
+    var wasActive = document.body.classList.contains('is-lesson-active');
     document.body.classList.toggle('is-lesson-active', active);
-    nav.hidden = !active;
-    progress.hidden = !active;
-    if (heroHeader) {
-      heroHeader.hidden = active;
+
+    if (animate && active && !wasActive) {
+      nav.hidden = false;
+      progress.hidden = false;
+      [nav, progress].forEach(function (el) {
+        el.classList.add('is-chrome-enter', 'is-chrome-no-transition');
+      });
+      void nav.offsetWidth;
+      [nav, progress].forEach(function (el) {
+        el.classList.remove('is-chrome-no-transition');
+      });
+      requestAnimationFrame(function () {
+        [nav, progress].forEach(function (el) {
+          el.classList.remove('is-chrome-enter');
+        });
+      });
+      if (heroHeader) {
+        heroHeader.classList.add('is-leaving');
+        window.setTimeout(function () {
+          heroHeader.hidden = true;
+          heroHeader.classList.remove('is-leaving');
+        }, TRANSITION_MS);
+      }
+    } else {
+      nav.hidden = !active;
+      progress.hidden = !active;
+      if (heroHeader) {
+        heroHeader.hidden = active;
+      }
     }
+
     if (active) {
       updateProgress();
     }
@@ -338,7 +369,7 @@
     var finishReveal = function () {
       current = index;
       saveProgress(current);
-      syncChrome();
+      syncChrome(true);
       updateNav();
 
       var enterClass = forward ? 'lesson-part--shift-right' : 'lesson-part--shift-left';
