@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TradeBuilt | R-410A Pressure-Temperature Chart</title>
+  <meta name="description" content="TRADEBUILT: R-410A saturation pressure-temperature reference chart, printable on a single page.">
+  <meta name="theme-color" content="#14181F">
+
+  <meta property="og:title" content="TRADEBUILT: R-410A Pressure-Temperature Chart">
+  <meta property="og:description" content="R-410A saturation pressure-temperature reference chart, printable on a single page.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="TRADEBUILT: R-410A Pressure-Temperature Chart">
+  <meta name="twitter:description" content="R-410A saturation pressure-temperature reference chart, printable on a single page.">
+
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/favicon-180.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    .pt-hub .container {
+      max-width: 1000px;
+    }
+
+    .pt-card {
+      position: relative;
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      margin-top: var(--space-2);
+    }
+
+    .pt-card__sticker {
+      position: absolute;
+      top: -14px;
+      right: 18px;
+      width: 92px;
+      height: 92px;
+      transform: rotate(-9deg);
+      filter: drop-shadow(0 8px 14px rgba(18, 21, 26, 0.35));
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .pt-card__sticker img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 18%;
+    }
+
+    .pt-card__head {
+      background: var(--color-navy);
+      color: #fff;
+      padding: var(--space-6) var(--space-6) var(--space-5);
+      position: relative;
+    }
+
+    .pt-card__head::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--color-accent), var(--color-accent-gold));
+    }
+
+    .pt-card__eyebrow {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: var(--text-xs);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-accent-gold);
+      margin: 0 0 var(--space-1);
+    }
+
+    .pt-card__title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: var(--text-2xl);
+      line-height: 1.1;
+      margin: 0 0 var(--space-2);
+      color: #fff;
+      max-width: 78%;
+    }
+
+    .pt-card__sub {
+      font-size: var(--text-sm);
+      color: rgba(255, 255, 255, 0.72);
+      margin: 0;
+      max-width: 62ch;
+    }
+
+    .pt-card__body {
+      padding: var(--space-6);
+    }
+
+    .pt-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2) var(--space-5);
+      margin: 0 0 var(--space-5);
+      font-size: var(--text-xs);
+      color: var(--color-slate);
+    }
+
+    .pt-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4em;
+    }
+
+    .pt-legend i {
+      width: 0.8em;
+      height: 0.8em;
+      border-radius: 3px;
+      display: inline-block;
+      background: var(--color-accent-tint);
+      border: 1px solid var(--color-accent);
+    }
+
+    .pt-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+
+    .pt-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pt-table caption {
+      caption-side: top;
+      text-align: left;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-slate);
+      padding-bottom: var(--space-2);
+      border-bottom: 2px solid var(--color-navy);
+      margin-bottom: var(--space-1);
+    }
+
+    .pt-table th {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: var(--text-xs);
+      text-align: left;
+      color: var(--color-ink);
+      padding: 0.35em 0.4em;
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .pt-table th:last-child,
+    .pt-table td:last-child {
+      text-align: right;
+    }
+
+    .pt-table td {
+      padding: 0.3em 0.4em;
+      font-size: var(--text-sm);
+      color: var(--color-ink);
+      border-bottom: 1px dashed rgba(150, 140, 120, 0.35);
+    }
+
+    .pt-table tr.is-ref td {
+      background: var(--color-accent-tint);
+      font-weight: 600;
+    }
+
+    .pt-table tr.is-ref td:first-child {
+      border-radius: 4px 0 0 4px;
+    }
+
+    .pt-table tr.is-ref td:last-child {
+      border-radius: 0 4px 4px 0;
+    }
+
+    .pt-card__foot {
+      border-top: 1px solid rgba(150, 140, 120, 0.35);
+      padding: var(--space-4) var(--space-6) var(--space-5);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      background: var(--color-paper);
+    }
+
+    .pt-card__note {
+      font-size: var(--text-xs);
+      color: var(--color-slate);
+      max-width: 68ch;
+      margin: 0;
+    }
+
+    .pt-actions {
+      display: flex;
+      gap: var(--space-2);
+    }
+
+    @media (max-width: 860px) {
+      .pt-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .pt-card__title {
+        max-width: 100%;
+        font-size: var(--text-xl);
+      }
+      .pt-card__sticker {
+        width: 68px;
+        height: 68px;
+        top: -10px;
+        right: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .pt-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      .nav-sentinel,
+      .site-header,
+      .site-footer,
+      .back-link,
+      .pt-actions,
+      .updates-badge,
+      .hub__bg {
+        display: none !important;
+      }
+
+      body {
+        padding-bottom: 0;
+        background: #fff;
+      }
+
+      .pt-hub {
+        padding: 0;
+      }
+
+      .pt-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+      }
+
+      .pt-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      @page {
+        size: letter landscape;
+        margin: 0.4in;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-sentinel" id="nav-sentinel" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="index.html">
+        <img src="assets/img/tradebuilt-logo.webp" alt="TradeBuilt" width="2172" height="724">
+        <span class="logo__tagline">Skilled Trades Learning Platform</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="hvacr.html">HVAC/R</a>
+        <a href="achievements.html" class="js-auth-gate">Achievements</a>
+        <a href="resources.html" aria-current="page">Resources</a>
+        <span class="site-nav__disabled" tabindex="0">Shop<span class="site-nav__tooltip">Coming Soon</span></span>
+      </nav>
+      <div class="header-actions">
+        <button type="button" class="btn btn-sm header-actions__signin">Sign In</button>
+        <button type="button" class="btn btn-sm header-actions__signup">Sign Up</button>
+        <a href="account.html" class="btn btn-sm header-actions__account" hidden>Account</a>
+      </div>
+      <script>
+        (function () {
+          try {
+            if (localStorage.getItem("tb_signed_in_hint") === "1") {
+              var signInBtn = document.querySelector(".header-actions__signin");
+              var signUpBtn = document.querySelector(".header-actions__signup");
+              if (signInBtn && signUpBtn) {
+                signUpBtn.style.display = "none";
+                signInBtn.textContent = "Sign Out";
+                signInBtn.classList.add("header-actions__signin--signed-in");
+              }
+              var accountLink = document.querySelector(".header-actions__account");
+              if (accountLink) {
+                accountLink.hidden = false;
+                var profile = null;
+                try {
+                  var rawProfile = localStorage.getItem("tb_profile_hint");
+                  profile = rawProfile ? JSON.parse(rawProfile) : null;
+                } catch (e2) {}
+                var firstName = (profile && profile.firstName) || "";
+                var lastName = (profile && profile.lastName) || "";
+                var photoURL = (profile && profile.photoURL) || "";
+                var email = (profile && profile.email) || "";
+                var initA = firstName.trim().charAt(0);
+                var initB = lastName.trim().charAt(0);
+                var initials = (initA || initB) ? (initA + initB).toUpperCase() : (email || "?").trim().charAt(0).toUpperCase();
+                var displayName = firstName || "Account";
+                accountLink.textContent = "";
+                var avatar = document.createElement("span");
+                avatar.className = "header-actions__avatar";
+                if (photoURL) {
+                  var img = document.createElement("img");
+                  img.src = photoURL;
+                  img.alt = "";
+                  avatar.appendChild(img);
+                } else {
+                  var initialsEl = document.createElement("span");
+                  initialsEl.className = "header-actions__avatar-initials";
+                  initialsEl.textContent = initials;
+                  avatar.appendChild(initialsEl);
+                }
+                var nameEl = document.createElement("span");
+                nameEl.className = "header-actions__account-name";
+                nameEl.textContent = displayName;
+                accountLink.appendChild(avatar);
+                accountLink.appendChild(nameEl);
+                accountLink.dataset.tbPhoto = photoURL;
+                accountLink.dataset.tbInitials = initials;
+                accountLink.dataset.tbName = displayName;
+              }
+            }
+          } catch (e) {}
+        })();
+      </script>
+      <div class="updates-badge">
+        <img src="assets/img/Updates.webp" alt="New updates weekly">
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hub pt-hub" id="r410a-pt-chart" aria-labelledby="pt-chart-heading">
+      <div class="hub__bg" aria-hidden="true"></div>
+      <div class="container">
+        <a class="back-link" href="resources.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back to Resources
+        </a>
+        <div class="hub__header">
+          <h1 id="pt-chart-heading">R-410A Pressure-Temperature Chart</h1>
+          <p class="hub__subhead">Saturation pressure reference for R-410A, from -35&deg;F to 160&deg;F, on a single printable page.</p>
+        </div>
+
+        <article class="pt-card">
+          <div class="pt-card__sticker" aria-hidden="true">
+            <img src="assets/img/TB.png" alt="">
+          </div>
+          <div class="pt-card__head">
+            <p class="pt-card__eyebrow">TradeBuilt Field Reference</p>
+            <h2 class="pt-card__title">R-410A Saturation PT Chart</h2>
+            <p class="pt-card__sub">Gauge pressure (PSIG) at sea level for a given saturation temperature. R-410A is a near-azeotropic blend, so bubble and dew points are close enough to share one PT line, matching standard field gauge cards.</p>
+          </div>
+
+          <div class="pt-card__body">
+            <p class="pt-legend">
+              <span><i></i> Commonly referenced set point</span>
+              <span>PSIG = pounds per square inch, gauge</span>
+              <span>&deg;F = saturation temperature</span>
+            </p>
+
+            <div class="pt-grid">
+              <table class="pt-table">
+                <caption>&deg;F &nbsp;/&nbsp; PSIG</caption>
+                <thead><tr><th>&deg;F</th><th>PSIG</th></tr></thead>
+                <tbody>
+                  <tr><td>-35</td><td>14</td></tr>
+                  <tr><td>-30</td><td>18</td></tr>
+                  <tr><td>-25</td><td>22</td></tr>
+                  <tr><td>-20</td><td>26</td></tr>
+                  <tr><td>-15</td><td>31</td></tr>
+                  <tr><td>-10</td><td>36</td></tr>
+                  <tr><td>-5</td><td>42</td></tr>
+                  <tr><td>0</td><td>48</td></tr>
+                  <tr><td>5</td><td>55</td></tr>
+                  <tr><td>10</td><td>62</td></tr>
+                </tbody>
+              </table>
+
+              <table class="pt-table">
+                <caption>&deg;F &nbsp;/&nbsp; PSIG</caption>
+                <thead><tr><th>&deg;F</th><th>PSIG</th></tr></thead>
+                <tbody>
+                  <tr><td>15</td><td>70</td></tr>
+                  <tr><td>20</td><td>78</td></tr>
+                  <tr><td>25</td><td>87</td></tr>
+                  <tr><td>30</td><td>97</td></tr>
+                  <tr><td>35</td><td>108</td></tr>
+                  <tr class="is-ref"><td>40</td><td>119</td></tr>
+                  <tr><td>45</td><td>131</td></tr>
+                  <tr><td>50</td><td>143</td></tr>
+                  <tr><td>55</td><td>157</td></tr>
+                  <tr><td>60</td><td>171</td></tr>
+                </tbody>
+              </table>
+
+              <table class="pt-table">
+                <caption>&deg;F &nbsp;/&nbsp; PSIG</caption>
+                <thead><tr><th>&deg;F</th><th>PSIG</th></tr></thead>
+                <tbody>
+                  <tr><td>65</td><td>186</td></tr>
+                  <tr class="is-ref"><td>70</td><td>202</td></tr>
+                  <tr><td>75</td><td>218</td></tr>
+                  <tr><td>80</td><td>236</td></tr>
+                  <tr><td>85</td><td>255</td></tr>
+                  <tr><td>90</td><td>274</td></tr>
+                  <tr><td>95</td><td>295</td></tr>
+                  <tr><td>100</td><td>317</td></tr>
+                  <tr><td>105</td><td>340</td></tr>
+                  <tr><td>110</td><td>364</td></tr>
+                </tbody>
+              </table>
+
+              <table class="pt-table">
+                <caption>&deg;F &nbsp;/&nbsp; PSIG</caption>
+                <thead><tr><th>&deg;F</th><th>PSIG</th></tr></thead>
+                <tbody>
+                  <tr><td>115</td><td>390</td></tr>
+                  <tr class="is-ref"><td>120</td><td>417</td></tr>
+                  <tr><td>125</td><td>445</td></tr>
+                  <tr><td>130</td><td>474</td></tr>
+                  <tr><td>135</td><td>505</td></tr>
+                  <tr><td>140</td><td>537</td></tr>
+                  <tr><td>145</td><td>572</td></tr>
+                  <tr><td>150</td><td>607</td></tr>
+                  <tr><td>155</td><td>644</td></tr>
+                  <tr><td>160</td><td>682</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="pt-card__foot">
+            <p class="pt-card__note">Reference only &mdash; not a substitute for a calibrated gauge set or manufacturer data. Values are rounded to the nearest whole PSIG at sea level; correct for altitude and verify readings in the field.</p>
+            <div class="pt-actions">
+              <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">Print / Save as PDF</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__legal">
+      <p>&copy; 2026 TradeBuilt USA. All rights reserved. &middot; <span class="site-footer__veteran">Veteran Owned and Operated<svg class="site-footer__flag" viewBox="0 0 7410 3900" role="img" aria-label="US flag"><rect width="7410" height="3900" fill="#b22234"/><g fill="#fff"><rect y="300" width="7410" height="300"/><rect y="900" width="7410" height="300"/><rect y="1500" width="7410" height="300"/><rect y="2100" width="7410" height="300"/><rect y="2700" width="7410" height="300"/><rect y="3300" width="7410" height="300"/></g><rect width="2964" height="2100" fill="#3c3b6e"/></svg></span></p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>
