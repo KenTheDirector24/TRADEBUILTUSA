@@ -98,6 +98,21 @@
     });
   }
 
+  var PRECISION_ACHIEVEMENT_KEY = 'tb:achievement-precision';
+
+  var maybeUnlockPrecisionAchievement = function () {
+    try {
+      if (window.localStorage.getItem(PRECISION_ACHIEVEMENT_KEY)) {
+        return;
+      }
+      window.localStorage.setItem(PRECISION_ACHIEVEMENT_KEY, '1');
+      window.sessionStorage.setItem('tb:achievement-pending', 'precision');
+    } catch (e) {}
+    if (window.TB && window.TB.saveCloudProgress) {
+      window.TB.saveCloudProgress('meta', 'achievements', { precision: true });
+    }
+  };
+
   var lockQuestion = function (question, options, chosenIndex) {
     options.forEach(function (option, i) {
       option.disabled = true;
@@ -210,6 +225,9 @@
         try {
           window.localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
         } catch (e) {}
+        if (correct === questions.length) {
+          maybeUnlockPrecisionAchievement();
+        }
       }
       if (window.TB && window.TB.saveCloudProgress) {
         window.TB.saveCloudProgress('quizzes', cloudPageId, { quizScore: scoreValue, attempts: history });

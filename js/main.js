@@ -232,6 +232,11 @@
       desc: 'Awarded for completing your first lesson.',
       img: '/assets/Achievements/BreakingGround.webp',
     },
+    precision: {
+      title: 'Precision',
+      desc: 'Awarded for passing a quiz with a perfect score.',
+      img: '/assets/Achievements/Precision.png',
+    },
   };
 
   // Builds a jagged polyline (as an SVG "points" string) from (x1,y1) to

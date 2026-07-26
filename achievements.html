@@ -130,6 +130,14 @@
             <p class="badge-card__desc">Awarded for completing your first lesson.</p>
             <span class="badge-card__status"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Locked</span>
           </li>
+          <li class="badge-card badge-card--locked" data-achievement="precision" style="--badge-index: 2">
+            <div class="badge-card__img-wrap">
+              <img class="badge-card__img" src="assets/Achievements/Precision.png" alt="Precision badge" width="512" height="512">
+            </div>
+            <h2 class="badge-card__title">Precision</h2>
+            <p class="badge-card__desc">Awarded for passing a quiz with a perfect score.</p>
+            <span class="badge-card__status"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Locked</span>
+          </li>
         </ul>
       </div>
     </section>
@@ -154,6 +162,7 @@
     });
 
     const BREAKING_GROUND_KEY = "tb:achievement-breaking-ground";
+    const PRECISION_KEY = "tb:achievement-precision";
     const CHECK_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><polyline points="3,8.5 6.5,12 13,4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     const LOCK_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
 
@@ -176,19 +185,45 @@
       updateAchievementProgress();
     }
 
+    function renderPrecision(earned) {
+      const li = document.querySelector('[data-achievement="precision"]');
+      if (!li) return;
+      li.classList.toggle("badge-card--locked", !earned);
+      const status = li.querySelector(".badge-card__status");
+      if (status) status.innerHTML = earned ? `${CHECK_ICON}Earned` : `${LOCK_ICON}Locked`;
+      updateAchievementProgress();
+    }
+
     renderBreakingGround(localStorage.getItem(BREAKING_GROUND_KEY) === "1");
+    renderPrecision(localStorage.getItem(PRECISION_KEY) === "1");
 
     if (window.TB && window.TB.hydratePageProgress) {
       window.TB.hydratePageProgress("meta", "achievements", (data) => {
-        const cloudEarned = !!(data && data.breakingGround);
-        const localEarned = localStorage.getItem(BREAKING_GROUND_KEY) === "1";
-        if (cloudEarned === localEarned) return false;
-        if (cloudEarned) {
-          localStorage.setItem(BREAKING_GROUND_KEY, "1");
-        } else {
-          localStorage.removeItem(BREAKING_GROUND_KEY);
+        const cloudBreakingGround = !!(data && data.breakingGround);
+        const localBreakingGround = localStorage.getItem(BREAKING_GROUND_KEY) === "1";
+        const cloudPrecision = !!(data && data.precision);
+        const localPrecision = localStorage.getItem(PRECISION_KEY) === "1";
+        let changed = false;
+
+        if (cloudBreakingGround !== localBreakingGround) {
+          if (cloudBreakingGround) {
+            localStorage.setItem(BREAKING_GROUND_KEY, "1");
+          } else {
+            localStorage.removeItem(BREAKING_GROUND_KEY);
+          }
+          changed = true;
         }
-        return true;
+
+        if (cloudPrecision !== localPrecision) {
+          if (cloudPrecision) {
+            localStorage.setItem(PRECISION_KEY, "1");
+          } else {
+            localStorage.removeItem(PRECISION_KEY);
+          }
+          changed = true;
+        }
+
+        return changed;
       });
     }
   </script>
