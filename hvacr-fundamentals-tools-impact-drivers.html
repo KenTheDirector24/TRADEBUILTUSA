@@ -88,6 +88,17 @@
           <p class="hub__subhead">Learn how to identify impact drivers, understand their purpose, use them safely, and apply them correctly in the field.</p>
           <button type="button" class="btn btn-primary btn-lg" data-lesson-start>Start Lesson</button>
         </div>
+        <script>
+          (function () {
+            try {
+              var raw = window.localStorage.getItem('tb:lesson-progress:' + window.location.pathname);
+              var idx = raw === null ? NaN : parseInt(raw, 10);
+              if (!isNaN(idx) && idx >= 0) {
+                document.currentScript.previousElementSibling.hidden = true;
+              }
+            } catch (e) {}
+          })();
+        </script>
 
         <div class="section-divider" aria-hidden="true"></div>
 

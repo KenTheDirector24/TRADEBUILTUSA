@@ -84,10 +84,24 @@
           </a>
         </div>
         <div class="hub__header">
+          <div class="hub__codex-cover quiz-hero-cover">
+            <img src="the-refrigeration-cycle-thumb.webp" alt="" width="173" height="260">
+          </div>
           <h1 id="quiz-the-refrigeration-cycle-heading">The Refrigeration Cycle</h1>
           <p class="hub__subhead">Test your understanding of refrigeration cycle sequence, pressures, temperatures, and component functions.</p>
           <button type="button" class="btn btn-primary btn-lg" data-lesson-start>Start Quiz</button>
         </div>
+        <script>
+          (function () {
+            try {
+              var raw = window.localStorage.getItem('tb:lesson-progress:' + window.location.pathname);
+              var idx = raw === null ? NaN : parseInt(raw, 10);
+              if (!isNaN(idx) && idx >= 0) {
+                document.currentScript.previousElementSibling.hidden = true;
+              }
+            } catch (e) {}
+          })();
+        </script>
 
         <div class="section-divider" aria-hidden="true"></div>
 

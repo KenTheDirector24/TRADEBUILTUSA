@@ -155,52 +155,71 @@
 
   // --- Settings icon + modal ---
 
-  var topbar = document.querySelector('.lesson-topbar');
-  if (!topbar) {
+  var startBtn = document.querySelector('[data-lesson-start]');
+  if (!startBtn) {
     return;
   }
-  var backLink = topbar.querySelector('.back-link');
 
   var settingsBtn = document.createElement('button');
   settingsBtn.type = 'button';
-  settingsBtn.className = 'quiz-settings-btn';
+  settingsBtn.className = 'btn btn-lg quiz-settings-btn';
   settingsBtn.setAttribute('aria-label', 'Quiz settings');
   settingsBtn.title = 'Quiz settings';
-  settingsBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+  settingsBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
     '<circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>' +
     '<path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '</svg>';
+    '</svg><span>Settings</span>';
 
-  if (backLink && backLink.parentNode === topbar) {
-    // Group with the back-link (top-left) rather than the far right, which
-    // the "New Updates" badge overlaps on hub pages.
-    var left = document.createElement('div');
-    left.className = 'lesson-topbar__left';
-    topbar.insertBefore(left, backLink);
-    left.appendChild(backLink);
-    left.appendChild(settingsBtn);
-  } else {
-    topbar.appendChild(settingsBtn);
-  }
+  startBtn.insertAdjacentElement('afterend', settingsBtn);
 
   var overlay = document.createElement('div');
   overlay.className = 'tb-modal-overlay';
   overlay.hidden = true;
   overlay.innerHTML =
-    '<div class="tb-modal" role="dialog" aria-modal="true" aria-labelledby="quiz-settings-title">' +
+    '<div class="tb-modal tb-modal--quiz-settings" role="dialog" aria-modal="true" aria-labelledby="quiz-settings-title">' +
+    '<button type="button" class="quiz-settings__close" aria-label="Close">' +
+    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' +
+    '</button>' +
+    '<div class="quiz-settings__header">' +
+    '<span class="quiz-settings__icon" aria-hidden="true">' +
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+    '</span>' +
+    '<div>' +
     '<h2 id="quiz-settings-title">Quiz Settings</h2>' +
     '<p class="tb-modal__warning">Mix things up on your next attempt.</p>' +
+    '</div>' +
+    '</div>' +
+    '<div class="quiz-settings__list">' +
     '<label class="quiz-settings__option">' +
+    '<span class="quiz-settings__option-icon" aria-hidden="true">' +
+    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><polyline points="16 3 21 3 21 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="4" y1="20" x2="21" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><polyline points="21 16 21 21 16 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="15" y1="15" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="4" x2="9" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' +
+    '</span>' +
+    '<span class="quiz-settings__option-text">' +
+    '<span class="quiz-settings__option-title">Randomize question order</span>' +
+    '<span class="quiz-settings__option-desc">Questions shuffle into a new order each attempt.</span>' +
+    '</span>' +
+    '<span class="quiz-settings__toggle">' +
     '<input type="checkbox" class="quiz-settings__randomize-q">' +
-    '<span>Randomize question order</span>' +
+    '<span class="quiz-settings__toggle-track"><span class="quiz-settings__toggle-thumb"></span></span>' +
+    '</span>' +
     '</label>' +
     '<label class="quiz-settings__option">' +
+    '<span class="quiz-settings__option-icon" aria-hidden="true">' +
+    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><line x1="8" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="8" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="6" x2="3.01" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="12" x2="3.01" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="3.01" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' +
+    '</span>' +
+    '<span class="quiz-settings__option-text">' +
+    '<span class="quiz-settings__option-title">Randomize answer order</span>' +
+    '<span class="quiz-settings__option-desc">Answer choices A, B, C, D reshuffle per question.</span>' +
+    '</span>' +
+    '<span class="quiz-settings__toggle">' +
     '<input type="checkbox" class="quiz-settings__randomize-a">' +
-    '<span>Randomize answer order</span>' +
+    '<span class="quiz-settings__toggle-track"><span class="quiz-settings__toggle-thumb"></span></span>' +
+    '</span>' +
     '</label>' +
+    '</div>' +
     '<div class="tb-modal__actions">' +
     '<button type="button" class="btn btn-sm btn-light quiz-settings__cancel">Cancel</button>' +
-    '<button type="button" class="btn btn-sm quiz-settings__save">Save</button>' +
+    '<button type="button" class="btn btn-sm btn-primary quiz-settings__save">Save</button>' +
     '</div>' +
     '</div>';
   document.body.appendChild(overlay);
@@ -209,6 +228,7 @@
   var aCheckbox = overlay.querySelector('.quiz-settings__randomize-a');
   var saveBtn = overlay.querySelector('.quiz-settings__save');
   var cancelBtn = overlay.querySelector('.quiz-settings__cancel');
+  var closeBtn = overlay.querySelector('.quiz-settings__close');
 
   var openModal = function () {
     // Reset the checkboxes to the last-saved settings every time the modal
@@ -253,6 +273,7 @@
   settingsBtn.addEventListener('click', openModal);
   saveBtn.addEventListener('click', saveSettings);
   cancelBtn.addEventListener('click', closeModal);
+  closeBtn.addEventListener('click', closeModal);
   overlay.addEventListener('click', function (e) {
     if (e.target === overlay) {
       closeModal();

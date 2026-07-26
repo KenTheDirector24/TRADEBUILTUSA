@@ -229,28 +229,96 @@
     }).observe(resultsPart, { attributes: true, attributeFilter: ['hidden'] });
   }
 
-  if (retakeBtn) {
-    retakeBtn.addEventListener('click', function () {
-      answers = {};
-      questions.forEach(function (question) {
-        question.removeAttribute('data-quiz-complete');
-        Array.prototype.slice.call(question.querySelectorAll('.quiz-option')).forEach(function (option) {
-          option.disabled = false;
-          option.classList.remove('is-correct', 'is-incorrect');
-        });
+  // Shared by the results-screen "Retake Quiz" button and the "Reset Quiz"
+  // button under the question counter — both wipe this attempt back to the
+  // lesson's intro screen the same way.
+  var resetQuizProgress = function () {
+    answers = {};
+    questions.forEach(function (question) {
+      question.removeAttribute('data-quiz-complete');
+      Array.prototype.slice.call(question.querySelectorAll('.quiz-option')).forEach(function (option) {
+        option.disabled = false;
+        option.classList.remove('is-correct', 'is-incorrect');
       });
-      try {
-        window.localStorage.removeItem('tb:lesson-progress:' + window.location.pathname);
-        window.localStorage.removeItem('tb:lesson-status:' + window.location.pathname.replace(/\.html$/, '').replace(/\/$/, ''));
-        window.localStorage.removeItem(SCORE_KEY);
-        window.localStorage.removeItem(ANSWERS_KEY);
-      } catch (e) {}
-      // Cloud is authoritative, so a local-only clear would just get
-      // overwritten back from Firestore on the next load — clear there too.
-      if (window.TB && window.TB.saveCloudProgress) {
-        window.TB.saveCloudProgress('quizzes', cloudPageId, { answers: {}, quizScore: null, partIndex: null, status: null });
-      }
+    });
+    try {
+      window.localStorage.removeItem('tb:lesson-progress:' + window.location.pathname);
+      window.localStorage.removeItem('tb:lesson-status:' + window.location.pathname.replace(/\.html$/, '').replace(/\/$/, ''));
+      window.localStorage.removeItem(SCORE_KEY);
+      window.localStorage.removeItem(ANSWERS_KEY);
+    } catch (e) {}
+    // Cloud is authoritative, so a local-only clear would just get
+    // overwritten back from Firestore on the next load — clear there too, and
+    // wait for the write to land before reloading. Reloading immediately
+    // would race the save: the cloud-hydrate check on the reloaded page can
+    // still see the old (un-cleared) cloud doc and silently resume the quiz
+    // right back to where it was.
+    var saved = (window.TB && window.TB.saveCloudProgress) ?
+      window.TB.saveCloudProgress('quizzes', cloudPageId, { answers: {}, quizScore: null, partIndex: null, status: null }) :
+      Promise.resolve();
+    saved.then(function () {
       window.location.reload();
+    });
+  };
+
+  if (retakeBtn) {
+    retakeBtn.addEventListener('click', resetQuizProgress);
+  }
+
+  // --- Reset Quiz button (under the "Question X of Y" counter) + confirm modal ---
+
+  var progressQuiz = document.querySelector('.lesson-progress--quiz');
+  if (progressQuiz) {
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'quiz-reset-btn';
+    resetBtn.setAttribute('aria-label', 'Reset quiz');
+    resetBtn.title = 'Reset quiz';
+    resetBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+      '<path d="M3 12a9 9 0 1 0 3-6.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M3 4v5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '</svg><span>Reset Quiz</span>';
+    // The progress element itself already hides outside the question range
+    // (pre-start and on the results screen), so the button rides along with
+    // no separate visibility logic needed.
+    progressQuiz.appendChild(resetBtn);
+
+    var resetOverlay = document.createElement('div');
+    resetOverlay.className = 'tb-modal-overlay';
+    resetOverlay.hidden = true;
+    resetOverlay.innerHTML =
+      '<div class="tb-modal tb-modal--quiz-reset" role="dialog" aria-modal="true" aria-labelledby="quiz-reset-title">' +
+      '<h2 id="quiz-reset-title">Reset this quiz?</h2>' +
+      '<p class="tb-modal__warning">This clears your answers and progress, and sends you back to the start of the lesson. This can’t be undone.</p>' +
+      '<div class="tb-modal__actions">' +
+      '<button type="button" class="btn btn-sm btn-light quiz-reset__cancel">Cancel</button>' +
+      '<button type="button" class="btn btn-sm tb-modal__delete-btn quiz-reset__confirm">Reset Quiz</button>' +
+      '</div>' +
+      '</div>';
+    document.body.appendChild(resetOverlay);
+
+    var resetConfirmBtn = resetOverlay.querySelector('.quiz-reset__confirm');
+    var resetCancelBtn = resetOverlay.querySelector('.quiz-reset__cancel');
+
+    var openResetModal = function () {
+      resetOverlay.hidden = false;
+    };
+    var closeResetModal = function () {
+      resetOverlay.hidden = true;
+    };
+
+    resetBtn.addEventListener('click', openResetModal);
+    resetConfirmBtn.addEventListener('click', resetQuizProgress);
+    resetCancelBtn.addEventListener('click', closeResetModal);
+    resetOverlay.addEventListener('click', function (e) {
+      if (e.target === resetOverlay) {
+        closeResetModal();
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !resetOverlay.hidden) {
+        closeResetModal();
+      }
     });
   }
 })();
