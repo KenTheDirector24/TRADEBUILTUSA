@@ -393,6 +393,11 @@
       desc: 'Awarded for joining TradeBuilt.',
       img: '/assets/Achievements/TradeBuiltRecruit.webp',
     },
+    breakingGround: {
+      title: 'Breaking Ground',
+      desc: 'Awarded for completing your first lesson.',
+      img: '/assets/Achievements/BreakingGround.webp',
+    },
   };
 
   // Builds a jagged polyline (as an SVG "points" string) from (x1,y1) to

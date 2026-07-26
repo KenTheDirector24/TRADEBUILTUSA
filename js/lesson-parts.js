@@ -209,6 +209,21 @@
     });
   };
 
+  var FIRST_LESSON_ACHIEVEMENT_KEY = 'tb:achievement-breaking-ground';
+
+  var maybeUnlockFirstLessonAchievement = function () {
+    if (isQuiz) {
+      return;
+    }
+    try {
+      if (window.localStorage.getItem(FIRST_LESSON_ACHIEVEMENT_KEY)) {
+        return;
+      }
+      window.localStorage.setItem(FIRST_LESSON_ACHIEVEMENT_KEY, '1');
+      window.sessionStorage.setItem('tb:achievement-pending', 'breakingGround');
+    } catch (e) {}
+  };
+
   var syncStatus = function (incomplete, skipCloud) {
     var value = null;
     try {
@@ -217,6 +232,7 @@
       } else if (current === parts.length - 1 && !incomplete) {
         value = 'complete';
         window.localStorage.setItem(STATUS_KEY, value);
+        maybeUnlockFirstLessonAchievement();
       } else {
         value = 'in-progress';
         window.localStorage.setItem(STATUS_KEY, value);

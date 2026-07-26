@@ -1632,26 +1632,13 @@ body.is-leaving #main {
 }
 
 .badge-card:not(.badge-card--locked) .badge-card__img {
-  animation: achievement-badge-tilt 2.4s ease-in-out infinite;
-  animation-delay: var(--tilt-delay, 0s);
   transition: filter 0.25s var(--ease-premium);
 }
 
 .badge-card:not(.badge-card--locked):hover .badge-card__img,
 .badge-card:not(.badge-card--locked):focus-within .badge-card__img {
+  animation: achievement-badge-tilt 2.4s ease-in-out infinite;
   filter: drop-shadow(0 10px 16px rgba(18, 21, 26, 0.35));
-}
-
-.badge-grid .badge-card:nth-child(2n) {
-  --tilt-delay: -0.6s;
-}
-
-.badge-grid .badge-card:nth-child(3n) {
-  --tilt-delay: -1.2s;
-}
-
-.badge-grid .badge-card:nth-child(4n) {
-  --tilt-delay: -1.8s;
 }
 
 .badge-card__title {
