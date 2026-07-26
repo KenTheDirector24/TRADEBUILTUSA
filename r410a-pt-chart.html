@@ -267,6 +267,10 @@
       background: var(--color-surface);
     }
 
+    .pt-print-legal {
+      display: none;
+    }
+
     .pt-card__foot {
       border-top: 1px solid rgba(150, 140, 120, 0.35);
       padding: var(--space-4) var(--space-6) var(--space-5);
@@ -398,6 +402,16 @@
       .pt-datatable tbody td {
         font-size: 0.6rem;
         padding: 0.075em 0.28em;
+      }
+
+      .pt-print-legal {
+        display: block;
+        padding: 8px 20px 0;
+        margin-top: 6px;
+        border-top: 1px solid #ccc;
+        font-size: 0.52rem;
+        line-height: 1.4;
+        color: #555;
       }
 
       @page {
@@ -581,6 +595,8 @@
                 </tbody>
               </table>
             </div>
+
+            <p class="pt-print-legal">Values shown are approximate saturation pressures for R-410A refrigerant, for reference only. Actual system pressures vary with equipment, altitude, charge level, and operating conditions &mdash; always verify against manufacturer specifications before servicing equipment. &copy; 2026 TradeBuilt USA. All rights reserved.</p>
           </div>
 
           <div class="pt-card__foot">
