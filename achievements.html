@@ -107,23 +107,27 @@
         <div class="hub__header">
           <h1 id="achievements-heading">Achievements</h1>
           <p class="hub__subhead">Earn achievements as you build your skills on TradeBuilt!</p>
+          <div class="achv-progress">
+            <div class="achv-progress__bar"><div class="achv-progress__fill" id="achv-progress-fill"></div></div>
+            <span class="achv-progress__label" id="achv-progress-label">0 of 0 earned</span>
+          </div>
         </div>
         <ul class="badge-grid" id="achievements-grid">
-          <li class="badge-card">
+          <li class="badge-card" style="--badge-index: 0">
             <div class="badge-card__img-wrap">
               <img class="badge-card__img" src="assets/Achievements/TradeBuiltRecruit.webp" alt="TradeBuilt Recruit badge" width="512" height="512">
             </div>
             <h2 class="badge-card__title">TradeBuilt Recruit</h2>
             <p class="badge-card__desc">Awarded for joining TradeBuilt.</p>
-            <span class="badge-card__status">Earned</span>
+            <span class="badge-card__status"><svg viewBox="0 0 16 16" aria-hidden="true"><polyline points="3,8.5 6.5,12 13,4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Earned</span>
           </li>
-          <li class="badge-card badge-card--locked" data-achievement="breaking-ground">
+          <li class="badge-card badge-card--locked" data-achievement="breaking-ground" style="--badge-index: 1">
             <div class="badge-card__img-wrap">
               <img class="badge-card__img" src="assets/Achievements/BreakingGround.webp" alt="Breaking Ground badge" width="512" height="512">
             </div>
             <h2 class="badge-card__title">Breaking Ground</h2>
             <p class="badge-card__desc">Awarded for completing your first lesson.</p>
-            <span class="badge-card__status">Locked</span>
+            <span class="badge-card__status"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Locked</span>
           </li>
         </ul>
       </div>
@@ -149,13 +153,26 @@
     });
 
     const BREAKING_GROUND_KEY = "tb:achievement-breaking-ground";
+    const CHECK_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><polyline points="3,8.5 6.5,12 13,4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const LOCK_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+
+    function updateAchievementProgress() {
+      const cards = document.querySelectorAll("#achievements-grid .badge-card");
+      const total = cards.length;
+      const earned = document.querySelectorAll("#achievements-grid .badge-card:not(.badge-card--locked)").length;
+      const fill = document.getElementById("achv-progress-fill");
+      const label = document.getElementById("achv-progress-label");
+      if (fill) fill.style.width = total ? `${(earned / total) * 100}%` : "0%";
+      if (label) label.textContent = `${earned} of ${total} earned`;
+    }
 
     function renderBreakingGround(earned) {
       const li = document.querySelector('[data-achievement="breaking-ground"]');
       if (!li) return;
       li.classList.toggle("badge-card--locked", !earned);
       const status = li.querySelector(".badge-card__status");
-      if (status) status.textContent = earned ? "Earned" : "Locked";
+      if (status) status.innerHTML = earned ? `${CHECK_ICON}Earned` : `${LOCK_ICON}Locked`;
+      updateAchievementProgress();
     }
 
     renderBreakingGround(localStorage.getItem(BREAKING_GROUND_KEY) === "1");
