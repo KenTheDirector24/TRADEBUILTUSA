@@ -67,16 +67,28 @@ async function endSession() {
 // Per-page lesson/quiz progress and the "breaking ground" achievement flag
 // are cached in localStorage under keys that aren't scoped per-user. Left
 // alone, they bleed into the next account signed in on this browser (e.g. a
-// lesson opening on a previous account's slide, or a badge briefly showing
-// as already earned). Clear them on sign-out, account deletion, and new
-// signup so every account starts from a clean local cache.
+// lesson opening on a previous account's slide, a quiz showing someone
+// else's answers/score/history, or a badge briefly showing as already
+// earned). Clear them on sign-out, account deletion, and new signup so
+// every account starts from a clean local cache.
+const LOCAL_CACHE_KEY_PREFIXES = [
+  "tb:lesson-progress:",
+  "tb:lesson-status:",
+  "tb:quiz-score:",
+  "tb:quiz-answers:",
+  "tb:quiz-history:",
+  "tb:quiz-settings:",
+  "tb:quiz-order:",
+  "tb:hotspot-progress:",
+];
+
 function clearLocalUserCaches() {
   try {
     for (let i = localStorage.length - 1; i >= 0; i--) {
       const key = localStorage.key(i);
       if (
         key === "tb:achievement-breaking-ground" ||
-        (key && (key.startsWith("tb:lesson-progress:") || key.startsWith("tb:lesson-status:")))
+        (key && LOCAL_CACHE_KEY_PREFIXES.some((prefix) => key.startsWith(prefix)))
       ) {
         localStorage.removeItem(key);
       }
