@@ -64,15 +64,31 @@ async function endSession() {
   await fetch("/api/session-logout", { method: "POST" }).catch(() => {});
 }
 
-// Not scoped per-user, so it must be cleared on sign-out/delete or it can
-// bleed into the next account signed in on this browser.
-const BREAKING_GROUND_HINT_KEY = "tb:achievement-breaking-ground";
+// Per-page lesson/quiz progress and the "breaking ground" achievement flag
+// are cached in localStorage under keys that aren't scoped per-user. Left
+// alone, they bleed into the next account signed in on this browser (e.g. a
+// lesson opening on a previous account's slide, or a badge briefly showing
+// as already earned). Clear them on sign-out, account deletion, and new
+// signup so every account starts from a clean local cache.
+function clearLocalUserCaches() {
+  try {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const key = localStorage.key(i);
+      if (
+        key === "tb:achievement-breaking-ground" ||
+        (key && (key.startsWith("tb:lesson-progress:") || key.startsWith("tb:lesson-status:")))
+      ) {
+        localStorage.removeItem(key);
+      }
+    }
+  } catch (e) {}
+}
 
 async function signOutEverywhere() {
   await endSession();
   await firebaseSignOut(auth).catch(() => {});
   clearProfileHint();
-  localStorage.removeItem(BREAKING_GROUND_HINT_KEY);
+  clearLocalUserCaches();
   window.location.href = "/index.html";
 }
 
@@ -90,7 +106,7 @@ async function deleteAccountEverywhere() {
     throw new Error(data.error || "Could not delete account");
   }
   localStorage.removeItem(SIGNED_IN_HINT_KEY);
-  localStorage.removeItem(BREAKING_GROUND_HINT_KEY);
+  clearLocalUserCaches();
   clearProfileHint();
   await firebaseSignOut(auth).catch(() => {});
   window.location.href = "/index.html";
@@ -474,6 +490,7 @@ export {
   endSession,
   signOutEverywhere,
   deleteAccountEverywhere,
+  clearLocalUserCaches,
   openDeleteAccountModal,
   safeNextPath,
   getProfileHint,

@@ -335,6 +335,7 @@
       ensureUserProfile,
       setProfileHint,
       safeNextPath,
+      clearLocalUserCaches,
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
       signInWithPopup,
@@ -443,11 +444,11 @@
       });
       if (isNewUser) {
         try {
-          // A previous account signed in on this browser may have left its
-          // "breaking ground" flag in localStorage (it isn't scoped per-user).
-          // Clear it so a brand-new account doesn't briefly render that
-          // achievement as already earned before the cloud fetch corrects it.
-          localStorage.removeItem("tb:achievement-breaking-ground");
+          // A previous account signed in on this browser may have left
+          // lesson progress / achievement flags in localStorage (they
+          // aren't scoped per-user). Clear them so a brand-new account
+          // doesn't inherit another account's slide position or badges.
+          clearLocalUserCaches();
           sessionStorage.setItem("tb:achievement-pending", "recruit");
         } catch (e) {}
         if (window.TB && window.TB.saveCloudProgress) {
