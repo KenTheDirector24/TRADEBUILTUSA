@@ -186,6 +186,8 @@
     .pt-datatable tbody td.pt-liq,
     .pt-datatable tbody td.pt-vap {
       font-weight: 600;
+      cursor: pointer;
+      transition: background 0.1s ease;
     }
 
     .pt-datatable tbody td.pt-liq {
@@ -194,6 +196,67 @@
 
     .pt-datatable tbody td.pt-vap {
       background: rgba(46, 107, 230, 0.12);
+    }
+
+    .pt-datatable tbody td.pt-liq.is-hover-active {
+      background: rgba(224, 52, 44, 0.38);
+      outline: 2px solid #E0342C;
+      outline-offset: -2px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pt-datatable tbody td.pt-vap.is-hover-active {
+      background: rgba(46, 107, 230, 0.38);
+      outline: 2px solid #2E6BE6;
+      outline-offset: -2px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pt-datatable tbody td.pt-f.is-hover-active {
+      background: var(--color-accent-tint);
+      font-weight: 800;
+    }
+
+    .pt-hover-arrow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 200;
+      overflow: visible;
+    }
+
+    .pt-hover-arrow path {
+      fill: none;
+      stroke-width: 2.5px;
+      stroke-linecap: round;
+      opacity: 0;
+      transition: opacity 0.12s ease;
+    }
+
+    .pt-datatable tbody td .pt-cell-text {
+      display: inline-block;
+      filter: blur(0);
+      transition: filter 0.15s ease;
+    }
+
+    .pt-datatable tbody td.is-crossed-active .pt-cell-text {
+      filter: blur(2.5px);
+      opacity: 0.7;
+    }
+
+    .pt-hover-arrow path.is-visible {
+      opacity: 1;
+    }
+
+    @media print {
+      .pt-hover-arrow {
+        display: none !important;
+      }
     }
 
     .pt-datatable tbody tr:nth-child(even) {
@@ -549,6 +612,177 @@
       window.addEventListener("afterprint", restore);
       window.print();
     }
+  </script>
+  <script>
+    (function () {
+      var table = document.querySelector(".pt-datatable");
+      if (!table) return;
+
+      table.querySelectorAll("tbody td.pt-f, tbody td.pt-liq, tbody td.pt-vap").forEach(function (td) {
+        var span = document.createElement("span");
+        span.className = "pt-cell-text";
+        span.textContent = td.textContent;
+        td.textContent = "";
+        td.appendChild(span);
+      });
+
+      var LIQ_COLOR = "#E0342C";
+      var VAP_COLOR = "#2E6BE6";
+      var svgNS = "http://www.w3.org/2000/svg";
+
+      var svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("class", "pt-hover-arrow");
+
+      var defs = document.createElementNS(svgNS, "defs");
+      [["pt-arrow-head-liq", LIQ_COLOR], ["pt-arrow-head-vap", VAP_COLOR]].forEach(function (entry) {
+        var marker = document.createElementNS(svgNS, "marker");
+        marker.setAttribute("id", entry[0]);
+        marker.setAttribute("viewBox", "0 0 10 10");
+        marker.setAttribute("refX", "8");
+        marker.setAttribute("refY", "5");
+        marker.setAttribute("markerWidth", "9");
+        marker.setAttribute("markerHeight", "9");
+        marker.setAttribute("orient", "auto-start-reverse");
+        var arrowPath = document.createElementNS(svgNS, "path");
+        arrowPath.setAttribute("d", "M0,0 L10,5 L0,10 Z");
+        arrowPath.setAttribute("fill", entry[1]);
+        marker.appendChild(arrowPath);
+        defs.appendChild(marker);
+      });
+      svg.appendChild(defs);
+
+      var path = document.createElementNS(svgNS, "path");
+      svg.appendChild(path);
+      document.body.appendChild(svg);
+
+      var activeCell = null;
+      var activeTempCell = null;
+      var activeCrossedCells = [];
+
+      function findTempCell(cell) {
+        var el = cell.previousElementSibling;
+        while (el) {
+          if (el.classList.contains("pt-f")) return el;
+          el = el.previousElementSibling;
+        }
+        return null;
+      }
+
+      function findCrossedCells(cell, tempCell) {
+        var crossed = [];
+        var el = cell.previousElementSibling;
+        while (el && el !== tempCell) {
+          crossed.push(el);
+          el = el.previousElementSibling;
+        }
+        return crossed;
+      }
+
+      function textRect(el) {
+        var target = el.querySelector(".pt-cell-text") || el;
+        var range = document.createRange();
+        range.selectNodeContents(target);
+        return range.getBoundingClientRect();
+      }
+
+      var START_GAP = 9;
+      var END_GAP = 4;
+
+      function drawArrow(cell, tempCell) {
+        var cellText = textRect(cell);
+        var tempText = textRect(tempCell);
+
+        var y = cellText.top + cellText.height / 2;
+        var x1 = cellText.left - START_GAP;
+        var x2 = tempText.right + END_GAP;
+
+        path.setAttribute("d", "M " + x1 + " " + y + " L " + x2 + " " + y);
+      }
+
+      function showArrowFor(cell) {
+        var tempCell = findTempCell(cell);
+        if (!tempCell) return;
+        var isLiquid = cell.classList.contains("pt-liq");
+
+        if (activeCell) activeCell.classList.remove("is-hover-active");
+        if (activeTempCell) activeTempCell.classList.remove("is-hover-active");
+        activeCrossedCells.forEach(function (c) {
+          c.classList.remove("is-crossed-active");
+        });
+
+        activeCell = cell;
+        activeTempCell = tempCell;
+        cell.classList.add("is-hover-active");
+        tempCell.classList.add("is-hover-active");
+
+        activeCrossedCells = findCrossedCells(cell, tempCell);
+        activeCrossedCells.forEach(function (c) {
+          c.classList.add("is-crossed-active");
+        });
+
+        path.setAttribute("stroke", isLiquid ? LIQ_COLOR : VAP_COLOR);
+        path.setAttribute("marker-end", "url(#" + (isLiquid ? "pt-arrow-head-liq" : "pt-arrow-head-vap") + ")");
+
+        drawArrow(cell, tempCell);
+        path.classList.add("is-visible");
+      }
+
+      function hideArrow() {
+        if (activeCell) activeCell.classList.remove("is-hover-active");
+        if (activeTempCell) activeTempCell.classList.remove("is-hover-active");
+        activeCrossedCells.forEach(function (c) {
+          c.classList.remove("is-crossed-active");
+        });
+        activeCell = null;
+        activeTempCell = null;
+        activeCrossedCells = [];
+        path.classList.remove("is-visible");
+      }
+
+      table.addEventListener("mouseover", function (e) {
+        var cell = e.target.closest("td.pt-liq, td.pt-vap");
+        if (!cell || cell === activeCell) return;
+        showArrowFor(cell);
+      });
+
+      table.addEventListener("mouseout", function (e) {
+        var cell = e.target.closest("td.pt-liq, td.pt-vap");
+        if (!cell) return;
+        var to = e.relatedTarget;
+        if (to && cell.contains(to)) return;
+        hideArrow();
+      });
+
+      table.addEventListener(
+        "touchstart",
+        function (e) {
+          var cell = e.target.closest("td.pt-liq, td.pt-vap");
+          if (!cell) return;
+          if (cell === activeCell) {
+            hideArrow();
+            return;
+          }
+          showArrowFor(cell);
+        },
+        { passive: true }
+      );
+
+      document.addEventListener(
+        "touchstart",
+        function (e) {
+          if (activeCell && !activeCell.contains(e.target) && !table.contains(e.target)) hideArrow();
+        },
+        { passive: true }
+      );
+
+      window.addEventListener(
+        "scroll",
+        function () {
+          if (activeCell && activeTempCell) drawArrow(activeCell, activeTempCell);
+        },
+        { passive: true }
+      );
+    })();
   </script>
 </body>
 </html>
