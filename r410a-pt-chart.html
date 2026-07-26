@@ -28,7 +28,7 @@
 
   <style>
     .pt-hub .container {
-      max-width: 1000px;
+      max-width: 1180px;
     }
 
     .pt-card {
@@ -40,30 +40,26 @@
       margin-top: var(--space-2);
     }
 
-    .pt-card__sticker {
-      position: absolute;
-      top: -14px;
-      right: 18px;
-      width: 92px;
+    .pt-card__brand {
       height: 92px;
-      transform: rotate(-9deg);
-      filter: drop-shadow(0 8px 14px rgba(18, 21, 26, 0.35));
-      z-index: 2;
-      pointer-events: none;
+      width: auto;
+      margin-left: auto;
+      flex: none;
     }
 
-    .pt-card__sticker img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      border-radius: 18%;
+    .pt-print-head {
+      display: none;
     }
 
     .pt-card__head {
       background: var(--color-navy);
       color: #fff;
-      padding: var(--space-6) var(--space-6) var(--space-5);
+      padding: var(--space-2) var(--space-6);
       position: relative;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
     }
 
     .pt-card__head::after {
@@ -76,24 +72,14 @@
       background: linear-gradient(90deg, var(--color-accent), var(--color-accent-gold));
     }
 
-    .pt-card__eyebrow {
-      font-family: var(--font-heading);
-      font-weight: 600;
-      font-size: var(--text-xs);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--color-accent-gold);
-      margin: 0 0 var(--space-1);
-    }
-
     .pt-card__title {
       font-family: var(--font-heading);
       font-weight: 700;
-      font-size: var(--text-2xl);
+      font-size: var(--text-xl);
       line-height: 1.1;
-      margin: 0 0 var(--space-2);
+      margin: 0;
       color: #fff;
-      max-width: 78%;
+      max-width: 70%;
     }
 
     .pt-card__sub {
@@ -104,92 +90,118 @@
     }
 
     .pt-card__body {
-      padding: var(--space-6);
+      padding: var(--space-4) var(--space-6) var(--space-6);
     }
 
-    .pt-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-2) var(--space-5);
-      margin: 0 0 var(--space-5);
-      font-size: var(--text-xs);
-      color: var(--color-slate);
-    }
-
-    .pt-legend span {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4em;
-    }
-
-    .pt-legend i {
-      width: 0.8em;
-      height: 0.8em;
-      border-radius: 3px;
+    .pt-th-dot {
       display: inline-block;
-      background: var(--color-accent-tint);
-      border: 1px solid var(--color-accent);
+      width: 0.6em;
+      height: 0.6em;
+      border-radius: 50%;
+      margin-right: 0.4em;
+      vertical-align: middle;
     }
 
-    .pt-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: var(--space-4);
+    .pt-th-dot.liq {
+      background: #E0342C;
     }
 
-    .pt-table {
+    .pt-th-dot.vap {
+      background: #2E6BE6;
+    }
+
+    .pt-table-wrap {
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+    }
+
+    .pt-datatable {
       width: 100%;
+      min-width: 700px;
       border-collapse: collapse;
       font-variant-numeric: tabular-nums;
     }
 
-    .pt-table caption {
-      caption-side: top;
-      text-align: left;
+    .pt-datatable thead th {
+      background: var(--color-navy);
+      color: #fff;
       font-family: var(--font-heading);
       font-weight: 600;
+      letter-spacing: 0.02em;
+      text-align: center;
+      border-right: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .pt-datatable thead tr:first-child th {
       font-size: var(--text-xs);
-      letter-spacing: 0.06em;
+      padding: 0.4em 0.4em;
+    }
+
+    .pt-datatable thead th.pt-psig-hd {
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+
+    .pt-datatable thead tr:last-child th {
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.75);
+      padding: 0.2em 0.4em 0.35em;
       text-transform: uppercase;
-      color: var(--color-slate);
-      padding-bottom: var(--space-2);
-      border-bottom: 2px solid var(--color-navy);
-      margin-bottom: var(--space-1);
+      letter-spacing: 0.04em;
     }
 
-    .pt-table th {
-      font-family: var(--font-heading);
-      font-weight: 600;
-      font-size: var(--text-xs);
-      text-align: left;
+    .pt-datatable thead th:last-child {
+      border-right: none;
+    }
+
+    .pt-datatable thead th.grp-start {
+      border-left: 3px solid var(--color-accent-gold);
+    }
+
+    .pt-datatable tbody td {
+      text-align: center;
+      padding: 0.24em 0.4em;
+      font-size: 0.78rem;
       color: var(--color-ink);
-      padding: 0.35em 0.4em;
-      border-bottom: 1px solid var(--color-line);
+      border-bottom: 1px solid rgba(150, 140, 120, 0.18);
+      border-right: 1px solid rgba(150, 140, 120, 0.12);
     }
 
-    .pt-table th:last-child,
-    .pt-table td:last-child {
-      text-align: right;
+    .pt-datatable tbody td:last-child {
+      border-right: none;
     }
 
-    .pt-table td {
-      padding: 0.3em 0.4em;
-      font-size: var(--text-sm);
+    .pt-datatable tbody td.grp-start {
+      border-left: 3px solid var(--color-line);
+    }
+
+    .pt-datatable tbody td.pt-f {
       color: var(--color-ink);
-      border-bottom: 1px dashed rgba(150, 140, 120, 0.35);
+      font-weight: 700;
+      background: #fff;
     }
 
-    .pt-table tr.is-ref td {
-      background: var(--color-accent-tint);
+    .pt-datatable tbody td.pt-liq,
+    .pt-datatable tbody td.pt-vap {
       font-weight: 600;
     }
 
-    .pt-table tr.is-ref td:first-child {
-      border-radius: 4px 0 0 4px;
+    .pt-datatable tbody td.pt-liq {
+      background: rgba(224, 52, 44, 0.12);
     }
 
-    .pt-table tr.is-ref td:last-child {
-      border-radius: 0 4px 4px 0;
+    .pt-datatable tbody td.pt-vap {
+      background: rgba(46, 107, 230, 0.12);
+    }
+
+    .pt-datatable tbody tr:nth-child(even) {
+      background: var(--color-paper);
+    }
+
+    .pt-datatable tbody tr:nth-child(odd) {
+      background: var(--color-surface);
     }
 
     .pt-card__foot {
@@ -198,16 +210,9 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
       gap: var(--space-3);
       background: var(--color-paper);
-    }
-
-    .pt-card__note {
-      font-size: var(--text-xs);
-      color: var(--color-slate);
-      max-width: 68ch;
-      margin: 0;
     }
 
     .pt-actions {
@@ -216,45 +221,58 @@
     }
 
     @media (max-width: 860px) {
-      .pt-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
       .pt-card__title {
         max-width: 100%;
-        font-size: var(--text-xl);
-      }
-      .pt-card__sticker {
-        width: 68px;
-        height: 68px;
-        top: -10px;
-        right: 12px;
       }
     }
 
     @media (max-width: 480px) {
-      .pt-grid {
-        grid-template-columns: 1fr;
+      .pt-datatable thead th,
+      .pt-datatable tbody td {
+        padding: 0.4em 0.35em;
+        font-size: var(--text-sm);
       }
     }
 
     @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+
       .nav-sentinel,
       .site-header,
       .site-footer,
       .back-link,
       .pt-actions,
       .updates-badge,
-      .hub__bg {
+      .hub__bg,
+      .pt-card__foot,
+      .pt-card__head {
         display: none !important;
+      }
+
+      html,
+      body,
+      #main {
+        background: #fff !important;
+        opacity: 1 !important;
       }
 
       body {
         padding-bottom: 0;
-        background: #fff;
       }
 
       .pt-hub {
         padding: 0;
+        background: #fff;
+      }
+
+      .pt-hub .container {
+        padding: 0;
+        max-width: none;
+        background: #fff;
       }
 
       .pt-card {
@@ -262,13 +280,66 @@
         border: 1px solid #ccc;
       }
 
-      .pt-grid {
-        grid-template-columns: repeat(4, 1fr);
+      .pt-print-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 11px 20px;
+        background: var(--color-navy);
+        position: relative;
+      }
+
+      .pt-print-head::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--color-accent), var(--color-accent-gold));
+      }
+
+      .pt-print-head__brand {
+        height: 42px;
+        width: auto;
+      }
+
+      .pt-print-head__title {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: #fff;
+      }
+
+      .pt-table-wrap {
+        overflow-x: visible;
+      }
+
+      .pt-datatable {
+        min-width: 0;
+        width: 100%;
+        table-layout: fixed;
+      }
+
+      .pt-datatable thead tr:first-child th {
+        font-size: 0.6rem;
+        padding: 0.17em 0.28em;
+      }
+
+      .pt-datatable thead tr:last-child th {
+        font-size: 0.48rem;
+        padding: 0.11em 0.28em 0.15em;
+      }
+
+      .pt-datatable tbody td {
+        font-size: 0.6rem;
+        padding: 0.075em 0.28em;
       }
 
       @page {
-        size: letter landscape;
-        margin: 0.4in;
+        size: letter portrait;
+        margin: 0.25in;
       }
     }
   </style>
@@ -365,103 +436,93 @@
           </svg>
           Back to Resources
         </a>
-        <div class="hub__header">
-          <h1 id="pt-chart-heading">R-410A Pressure-Temperature Chart</h1>
-          <p class="hub__subhead">Saturation pressure reference for R-410A, from -35&deg;F to 160&deg;F, on a single printable page.</p>
-        </div>
-
         <article class="pt-card">
-          <div class="pt-card__sticker" aria-hidden="true">
-            <img src="assets/img/TB.png" alt="">
+          <div class="pt-print-head">
+            <span class="pt-print-head__title">TradeBuilt R-410A PT Chart</span>
+            <img class="pt-print-head__brand" src="assets/img/tradebuilt-logo.webp" alt="TradeBuilt" width="2172" height="724">
           </div>
+
           <div class="pt-card__head">
-            <p class="pt-card__eyebrow">TradeBuilt Field Reference</p>
-            <h2 class="pt-card__title">R-410A Saturation PT Chart</h2>
-            <p class="pt-card__sub">Gauge pressure (PSIG) at sea level for a given saturation temperature. R-410A is a near-azeotropic blend, so bubble and dew points are close enough to share one PT line, matching standard field gauge cards.</p>
+            <h1 id="pt-chart-heading" class="pt-card__title">R-410A Pressure/Temperature Chart</h1>
+            <img class="pt-card__brand" src="assets/img/tradebuilt-logo.webp" alt="TradeBuilt" width="2172" height="724">
           </div>
 
           <div class="pt-card__body">
-            <p class="pt-legend">
-              <span><i></i> Commonly referenced set point</span>
-              <span>PSIG = pounds per square inch, gauge</span>
-              <span>&deg;F = saturation temperature</span>
-            </p>
-
-            <div class="pt-grid">
-              <table class="pt-table">
-                <caption>&deg;F &nbsp;/&nbsp; PSIG</caption>
-                <thead><tr><th>&deg;F</th><th>PSIG</th></tr></thead>
+            <div class="pt-table-wrap">
+              <table class="pt-datatable">
+                <thead>
+                  <tr>
+                    <th rowspan="2">&deg;F</th><th class="pt-psig-hd" colspan="2">Pressure (PSIG)</th>
+                    <th class="grp-start" rowspan="2">&deg;F</th><th class="pt-psig-hd" colspan="2">Pressure (PSIG)</th>
+                    <th class="grp-start" rowspan="2">&deg;F</th><th class="pt-psig-hd" colspan="2">Pressure (PSIG)</th>
+                    <th class="grp-start" rowspan="2">&deg;F</th><th class="pt-psig-hd" colspan="2">Pressure (PSIG)</th>
+                  </tr>
+                  <tr>
+                    <th><i class="pt-th-dot liq"></i>Liquid</th><th><i class="pt-th-dot vap"></i>Vapor</th>
+                    <th><i class="pt-th-dot liq"></i>Liquid</th><th><i class="pt-th-dot vap"></i>Vapor</th>
+                    <th><i class="pt-th-dot liq"></i>Liquid</th><th><i class="pt-th-dot vap"></i>Vapor</th>
+                    <th><i class="pt-th-dot liq"></i>Liquid</th><th><i class="pt-th-dot vap"></i>Vapor</th>
+                  </tr>
+                </thead>
                 <tbody>
-                  <tr><td>-35</td><td>14</td></tr>
-                  <tr><td>-30</td><td>18</td></tr>
-                  <tr><td>-25</td><td>22</td></tr>
-                  <tr><td>-20</td><td>26</td></tr>
-                  <tr><td>-15</td><td>31</td></tr>
-                  <tr><td>-10</td><td>36</td></tr>
-                  <tr><td>-5</td><td>42</td></tr>
-                  <tr><td>0</td><td>48</td></tr>
-                  <tr><td>5</td><td>55</td></tr>
-                  <tr><td>10</td><td>62</td></tr>
-                </tbody>
-              </table>
-
-              <table class="pt-table">
-                <caption>&deg;F &nbsp;/&nbsp; PSIG</caption>
-                <thead><tr><th>&deg;F</th><th>PSIG</th></tr></thead>
-                <tbody>
-                  <tr><td>15</td><td>70</td></tr>
-                  <tr><td>20</td><td>78</td></tr>
-                  <tr><td>25</td><td>87</td></tr>
-                  <tr><td>30</td><td>97</td></tr>
-                  <tr><td>35</td><td>108</td></tr>
-                  <tr class="is-ref"><td>40</td><td>119</td></tr>
-                  <tr><td>45</td><td>131</td></tr>
-                  <tr><td>50</td><td>143</td></tr>
-                  <tr><td>55</td><td>157</td></tr>
-                  <tr><td>60</td><td>171</td></tr>
-                </tbody>
-              </table>
-
-              <table class="pt-table">
-                <caption>&deg;F &nbsp;/&nbsp; PSIG</caption>
-                <thead><tr><th>&deg;F</th><th>PSIG</th></tr></thead>
-                <tbody>
-                  <tr><td>65</td><td>186</td></tr>
-                  <tr class="is-ref"><td>70</td><td>202</td></tr>
-                  <tr><td>75</td><td>218</td></tr>
-                  <tr><td>80</td><td>236</td></tr>
-                  <tr><td>85</td><td>255</td></tr>
-                  <tr><td>90</td><td>274</td></tr>
-                  <tr><td>95</td><td>295</td></tr>
-                  <tr><td>100</td><td>317</td></tr>
-                  <tr><td>105</td><td>340</td></tr>
-                  <tr><td>110</td><td>364</td></tr>
-                </tbody>
-              </table>
-
-              <table class="pt-table">
-                <caption>&deg;F &nbsp;/&nbsp; PSIG</caption>
-                <thead><tr><th>&deg;F</th><th>PSIG</th></tr></thead>
-                <tbody>
-                  <tr><td>115</td><td>390</td></tr>
-                  <tr class="is-ref"><td>120</td><td>417</td></tr>
-                  <tr><td>125</td><td>445</td></tr>
-                  <tr><td>130</td><td>474</td></tr>
-                  <tr><td>135</td><td>505</td></tr>
-                  <tr><td>140</td><td>537</td></tr>
-                  <tr><td>145</td><td>572</td></tr>
-                  <tr><td>150</td><td>607</td></tr>
-                  <tr><td>155</td><td>644</td></tr>
-                  <tr><td>160</td><td>682</td></tr>
+                  <tr><td class="pt-f">&minus;49&deg;</td><td class="pt-liq">5.5</td><td class="pt-vap">5.4</td><td class="pt-f grp-start">1&deg;</td><td class="pt-liq">49.7</td><td class="pt-vap">49.5</td><td class="pt-f grp-start">51&deg;</td><td class="pt-liq">145.8</td><td class="pt-vap">145.2</td><td class="pt-f grp-start">101&deg;</td><td class="pt-liq">323.1</td><td class="pt-vap">322.1</td></tr>
+                  <tr><td class="pt-f">&minus;48&deg;</td><td class="pt-liq">6</td><td class="pt-vap">5.9</td><td class="pt-f grp-start">2&deg;</td><td class="pt-liq">51.1</td><td class="pt-vap">50.8</td><td class="pt-f grp-start">52&deg;</td><td class="pt-liq">148.4</td><td class="pt-vap">147.9</td><td class="pt-f grp-start">102&deg;</td><td class="pt-liq">327.7</td><td class="pt-vap">326.7</td></tr>
+                  <tr><td class="pt-f">&minus;47&deg;</td><td class="pt-liq">6.6</td><td class="pt-vap">6.5</td><td class="pt-f grp-start">3&deg;</td><td class="pt-liq">52.4</td><td class="pt-vap">52.2</td><td class="pt-f grp-start">53&deg;</td><td class="pt-liq">151.1</td><td class="pt-vap">150.5</td><td class="pt-f grp-start">103&deg;</td><td class="pt-liq">332.4</td><td class="pt-vap">331.4</td></tr>
+                  <tr><td class="pt-f">&minus;46&deg;</td><td class="pt-liq">7.1</td><td class="pt-vap">7.1</td><td class="pt-f grp-start">4&deg;</td><td class="pt-liq">53.8</td><td class="pt-vap">53.5</td><td class="pt-f grp-start">54&deg;</td><td class="pt-liq">153.8</td><td class="pt-vap">153.2</td><td class="pt-f grp-start">104&deg;</td><td class="pt-liq">337.1</td><td class="pt-vap">336.1</td></tr>
+                  <tr><td class="pt-f">&minus;45&deg;</td><td class="pt-liq">7.7</td><td class="pt-vap">7.6</td><td class="pt-f grp-start">5&deg;</td><td class="pt-liq">55.2</td><td class="pt-vap">54.9</td><td class="pt-f grp-start">55&deg;</td><td class="pt-liq">156.5</td><td class="pt-vap">156</td><td class="pt-f grp-start">105&deg;</td><td class="pt-liq">341.9</td><td class="pt-vap">340.9</td></tr>
+                  <tr><td class="pt-f">&minus;44&deg;</td><td class="pt-liq">8.3</td><td class="pt-vap">8.2</td><td class="pt-f grp-start">6&deg;</td><td class="pt-liq">56.6</td><td class="pt-vap">56.3</td><td class="pt-f grp-start">56&deg;</td><td class="pt-liq">159.3</td><td class="pt-vap">158.7</td><td class="pt-f grp-start">106&deg;</td><td class="pt-liq">346.7</td><td class="pt-vap">345.7</td></tr>
+                  <tr><td class="pt-f">&minus;43&deg;</td><td class="pt-liq">8.9</td><td class="pt-vap">8.8</td><td class="pt-f grp-start">7&deg;</td><td class="pt-liq">58</td><td class="pt-vap">57.8</td><td class="pt-f grp-start">57&deg;</td><td class="pt-liq">162.1</td><td class="pt-vap">161.5</td><td class="pt-f grp-start">107&deg;</td><td class="pt-liq">351.6</td><td class="pt-vap">350.5</td></tr>
+                  <tr><td class="pt-f">&minus;42&deg;</td><td class="pt-liq">9.5</td><td class="pt-vap">9.4</td><td class="pt-f grp-start">8&deg;</td><td class="pt-liq">59.5</td><td class="pt-vap">59.2</td><td class="pt-f grp-start">58&deg;</td><td class="pt-liq">164.9</td><td class="pt-vap">164.4</td><td class="pt-f grp-start">108&deg;</td><td class="pt-liq">356.5</td><td class="pt-vap">355.4</td></tr>
+                  <tr><td class="pt-f">&minus;41&deg;</td><td class="pt-liq">10.1</td><td class="pt-vap">10</td><td class="pt-f grp-start">9&deg;</td><td class="pt-liq">60.9</td><td class="pt-vap">60.7</td><td class="pt-f grp-start">59&deg;</td><td class="pt-liq">167.8</td><td class="pt-vap">167.2</td><td class="pt-f grp-start">109&deg;</td><td class="pt-liq">361.4</td><td class="pt-vap">360.4</td></tr>
+                  <tr><td class="pt-f">&minus;40&deg;</td><td class="pt-liq">10.8</td><td class="pt-vap">10.7</td><td class="pt-f grp-start">10&deg;</td><td class="pt-liq">62.4</td><td class="pt-vap">62.2</td><td class="pt-f grp-start">60&deg;</td><td class="pt-liq">170.7</td><td class="pt-vap">170.1</td><td class="pt-f grp-start">110&deg;</td><td class="pt-liq">366.4</td><td class="pt-vap">365.4</td></tr>
+                  <tr><td class="pt-f">&minus;39&deg;</td><td class="pt-liq">11.4</td><td class="pt-vap">11.3</td><td class="pt-f grp-start">11&deg;</td><td class="pt-liq">63.9</td><td class="pt-vap">63.7</td><td class="pt-f grp-start">61&deg;</td><td class="pt-liq">173.7</td><td class="pt-vap">173.1</td><td class="pt-f grp-start">111&deg;</td><td class="pt-liq">371.5</td><td class="pt-vap">370.4</td></tr>
+                  <tr><td class="pt-f">&minus;38&deg;</td><td class="pt-liq">12.1</td><td class="pt-vap">12</td><td class="pt-f grp-start">12&deg;</td><td class="pt-liq">65.5</td><td class="pt-vap">65.2</td><td class="pt-f grp-start">62&deg;</td><td class="pt-liq">176.7</td><td class="pt-vap">176</td><td class="pt-f grp-start">112&deg;</td><td class="pt-liq">376.6</td><td class="pt-vap">375.5</td></tr>
+                  <tr><td class="pt-f">&minus;37&deg;</td><td class="pt-liq">12.7</td><td class="pt-vap">12.6</td><td class="pt-f grp-start">13&deg;</td><td class="pt-liq">67.1</td><td class="pt-vap">66.8</td><td class="pt-f grp-start">63&deg;</td><td class="pt-liq">179.7</td><td class="pt-vap">179</td><td class="pt-f grp-start">113&deg;</td><td class="pt-liq">381.8</td><td class="pt-vap">380.7</td></tr>
+                  <tr><td class="pt-f">&minus;36&deg;</td><td class="pt-liq">13.4</td><td class="pt-vap">13.3</td><td class="pt-f grp-start">14&deg;</td><td class="pt-liq">68.6</td><td class="pt-vap">68.4</td><td class="pt-f grp-start">64&deg;</td><td class="pt-liq">182.7</td><td class="pt-vap">182.1</td><td class="pt-f grp-start">114&deg;</td><td class="pt-liq">387</td><td class="pt-vap">385.9</td></tr>
+                  <tr><td class="pt-f">&minus;35&deg;</td><td class="pt-liq">14.1</td><td class="pt-vap">14</td><td class="pt-f grp-start">15&deg;</td><td class="pt-liq">70.3</td><td class="pt-vap">70</td><td class="pt-f grp-start">65&deg;</td><td class="pt-liq">185.8</td><td class="pt-vap">185.2</td><td class="pt-f grp-start">115&deg;</td><td class="pt-liq">392.3</td><td class="pt-vap">391.2</td></tr>
+                  <tr><td class="pt-f">&minus;34&deg;</td><td class="pt-liq">14.8</td><td class="pt-vap">14.7</td><td class="pt-f grp-start">16&deg;</td><td class="pt-liq">71.9</td><td class="pt-vap">71.6</td><td class="pt-f grp-start">66&deg;</td><td class="pt-liq">188.9</td><td class="pt-vap">188.3</td><td class="pt-f grp-start">116&deg;</td><td class="pt-liq">397.6</td><td class="pt-vap">396.5</td></tr>
+                  <tr><td class="pt-f">&minus;33&deg;</td><td class="pt-liq">15.6</td><td class="pt-vap">15.5</td><td class="pt-f grp-start">17&deg;</td><td class="pt-liq">73.5</td><td class="pt-vap">73.3</td><td class="pt-f grp-start">67&deg;</td><td class="pt-liq">192.1</td><td class="pt-vap">191.4</td><td class="pt-f grp-start">117&deg;</td><td class="pt-liq">403</td><td class="pt-vap">401.9</td></tr>
+                  <tr><td class="pt-f">&minus;32&deg;</td><td class="pt-liq">16.3</td><td class="pt-vap">16.2</td><td class="pt-f grp-start">18&deg;</td><td class="pt-liq">75.2</td><td class="pt-vap">74.9</td><td class="pt-f grp-start">68&deg;</td><td class="pt-liq">195.3</td><td class="pt-vap">194.6</td><td class="pt-f grp-start">118&deg;</td><td class="pt-liq">408.4</td><td class="pt-vap">407.3</td></tr>
+                  <tr><td class="pt-f">&minus;31&deg;</td><td class="pt-liq">17.1</td><td class="pt-vap">16.9</td><td class="pt-f grp-start">19&deg;</td><td class="pt-liq">76.9</td><td class="pt-vap">76.6</td><td class="pt-f grp-start">69&deg;</td><td class="pt-liq">198.5</td><td class="pt-vap">197.8</td><td class="pt-f grp-start">119&deg;</td><td class="pt-liq">413.9</td><td class="pt-vap">412.8</td></tr>
+                  <tr><td class="pt-f">&minus;30&deg;</td><td class="pt-liq">17.8</td><td class="pt-vap">17.7</td><td class="pt-f grp-start">20&deg;</td><td class="pt-liq">78.7</td><td class="pt-vap">78.4</td><td class="pt-f grp-start">70&deg;</td><td class="pt-liq">201.8</td><td class="pt-vap">201.1</td><td class="pt-f grp-start">120&deg;</td><td class="pt-liq">419.4</td><td class="pt-vap">418.3</td></tr>
+                  <tr><td class="pt-f">&minus;29&deg;</td><td class="pt-liq">18.6</td><td class="pt-vap">18.5</td><td class="pt-f grp-start">21&deg;</td><td class="pt-liq">80.4</td><td class="pt-vap">80.1</td><td class="pt-f grp-start">71&deg;</td><td class="pt-liq">205.1</td><td class="pt-vap">204.4</td><td class="pt-f grp-start">121&deg;</td><td class="pt-liq">425</td><td class="pt-vap">423.9</td></tr>
+                  <tr><td class="pt-f">&minus;28&deg;</td><td class="pt-liq">19.4</td><td class="pt-vap">19.3</td><td class="pt-f grp-start">22&deg;</td><td class="pt-liq">82.2</td><td class="pt-vap">81.9</td><td class="pt-f grp-start">72&deg;</td><td class="pt-liq">208.4</td><td class="pt-vap">207.7</td><td class="pt-f grp-start">122&deg;</td><td class="pt-liq">430.7</td><td class="pt-vap">429.5</td></tr>
+                  <tr><td class="pt-f">&minus;27&deg;</td><td class="pt-liq">20.2</td><td class="pt-vap">20.1</td><td class="pt-f grp-start">23&deg;</td><td class="pt-liq">84</td><td class="pt-vap">83.7</td><td class="pt-f grp-start">73&deg;</td><td class="pt-liq">211.8</td><td class="pt-vap">211.1</td><td class="pt-f grp-start">123&deg;</td><td class="pt-liq">436.4</td><td class="pt-vap">435.2</td></tr>
+                  <tr><td class="pt-f">&minus;26&deg;</td><td class="pt-liq">21</td><td class="pt-vap">20.9</td><td class="pt-f grp-start">24&deg;</td><td class="pt-liq">85.8</td><td class="pt-vap">85.5</td><td class="pt-f grp-start">74&deg;</td><td class="pt-liq">215.2</td><td class="pt-vap">214.5</td><td class="pt-f grp-start">124&deg;</td><td class="pt-liq">442.1</td><td class="pt-vap">441</td></tr>
+                  <tr><td class="pt-f">&minus;25&deg;</td><td class="pt-liq">21.9</td><td class="pt-vap">21.8</td><td class="pt-f grp-start">25&deg;</td><td class="pt-liq">87.7</td><td class="pt-vap">87.4</td><td class="pt-f grp-start">75&deg;</td><td class="pt-liq">218.7</td><td class="pt-vap">217.9</td><td class="pt-f grp-start">125&deg;</td><td class="pt-liq">447.9</td><td class="pt-vap">446.8</td></tr>
+                  <tr><td class="pt-f">&minus;24&deg;</td><td class="pt-liq">22.7</td><td class="pt-vap">22.6</td><td class="pt-f grp-start">26&deg;</td><td class="pt-liq">89.6</td><td class="pt-vap">89.2</td><td class="pt-f grp-start">76&deg;</td><td class="pt-liq">222.2</td><td class="pt-vap">221.4</td><td class="pt-f grp-start">126&deg;</td><td class="pt-liq">453.8</td><td class="pt-vap">452.7</td></tr>
+                  <tr><td class="pt-f">&minus;23&deg;</td><td class="pt-liq">23.6</td><td class="pt-vap">23.5</td><td class="pt-f grp-start">27&deg;</td><td class="pt-liq">91.5</td><td class="pt-vap">91.1</td><td class="pt-f grp-start">77&deg;</td><td class="pt-liq">225.7</td><td class="pt-vap">224.9</td><td class="pt-f grp-start">127&deg;</td><td class="pt-liq">459.8</td><td class="pt-vap">458.6</td></tr>
+                  <tr><td class="pt-f">&minus;22&deg;</td><td class="pt-liq">24.5</td><td class="pt-vap">24.4</td><td class="pt-f grp-start">28&deg;</td><td class="pt-liq">93.4</td><td class="pt-vap">93.1</td><td class="pt-f grp-start">78&deg;</td><td class="pt-liq">229.3</td><td class="pt-vap">228.5</td><td class="pt-f grp-start">128&deg;</td><td class="pt-liq">465.8</td><td class="pt-vap">464.6</td></tr>
+                  <tr><td class="pt-f">&minus;21&deg;</td><td class="pt-liq">25.4</td><td class="pt-vap">25.3</td><td class="pt-f grp-start">29&deg;</td><td class="pt-liq">95.4</td><td class="pt-vap">95</td><td class="pt-f grp-start">79&deg;</td><td class="pt-liq">232.9</td><td class="pt-vap">232.1</td><td class="pt-f grp-start">129&deg;</td><td class="pt-liq">471.8</td><td class="pt-vap">470.7</td></tr>
+                  <tr><td class="pt-f">&minus;20&deg;</td><td class="pt-liq">26.3</td><td class="pt-vap">26.2</td><td class="pt-f grp-start">30&deg;</td><td class="pt-liq">97.4</td><td class="pt-vap">97</td><td class="pt-f grp-start">80&deg;</td><td class="pt-liq">236.5</td><td class="pt-vap">235.8</td><td class="pt-f grp-start">130&deg;</td><td class="pt-liq">477.9</td><td class="pt-vap">476.8</td></tr>
+                  <tr><td class="pt-f">&minus;19&deg;</td><td class="pt-liq">27.3</td><td class="pt-vap">27.1</td><td class="pt-f grp-start">31&deg;</td><td class="pt-liq">99.4</td><td class="pt-vap">99</td><td class="pt-f grp-start">81&deg;</td><td class="pt-liq">240.2</td><td class="pt-vap">239.4</td><td class="pt-f grp-start">131&deg;</td><td class="pt-liq">484.1</td><td class="pt-vap">483</td></tr>
+                  <tr><td class="pt-f">&minus;18&deg;</td><td class="pt-liq">28.2</td><td class="pt-vap">28.1</td><td class="pt-f grp-start">32&deg;</td><td class="pt-liq">101.4</td><td class="pt-vap">101.1</td><td class="pt-f grp-start">82&deg;</td><td class="pt-liq">244</td><td class="pt-vap">243.2</td><td class="pt-f grp-start">132&deg;</td><td class="pt-liq">490.3</td><td class="pt-vap">489.2</td></tr>
+                  <tr><td class="pt-f">&minus;17&deg;</td><td class="pt-liq">29.2</td><td class="pt-vap">29</td><td class="pt-f grp-start">33&deg;</td><td class="pt-liq">103.5</td><td class="pt-vap">103.1</td><td class="pt-f grp-start">83&deg;</td><td class="pt-liq">247.8</td><td class="pt-vap">246.9</td><td class="pt-f grp-start">133&deg;</td><td class="pt-liq">496.6</td><td class="pt-vap">495.5</td></tr>
+                  <tr><td class="pt-f">&minus;16&deg;</td><td class="pt-liq">30.2</td><td class="pt-vap">30</td><td class="pt-f grp-start">34&deg;</td><td class="pt-liq">105.6</td><td class="pt-vap">105.2</td><td class="pt-f grp-start">84&deg;</td><td class="pt-liq">251.6</td><td class="pt-vap">250.7</td><td class="pt-f grp-start">134&deg;</td><td class="pt-liq">503</td><td class="pt-vap">501.9</td></tr>
+                  <tr><td class="pt-f">&minus;15&deg;</td><td class="pt-liq">31.2</td><td class="pt-vap">31</td><td class="pt-f grp-start">35&deg;</td><td class="pt-liq">107.7</td><td class="pt-vap">107.3</td><td class="pt-f grp-start">85&deg;</td><td class="pt-liq">255.4</td><td class="pt-vap">254.6</td><td class="pt-f grp-start">135&deg;</td><td class="pt-liq">509.4</td><td class="pt-vap">508.3</td></tr>
+                  <tr><td class="pt-f">&minus;14&deg;</td><td class="pt-liq">32.2</td><td class="pt-vap">32</td><td class="pt-f grp-start">36&deg;</td><td class="pt-liq">109.9</td><td class="pt-vap">109.5</td><td class="pt-f grp-start">86&deg;</td><td class="pt-liq">259.3</td><td class="pt-vap">258.5</td><td class="pt-f grp-start">136&deg;</td><td class="pt-liq">515.9</td><td class="pt-vap">514.8</td></tr>
+                  <tr><td class="pt-f">&minus;13&deg;</td><td class="pt-liq">33.2</td><td class="pt-vap">33.1</td><td class="pt-f grp-start">37&deg;</td><td class="pt-liq">112.1</td><td class="pt-vap">111.7</td><td class="pt-f grp-start">87&deg;</td><td class="pt-liq">263.3</td><td class="pt-vap">262.4</td><td class="pt-f grp-start">137&deg;</td><td class="pt-liq">522.5</td><td class="pt-vap">521.4</td></tr>
+                  <tr><td class="pt-f">&minus;12&deg;</td><td class="pt-liq">34.3</td><td class="pt-vap">34.1</td><td class="pt-f grp-start">38&deg;</td><td class="pt-liq">114.3</td><td class="pt-vap">113.9</td><td class="pt-f grp-start">88&deg;</td><td class="pt-liq">267.3</td><td class="pt-vap">266.4</td><td class="pt-f grp-start">138&deg;</td><td class="pt-liq">529.1</td><td class="pt-vap">528</td></tr>
+                  <tr><td class="pt-f">&minus;11&deg;</td><td class="pt-liq">35.4</td><td class="pt-vap">35.2</td><td class="pt-f grp-start">39&deg;</td><td class="pt-liq">116.5</td><td class="pt-vap">116.1</td><td class="pt-f grp-start">89&deg;</td><td class="pt-liq">271.3</td><td class="pt-vap">270.4</td><td class="pt-f grp-start">139&deg;</td><td class="pt-liq">535.8</td><td class="pt-vap">534.7</td></tr>
+                  <tr><td class="pt-f">&minus;10&deg;</td><td class="pt-liq">36.5</td><td class="pt-vap">36.3</td><td class="pt-f grp-start">40&deg;</td><td class="pt-liq">118.8</td><td class="pt-vap">118.4</td><td class="pt-f grp-start">90&deg;</td><td class="pt-liq">275.4</td><td class="pt-vap">274.5</td><td class="pt-f grp-start">140&deg;</td><td class="pt-liq">542.5</td><td class="pt-vap">541.4</td></tr>
+                  <tr><td class="pt-f">&minus;9&deg;</td><td class="pt-liq">37.6</td><td class="pt-vap">37.4</td><td class="pt-f grp-start">41&deg;</td><td class="pt-liq">121.1</td><td class="pt-vap">120.7</td><td class="pt-f grp-start">91&deg;</td><td class="pt-liq">279.5</td><td class="pt-vap">278.6</td><td class="pt-f grp-start">141&deg;</td><td class="pt-liq">549.3</td><td class="pt-vap">548.3</td></tr>
+                  <tr><td class="pt-f">&minus;8&deg;</td><td class="pt-liq">38.7</td><td class="pt-vap">38.5</td><td class="pt-f grp-start">42&deg;</td><td class="pt-liq">123.4</td><td class="pt-vap">123</td><td class="pt-f grp-start">92&deg;</td><td class="pt-liq">283.6</td><td class="pt-vap">282.7</td><td class="pt-f grp-start">142&deg;</td><td class="pt-liq">556.2</td><td class="pt-vap">555.2</td></tr>
+                  <tr><td class="pt-f">&minus;7&deg;</td><td class="pt-liq">39.9</td><td class="pt-vap">39.7</td><td class="pt-f grp-start">43&deg;</td><td class="pt-liq">125.8</td><td class="pt-vap">125.3</td><td class="pt-f grp-start">93&deg;</td><td class="pt-liq">287.9</td><td class="pt-vap">286.9</td><td class="pt-f grp-start">143&deg;</td><td class="pt-liq">563.2</td><td class="pt-vap">562.1</td></tr>
+                  <tr><td class="pt-f">&minus;6&deg;</td><td class="pt-liq">41</td><td class="pt-vap">40.8</td><td class="pt-f grp-start">44&deg;</td><td class="pt-liq">128.2</td><td class="pt-vap">127.7</td><td class="pt-f grp-start">94&deg;</td><td class="pt-liq">292.1</td><td class="pt-vap">291.2</td><td class="pt-f grp-start">144&deg;</td><td class="pt-liq">570.2</td><td class="pt-vap">569.2</td></tr>
+                  <tr><td class="pt-f">&minus;5&deg;</td><td class="pt-liq">42.2</td><td class="pt-vap">42</td><td class="pt-f grp-start">45&deg;</td><td class="pt-liq">130.6</td><td class="pt-vap">130.1</td><td class="pt-f grp-start">95&deg;</td><td class="pt-liq">296.4</td><td class="pt-vap">295.5</td><td class="pt-f grp-start">145&deg;</td><td class="pt-liq">577.3</td><td class="pt-vap">576.3</td></tr>
+                  <tr><td class="pt-f">&minus;4&deg;</td><td class="pt-liq">43.4</td><td class="pt-vap">43.2</td><td class="pt-f grp-start">46&deg;</td><td class="pt-liq">133</td><td class="pt-vap">132.6</td><td class="pt-f grp-start">96&deg;</td><td class="pt-liq">300.7</td><td class="pt-vap">299.8</td><td class="pt-f grp-start">146&deg;</td><td class="pt-liq">584.5</td><td class="pt-vap">583.5</td></tr>
+                  <tr><td class="pt-f">&minus;3&deg;</td><td class="pt-liq">44.6</td><td class="pt-vap">44.4</td><td class="pt-f grp-start">47&deg;</td><td class="pt-liq">135.5</td><td class="pt-vap">135</td><td class="pt-f grp-start">97&deg;</td><td class="pt-liq">305.1</td><td class="pt-vap">304.2</td><td class="pt-f grp-start">147&deg;</td><td class="pt-liq">591.7</td><td class="pt-vap">590.7</td></tr>
+                  <tr><td class="pt-f">&minus;2&deg;</td><td class="pt-liq">45.9</td><td class="pt-vap">45.7</td><td class="pt-f grp-start">48&deg;</td><td class="pt-liq">138</td><td class="pt-vap">137.5</td><td class="pt-f grp-start">98&deg;</td><td class="pt-liq">309.5</td><td class="pt-vap">308.6</td><td class="pt-f grp-start">148&deg;</td><td class="pt-liq">599</td><td class="pt-vap">598.1</td></tr>
+                  <tr><td class="pt-f">&minus;1&deg;</td><td class="pt-liq">47.1</td><td class="pt-vap">46.9</td><td class="pt-f grp-start">49&deg;</td><td class="pt-liq">140.6</td><td class="pt-vap">140.1</td><td class="pt-f grp-start">99&deg;</td><td class="pt-liq">314</td><td class="pt-vap">313.1</td><td class="pt-f grp-start">149&deg;</td><td class="pt-liq">606.4</td><td class="pt-vap">605.5</td></tr>
+                  <tr><td class="pt-f">0&deg;</td><td class="pt-liq">48.4</td><td class="pt-vap">48.2</td><td class="pt-f grp-start">50&deg;</td><td class="pt-liq">143.2</td><td class="pt-vap">142.6</td><td class="pt-f grp-start">100&deg;</td><td class="pt-liq">318.6</td><td class="pt-vap">317.6</td><td class="pt-f grp-start">150&deg;</td><td class="pt-liq">613.9</td><td class="pt-vap">613</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
 
           <div class="pt-card__foot">
-            <p class="pt-card__note">Reference only &mdash; not a substitute for a calibrated gauge set or manufacturer data. Values are rounded to the nearest whole PSIG at sea level; correct for altitude and verify readings in the field.</p>
             <div class="pt-actions">
-              <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">Print / Save as PDF</button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="printPTChart()">Print / Save as PDF</button>
             </div>
           </div>
         </article>
@@ -477,5 +538,17 @@
 
   <script src="js/main.js"></script>
   <script type="module" src="js/auth.js"></script>
+  <script>
+    function printPTChart() {
+      var originalTitle = document.title;
+      document.title = "TradeBuilt R-410A PT Chart";
+      var restore = function () {
+        document.title = originalTitle;
+        window.removeEventListener("afterprint", restore);
+      };
+      window.addEventListener("afterprint", restore);
+      window.print();
+    }
+  </script>
 </body>
 </html>
