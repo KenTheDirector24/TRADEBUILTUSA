@@ -224,6 +224,12 @@
     } catch (e) {}
   };
 
+  // isInitialRender: true only for the updateNav(true) call at page load that
+  // re-renders previously restored progress. A lesson already sitting at a
+  // completed final part when the page opens isn't a fresh completion, so it
+  // shouldn't fire the unlock — only a completion reached during this visit should.
+  var isInitialRender = true;
+
   var syncStatus = function (incomplete, skipCloud) {
     var value = null;
     try {
@@ -232,7 +238,9 @@
       } else if (current === parts.length - 1 && !incomplete) {
         value = 'complete';
         window.localStorage.setItem(STATUS_KEY, value);
-        maybeUnlockFirstLessonAchievement();
+        if (!isInitialRender) {
+          maybeUnlockFirstLessonAchievement();
+        }
       } else {
         value = 'in-progress';
         window.localStorage.setItem(STATUS_KEY, value);
@@ -360,6 +368,7 @@
   showOnly(current);
   syncChrome();
   updateNav(true);
+  isInitialRender = false;
 
   document.addEventListener('hotspot:complete', updateNav);
   document.addEventListener('quiz:answered', updateNav);
