@@ -80,13 +80,13 @@
             <p class="badge-card__desc">Awarded for joining TradeBuilt.</p>
             <span class="badge-card__status">Earned</span>
           </li>
-          <li class="badge-card">
+          <li class="badge-card badge-card--locked" data-achievement="breaking-ground">
             <div class="badge-card__img-wrap">
               <img class="badge-card__img" src="assets/Achievements/BreakingGround.webp" alt="Breaking Ground badge" width="512" height="512">
             </div>
             <h2 class="badge-card__title">Breaking Ground</h2>
             <p class="badge-card__desc">Awarded for completing your first lesson.</p>
-            <span class="badge-card__status">Earned</span>
+            <span class="badge-card__status">Locked</span>
           </li>
         </ul>
       </div>
@@ -110,6 +110,32 @@
         window.location.href = `/login.html#next=${encodeURIComponent(next)}`;
       }
     });
+
+    const BREAKING_GROUND_KEY = "tb:achievement-breaking-ground";
+
+    function renderBreakingGround(earned) {
+      const li = document.querySelector('[data-achievement="breaking-ground"]');
+      if (!li) return;
+      li.classList.toggle("badge-card--locked", !earned);
+      const status = li.querySelector(".badge-card__status");
+      if (status) status.textContent = earned ? "Earned" : "Locked";
+    }
+
+    renderBreakingGround(localStorage.getItem(BREAKING_GROUND_KEY) === "1");
+
+    if (window.TB && window.TB.hydratePageProgress) {
+      window.TB.hydratePageProgress("meta", "achievements", (data) => {
+        const cloudEarned = !!(data && data.breakingGround);
+        const localEarned = localStorage.getItem(BREAKING_GROUND_KEY) === "1";
+        if (cloudEarned === localEarned) return false;
+        if (cloudEarned) {
+          localStorage.setItem(BREAKING_GROUND_KEY, "1");
+        } else {
+          localStorage.removeItem(BREAKING_GROUND_KEY);
+        }
+        return true;
+      });
+    }
   </script>
 </body>
 </html>

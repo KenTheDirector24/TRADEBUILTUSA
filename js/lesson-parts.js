@@ -222,6 +222,9 @@
       window.localStorage.setItem(FIRST_LESSON_ACHIEVEMENT_KEY, '1');
       window.sessionStorage.setItem('tb:achievement-pending', 'breakingGround');
     } catch (e) {}
+    if (window.TB && window.TB.saveCloudProgress) {
+      window.TB.saveCloudProgress('meta', 'achievements', { breakingGround: true });
+    }
   };
 
   // isInitialRender: true only for the updateNav(true) call at page load that
