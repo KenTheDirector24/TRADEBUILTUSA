@@ -17,6 +17,7 @@ export const config = {
     "/hvacr-service.html",
     "/hvacr-simulations.html",
     "/hvacr-quizzes.html",
+    "/hvacr-calculators.html",
     "/follow-the-build.html",
     "/quizzes/the-refrigeration-cycle.html",
   ],
