@@ -443,6 +443,11 @@
       });
       if (isNewUser) {
         try {
+          // A previous account signed in on this browser may have left its
+          // "breaking ground" flag in localStorage (it isn't scoped per-user).
+          // Clear it so a brand-new account doesn't briefly render that
+          // achievement as already earned before the cloud fetch corrects it.
+          localStorage.removeItem("tb:achievement-breaking-ground");
           sessionStorage.setItem("tb:achievement-pending", "recruit");
         } catch (e) {}
         if (window.TB && window.TB.saveCloudProgress) {

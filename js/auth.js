@@ -64,10 +64,15 @@ async function endSession() {
   await fetch("/api/session-logout", { method: "POST" }).catch(() => {});
 }
 
+// Not scoped per-user, so it must be cleared on sign-out/delete or it can
+// bleed into the next account signed in on this browser.
+const BREAKING_GROUND_HINT_KEY = "tb:achievement-breaking-ground";
+
 async function signOutEverywhere() {
   await endSession();
   await firebaseSignOut(auth).catch(() => {});
   clearProfileHint();
+  localStorage.removeItem(BREAKING_GROUND_HINT_KEY);
   window.location.href = "/index.html";
 }
 
@@ -85,6 +90,7 @@ async function deleteAccountEverywhere() {
     throw new Error(data.error || "Could not delete account");
   }
   localStorage.removeItem(SIGNED_IN_HINT_KEY);
+  localStorage.removeItem(BREAKING_GROUND_HINT_KEY);
   clearProfileHint();
   await firebaseSignOut(auth).catch(() => {});
   window.location.href = "/index.html";
