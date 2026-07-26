@@ -445,6 +445,9 @@
         try {
           sessionStorage.setItem("tb:achievement-pending", "recruit");
         } catch (e) {}
+        if (window.TB && window.TB.saveCloudProgress) {
+          window.TB.saveCloudProgress("meta", "achievements", { recruit: true });
+        }
       }
       window.location.href = nextPath;
     }
