@@ -301,6 +301,18 @@ function openDeleteAccountModal() {
   deleteModalEls.input.focus();
 }
 
+// Re-paints the header avatar on the current page from whatever is in the
+// profile hint cache right now. renderAccountLink() normally only runs on
+// page load / onAuthStateChanged, so without this the header stays stale
+// after an in-page profile edit (e.g. uploading a new photo) until the next
+// navigation or refresh re-triggers one of those.
+function refreshHeaderAvatar() {
+  const accountLink = document.querySelector(".header-actions__account");
+  if (!accountLink || accountLink.hidden) return;
+  const profile = getProfileHint();
+  renderAccountLink(accountLink, profile, profile && profile.email);
+}
+
 function wireHeaderButtons() {
   const signInBtn = document.querySelector(".header-actions__signin");
   const signUpBtn = document.querySelector(".header-actions__signup");
@@ -461,6 +473,7 @@ export {
   getProfileHint,
   setProfileHint,
   clearProfileHint,
+  refreshHeaderAvatar,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,

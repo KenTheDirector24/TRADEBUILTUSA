@@ -488,6 +488,7 @@
       safeNextPath,
       onAuthStateChanged,
       setProfileHint,
+      refreshHeaderAvatar,
     } from "./js/auth.js";
 
     const statusBox = document.getElementById("account-status");
@@ -750,6 +751,7 @@
           photoURL,
           email: currentUser.email || "",
         });
+        refreshHeaderAvatar();
         showStatus("Profile picture updated.");
 
         try {
@@ -806,6 +808,7 @@
           photoURL: currentPhotoURL,
           email: currentUser.email || "",
         });
+        refreshHeaderAvatar();
         showStatus("Changes saved.");
       } catch (err) {
         showStatus(err.message || "Could not save changes. Please try again.", true);
