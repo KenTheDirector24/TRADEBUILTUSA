@@ -425,7 +425,11 @@ function buildAnnouncementsBell() {
   bellBtn.className = "header-actions__bell";
   bellBtn.setAttribute("aria-label", "Announcements");
   bellBtn.setAttribute("aria-expanded", "false");
-  bellBtn.hidden = true;
+  // Render from the cached sign-in hint immediately, same as the header's
+  // Sign In/Sign Out buttons, so the bell doesn't pop in (and shift the
+  // rest of header-actions) a beat after everything else once Firebase
+  // actually resolves. onAuthStateChanged below corrects this if it's wrong.
+  bellBtn.hidden = localStorage.getItem(SIGNED_IN_HINT_KEY) !== "1";
   bellBtn.innerHTML = `
     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
