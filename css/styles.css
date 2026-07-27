@@ -354,7 +354,7 @@ body.is-ready #main {
 
 body.is-leaving #main {
   opacity: 0;
-  transition-duration: 0.18s;
+  transition-duration: 0.4s;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1049,8 +1049,18 @@ body.is-lesson-active .quiz-settings-btn {
   right: -8px;
   z-index: 5;
   display: inline-flex;
+  opacity: 0;
   transform: rotate(10deg);
-  transition: transform 0.25s var(--ease-premium);
+  transition: opacity 0.32s var(--ease-premium), transform 0.25s var(--ease-premium);
+}
+
+body.is-ready .updates-badge {
+  opacity: 1;
+}
+
+body.is-leaving .updates-badge {
+  opacity: 0;
+  transition-duration: 0.4s;
 }
 
 .updates-badge img {
@@ -1070,6 +1080,11 @@ body.is-lesson-active .quiz-settings-btn {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .updates-badge {
+    transition: none;
+    opacity: 1;
+  }
+
   .updates-badge img {
     animation: none;
   }

@@ -3,7 +3,7 @@
 
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var LEAVE_DURATION = 180;
+  var LEAVE_DURATION = 400;
 
   document.body.classList.add('is-ready');
 
