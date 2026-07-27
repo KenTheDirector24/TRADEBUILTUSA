@@ -139,7 +139,7 @@
         </div>
 
         <div class="grades-empty" id="grades-empty" hidden>
-          <p>Nothing graded yet. Scores will show up here as you complete quizzes.</p>
+          <p>Nothing graded yet. Scores will show up here as you complete lessons and quizzes.</p>
         </div>
 
         <div class="grades-table-wrap" id="grades-table-wrap" hidden>
@@ -147,17 +147,19 @@
             <thead>
               <tr>
                 <th scope="col">Assignment</th>
+                <th scope="col">Type</th>
                 <th scope="col">Score</th>
                 <th scope="col">Attempts</th>
-                <th scope="col">Last Attempt</th>
+                <th scope="col">Last Activity</th>
               </tr>
             </thead>
             <tbody id="grades-table-body"></tbody>
             <tfoot>
               <tr>
                 <th scope="row">Overall</th>
+                <td></td>
                 <td id="grades-overall-score">—</td>
-                <td id="grades-overall-count">0 of 0 graded</td>
+                <td id="grades-overall-count">0 of 0 complete</td>
                 <td></td>
               </tr>
             </tfoot>
@@ -221,86 +223,136 @@
       }, null);
     }
 
-    function renderRow(quiz, data) {
-      const attempts = Array.isArray(data && data.attempts) ? data.attempts : [];
-      const best = attempts.length ? bestAttempt(attempts) : null;
-      const frac = best ? scoreFraction(best.score) : null;
+    function letterGrade(pct) {
+      if (pct >= 97) return "A+";
+      if (pct >= 93) return "A";
+      if (pct >= 90) return "A-";
+      if (pct >= 87) return "B+";
+      if (pct >= 83) return "B";
+      if (pct >= 80) return "B-";
+      if (pct >= 77) return "C+";
+      if (pct >= 73) return "C";
+      if (pct >= 70) return "C-";
+      if (pct >= 67) return "D+";
+      if (pct >= 63) return "D";
+      if (pct >= 60) return "D-";
+      return "F";
+    }
 
+    function renderRow(item, data) {
       const tr = document.createElement("tr");
-      tr.dataset.status = attempts.length ? "graded" : "not-started";
 
       const nameCell = document.createElement("th");
       nameCell.scope = "row";
       const nameLink = document.createElement("a");
       nameLink.className = "grades-table__link";
-      nameLink.href = quiz.href;
-      nameLink.textContent = quiz.title;
+      nameLink.href = item.href;
+      nameLink.textContent = item.title;
       nameCell.appendChild(nameLink);
       tr.appendChild(nameCell);
 
+      const typeCell = document.createElement("td");
+      typeCell.textContent = item.type === "quiz" ? "Quiz" : "Lesson";
+      tr.appendChild(typeCell);
+
       const scoreCell = document.createElement("td");
-      scoreCell.textContent = best ? `${best.score}${frac !== null ? ` (${Math.round(frac * 100)}%)` : ""}` : "—";
-      tr.appendChild(scoreCell);
-
       const attemptsCell = document.createElement("td");
-      attemptsCell.textContent = attempts.length ? String(attempts.length) : "—";
-      tr.appendChild(attemptsCell);
-
       const dateCell = document.createElement("td");
-      dateCell.textContent = attempts.length ? formatDate(attempts[0].at) : "—";
+
+      if (item.type === "quiz") {
+        const attempts = Array.isArray(data && data.attempts) ? data.attempts : [];
+        const best = attempts.length ? bestAttempt(attempts) : null;
+        const frac = best ? scoreFraction(best.score) : null;
+        tr.dataset.status = attempts.length ? "graded" : "not-started";
+        scoreCell.textContent = best ? `${best.score}${frac !== null ? ` (${Math.round(frac * 100)}%)` : ""}` : "—";
+        attemptsCell.textContent = attempts.length ? String(attempts.length) : "—";
+        dateCell.textContent = attempts.length ? formatDate(attempts[0].at) : "—";
+      } else {
+        const status = data && data.status;
+        tr.dataset.status = status ? "graded" : "not-started";
+        scoreCell.textContent = status === "complete" ? "Complete" : status === "in-progress" ? "In Progress" : "—";
+        attemptsCell.textContent = "—";
+        const updatedAt = data && data.updatedAt && typeof data.updatedAt.toDate === "function" ? data.updatedAt.toDate() : null;
+        dateCell.textContent = updatedAt ? formatDate(updatedAt) : "—";
+      }
+
+      tr.appendChild(scoreCell);
+      tr.appendChild(attemptsCell);
       tr.appendChild(dateCell);
 
       return tr;
     }
 
-    function renderGrades(manifest, progressMap) {
+    function renderGrades(items) {
       tableBody.innerHTML = "";
 
-      const quizzes = Array.isArray(manifest) ? manifest.filter((q) => q && q.href && q.title) : [];
-      if (!quizzes.length) {
+      if (!items.length) {
         emptyState.hidden = false;
         tableWrap.hidden = true;
         return;
       }
 
-      let gradedCount = 0;
+      let completeCount = 0;
       let scoreTotal = 0;
       let scoreCount = 0;
 
-      quizzes.forEach((quiz) => {
-        const pageId = pageIdFromHref(quiz.href);
-        const data = progressMap[pageId] || null;
-        const attempts = Array.isArray(data && data.attempts) ? data.attempts : [];
-        if (attempts.length) {
-          gradedCount++;
-          const best = bestAttempt(attempts);
-          const frac = best ? scoreFraction(best.score) : null;
-          if (frac !== null) {
-            scoreTotal += frac;
-            scoreCount++;
+      items.forEach(({ item, data }) => {
+        if (item.type === "quiz") {
+          const attempts = Array.isArray(data && data.attempts) ? data.attempts : [];
+          if (attempts.length) {
+            completeCount++;
+            const best = bestAttempt(attempts);
+            const frac = best ? scoreFraction(best.score) : null;
+            if (frac !== null) {
+              scoreTotal += frac;
+              scoreCount++;
+            }
           }
+        } else if (data && data.status === "complete") {
+          completeCount++;
         }
-        tableBody.appendChild(renderRow(quiz, data));
+        tableBody.appendChild(renderRow(item, data));
       });
 
       emptyState.hidden = true;
       tableWrap.hidden = false;
       const avgPct = scoreCount ? Math.round((scoreTotal / scoreCount) * 100) : null;
-      overallScoreCell.textContent = avgPct !== null ? `${avgPct}%` : "—";
-      overallCountCell.textContent = `${gradedCount} of ${quizzes.length} graded`;
+      overallScoreCell.textContent = avgPct !== null ? `${avgPct}% (${letterGrade(avgPct)})` : "—";
+      overallCountCell.textContent = `${completeCount} of ${items.length} complete`;
     }
 
     async function loadGrades(user) {
-      const [manifestRes, progressSnap] = await Promise.all([
+      const [quizManifestRes, lessonManifestRes, quizSnap, lessonSnap] = await Promise.all([
         fetch("quizzes/quizzes.json", { cache: "no-store" }),
+        fetch("assets/data/lessons.json", { cache: "no-store" }),
         getDocs(collection(db, "users", user.uid, "quizzes")),
+        getDocs(collection(db, "users", user.uid, "lessons")),
       ]);
-      const manifest = manifestRes.ok ? await manifestRes.json() : [];
-      const progressMap = {};
-      progressSnap.forEach((docSnap) => {
-        progressMap[docSnap.id] = docSnap.data();
+      const quizManifest = quizManifestRes.ok ? await quizManifestRes.json() : [];
+      const lessonManifest = lessonManifestRes.ok ? await lessonManifestRes.json() : [];
+
+      const quizProgress = {};
+      quizSnap.forEach((docSnap) => {
+        quizProgress[docSnap.id] = docSnap.data();
       });
-      renderGrades(manifest, progressMap);
+      const lessonProgress = {};
+      lessonSnap.forEach((docSnap) => {
+        lessonProgress[docSnap.id] = docSnap.data();
+      });
+
+      const items = []
+        .concat(
+          (Array.isArray(lessonManifest) ? lessonManifest : [])
+            .filter((l) => l && l.href && l.title)
+            .map((l) => ({ item: { ...l, type: "lesson" }, data: lessonProgress[pageIdFromHref(l.href)] || null }))
+        )
+        .concat(
+          (Array.isArray(quizManifest) ? quizManifest : [])
+            .filter((q) => q && q.href && q.title)
+            .map((q) => ({ item: { ...q, type: "quiz" }, data: quizProgress[pageIdFromHref(q.href)] || null }))
+        );
+
+      renderGrades(items);
     }
 
     onAuthStateChanged(auth, (user) => {
