@@ -124,12 +124,45 @@
   </header>
 
   <main id="main">
-    <section class="follow" id="grades" aria-labelledby="grades-heading">
-      <div class="container follow__inner" data-reveal>
-        <p class="eyebrow eyebrow--light">Coming soon</p>
-        <h2 id="grades-heading">Grades</h2>
-        <p class="follow__subhead">This page isn't ready yet, but check back soon.</p>
-        <a class="btn btn-light btn-lg" href="index.html">Back to Home</a>
+    <section class="hub" id="grades" aria-labelledby="grades-heading">
+      <div class="hub__bg" aria-hidden="true"></div>
+      <div class="container">
+        <a class="back-link" href="index.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back to Home
+        </a>
+        <div class="hub__header">
+          <h1 id="grades-heading">Grades</h1>
+          <p class="hub__subhead">Every score you've earned on TradeBuilt, in one place.</p>
+        </div>
+
+        <div class="grades-empty" id="grades-empty" hidden>
+          <p>Nothing graded yet. Scores will show up here as you complete quizzes.</p>
+        </div>
+
+        <div class="grades-table-wrap" id="grades-table-wrap" hidden>
+          <table class="grades-table">
+            <thead>
+              <tr>
+                <th scope="col">Assignment</th>
+                <th scope="col">Score</th>
+                <th scope="col">Attempts</th>
+                <th scope="col">Last Attempt</th>
+              </tr>
+            </thead>
+            <tbody id="grades-table-body"></tbody>
+            <tfoot>
+              <tr>
+                <th scope="row">Overall</th>
+                <td id="grades-overall-score">—</td>
+                <td id="grades-overall-count">0 of 0 graded</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
     </section>
   </main>
@@ -144,5 +177,142 @@
 
   <script src="js/main.js"></script>
   <script type="module" src="js/auth.js"></script>
+  <script type="module">
+    import {
+      auth,
+      db,
+      collection,
+      getDocs,
+      onAuthStateChanged,
+      safeNextPath,
+    } from "./js/auth.js";
+
+    const emptyState = document.getElementById("grades-empty");
+    const tableWrap = document.getElementById("grades-table-wrap");
+    const tableBody = document.getElementById("grades-table-body");
+    const overallScoreCell = document.getElementById("grades-overall-score");
+    const overallCountCell = document.getElementById("grades-overall-count");
+
+    function pageIdFromHref(href) {
+      const url = new URL(href, window.location.origin);
+      const path = url.pathname.replace(/\.html$/, "").replace(/\/$/, "").replace(/^\//, "");
+      return path.replace(/\//g, "-") || "index";
+    }
+
+    function scoreFraction(scoreStr) {
+      const parts = (scoreStr || "").split("/");
+      const correct = parseInt(parts[0], 10);
+      const total = parseInt(parts[1], 10);
+      if (!isFinite(correct) || !isFinite(total) || !total) return null;
+      return correct / total;
+    }
+
+    function formatDate(iso) {
+      const when = new Date(iso);
+      return isNaN(when.getTime()) ? "" : when.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+    }
+
+    function bestAttempt(attempts) {
+      return attempts.reduce((best, entry) => {
+        const frac = scoreFraction(entry.score);
+        if (frac === null) return best;
+        if (!best || frac > scoreFraction(best.score)) return entry;
+        return best;
+      }, null);
+    }
+
+    function renderRow(quiz, data) {
+      const attempts = Array.isArray(data && data.attempts) ? data.attempts : [];
+      const best = attempts.length ? bestAttempt(attempts) : null;
+      const frac = best ? scoreFraction(best.score) : null;
+
+      const tr = document.createElement("tr");
+      tr.dataset.status = attempts.length ? "graded" : "not-started";
+
+      const nameCell = document.createElement("th");
+      nameCell.scope = "row";
+      const nameLink = document.createElement("a");
+      nameLink.className = "grades-table__link";
+      nameLink.href = quiz.href;
+      nameLink.textContent = quiz.title;
+      nameCell.appendChild(nameLink);
+      tr.appendChild(nameCell);
+
+      const scoreCell = document.createElement("td");
+      scoreCell.textContent = best ? `${best.score}${frac !== null ? ` (${Math.round(frac * 100)}%)` : ""}` : "—";
+      tr.appendChild(scoreCell);
+
+      const attemptsCell = document.createElement("td");
+      attemptsCell.textContent = attempts.length ? String(attempts.length) : "—";
+      tr.appendChild(attemptsCell);
+
+      const dateCell = document.createElement("td");
+      dateCell.textContent = attempts.length ? formatDate(attempts[0].at) : "—";
+      tr.appendChild(dateCell);
+
+      return tr;
+    }
+
+    function renderGrades(manifest, progressMap) {
+      tableBody.innerHTML = "";
+
+      const quizzes = Array.isArray(manifest) ? manifest.filter((q) => q && q.href && q.title) : [];
+      if (!quizzes.length) {
+        emptyState.hidden = false;
+        tableWrap.hidden = true;
+        return;
+      }
+
+      let gradedCount = 0;
+      let scoreTotal = 0;
+      let scoreCount = 0;
+
+      quizzes.forEach((quiz) => {
+        const pageId = pageIdFromHref(quiz.href);
+        const data = progressMap[pageId] || null;
+        const attempts = Array.isArray(data && data.attempts) ? data.attempts : [];
+        if (attempts.length) {
+          gradedCount++;
+          const best = bestAttempt(attempts);
+          const frac = best ? scoreFraction(best.score) : null;
+          if (frac !== null) {
+            scoreTotal += frac;
+            scoreCount++;
+          }
+        }
+        tableBody.appendChild(renderRow(quiz, data));
+      });
+
+      emptyState.hidden = true;
+      tableWrap.hidden = false;
+      const avgPct = scoreCount ? Math.round((scoreTotal / scoreCount) * 100) : null;
+      overallScoreCell.textContent = avgPct !== null ? `${avgPct}%` : "—";
+      overallCountCell.textContent = `${gradedCount} of ${quizzes.length} graded`;
+    }
+
+    async function loadGrades(user) {
+      const [manifestRes, progressSnap] = await Promise.all([
+        fetch("quizzes/quizzes.json", { cache: "no-store" }),
+        getDocs(collection(db, "users", user.uid, "quizzes")),
+      ]);
+      const manifest = manifestRes.ok ? await manifestRes.json() : [];
+      const progressMap = {};
+      progressSnap.forEach((docSnap) => {
+        progressMap[docSnap.id] = docSnap.data();
+      });
+      renderGrades(manifest, progressMap);
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        const next = safeNextPath(window.location.pathname);
+        window.location.href = `/login.html#next=${encodeURIComponent(next)}`;
+        return;
+      }
+      loadGrades(user).catch(() => {
+        emptyState.hidden = false;
+      });
+    });
+  </script>
 </body>
 </html>

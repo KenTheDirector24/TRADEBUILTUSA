@@ -2456,6 +2456,94 @@ body.is-leaving .updates-badge {
   }
 }
 
+/* Grades */
+.grades-empty {
+  max-width: 480px;
+  margin: var(--space-6) auto;
+  text-align: center;
+  color: var(--color-slate);
+}
+
+.grades-table-wrap {
+  max-width: 760px;
+  margin: var(--space-6) auto 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+.grades-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.grades-table th,
+.grades-table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.grades-table thead th {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-slate);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.grades-table tbody th {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.grades-table tbody tr {
+  border-bottom: 1px solid var(--color-line);
+}
+
+.grades-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.grades-table tbody tr[data-status="not-started"] td,
+.grades-table tbody tr[data-status="not-started"] th {
+  color: var(--color-slate);
+}
+
+.grades-table td {
+  font-variant-numeric: tabular-nums;
+}
+
+.grades-table__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.grades-table__link:hover,
+.grades-table__link:focus-visible {
+  text-decoration: underline;
+}
+
+.grades-table tfoot th,
+.grades-table tfoot td {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  border-top: 2px solid var(--color-line);
+  color: var(--color-ink);
+}
+
+@media (max-width: 560px) {
+  .grades-table th,
+  .grades-table td {
+    padding: var(--space-2) var(--space-3);
+  }
+}
+
 /* Breadcrumbs */
 .breadcrumbs {
   display: flex;
