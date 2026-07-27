@@ -1552,7 +1552,7 @@ body.is-leaving .updates-badge {
   position: relative;
   flex: 1 1 auto;
   overflow: hidden;
-  padding: var(--space-6) 0 var(--space-12);
+  padding: var(--space-2) 0 var(--space-12);
 }
 
 .hub:has(.hub__codex-row) {
@@ -1587,7 +1587,7 @@ body.is-leaving .updates-badge {
 
 .hub__header {
   max-width: 620px;
-  margin: 0 auto var(--space-8);
+  margin: 0 auto var(--space-5);
   text-align: center;
   transition: opacity 0.28s var(--ease-premium), transform 0.28s var(--ease-premium);
 }
@@ -1834,9 +1834,31 @@ body.is-leaving .updates-badge {
   margin: 0 0 var(--space-3);
 }
 
+.hub:not(:has(.hub__header [data-lesson-start])) .hub__header h1 {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-accent-strong);
+  position: relative;
+  margin: 0 0 var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
+.hub:not(:has(.hub__header [data-lesson-start])) .hub__header h1::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 2.5rem;
+  height: 2px;
+  background: var(--color-accent-strong);
+}
+
 .hub__subhead {
   color: var(--color-slate);
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   line-height: 1.6;
   margin: 0;
 }
@@ -2552,7 +2574,7 @@ body.is-leaving .updates-badge {
   align-items: center;
   align-self: flex-start;
   gap: var(--space-1);
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-3);
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: var(--text-sm);
