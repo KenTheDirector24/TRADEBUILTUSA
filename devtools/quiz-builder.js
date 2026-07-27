@@ -388,21 +388,12 @@
       '        <img src="../assets/img/tradebuilt-logo.webp" alt="TradeBuilt" width="2172" height="724">',
       '        <span class="logo__tagline">Skilled Trades Learning Platform</span>',
       '      </a>',
-      '      <nav class="site-nav" aria-label="Primary">',
-      '        <a href="../index.html">Home</a>',
-      '        <a href="../hvacr.html" aria-current="page">HVAC/R</a>',
-      '        <span class="site-nav__disabled" tabindex="0">Electrician<span class="site-nav__tooltip">In Development</span></span>',
-      '        <span class="site-nav__disabled" tabindex="0">Resources<span class="site-nav__tooltip">Coming Soon</span></span>',
-      '        <span class="site-nav__disabled" tabindex="0">Store<span class="site-nav__tooltip">Coming Soon</span></span>',
-      '        <a href="../follow-the-build.html">Follow Us</a>',
-      '      </nav>',
-      '      <div class="header-actions">',
-      '        <button type="button" class="btn btn-sm header-actions__signin">Sign In</button>',
-      '        <button type="button" class="btn btn-sm header-actions__signup">Sign Up</button>',
-      '      </div>',
-      '      <div class="updates-badge">',
-      '        <img src="../assets/img/Updates.webp" alt="New updates weekly">',
-      '      </div>',
+      '      <!-- TB:NAV active="hvacr" -->',
+      '      <nav class="site-nav" aria-label="Primary"></nav>',
+      '<!-- /TB:NAV -->',
+      '      <!-- TB:HEADER-ACTIONS -->',
+      '      <div class="header-actions"></div>',
+      '<!-- /TB:HEADER-ACTIONS -->',
       '    </div>',
       '  </header>',
       '',
@@ -451,11 +442,9 @@
       '    </section>',
       '  </main>',
       '',
-      '  <footer class="site-footer">',
-      '    <div class="site-footer__legal">',
-      '      <p>&copy; 2026 TradeBuilt USA. All rights reserved. &middot; Created by Kenneth J. Thompson &middot; <span class="site-footer__veteran">Veteran Owned 🇺🇸</span></p>',
-      '    </div>',
-      '  </footer>',
+      '  <!-- TB:FOOTER -->',
+      '  <footer class="site-footer"></footer>',
+      '<!-- /TB:FOOTER -->',
       '',
       '  <script src="../js/main.js"></script>',
       '  <script type="module" src="../js/auth.js"></script>',
@@ -581,7 +570,7 @@
         })
         .then(function () {
           saveExisting();
-          setStatus('Saved ' + savedNote + ' to the folder you picked.');
+          setStatus('Saved ' + savedNote + ' to the folder you picked. Run `node scripts/build-shared.mjs` to fill in the nav/footer.');
         })
         .catch(function (err) {
           if (err && err.name === 'AbortError') {
@@ -598,7 +587,7 @@
               downloadFile(thumbFilename, thumbBlob, mimeForDataUrl(quiz.thumbDataUrl));
             }, 700);
           }
-          setStatus('Could not save directly — downloaded ' + savedNote + ' instead.');
+          setStatus('Could not save directly — downloaded ' + savedNote + ' instead. Run `node scripts/build-shared.mjs` after dropping them in to fill in the nav/footer.');
         });
       return;
     }
@@ -613,7 +602,7 @@
         downloadFile(thumbFilename, thumbBlob, mimeForDataUrl(quiz.thumbDataUrl));
       }, 700);
     }
-    setStatus('Downloaded ' + savedNote + ' — drop them all into the /quizzes folder.');
+    setStatus('Downloaded ' + savedNote + ' — drop them all into the /quizzes folder, then run `node scripts/build-shared.mjs` to fill in the nav/footer.');
   });
 
   clearBtn.addEventListener('click', function () {
