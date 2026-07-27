@@ -494,6 +494,12 @@ body.is-leaving #main {
   gap: var(--space-4);
   flex: 0 0 auto;
   min-width: 200px;
+}
+
+/* Only the home page still has the updates badge, which sits absolutely
+   positioned off the header's right edge — reserve room for it there so it
+   doesn't crowd header-actions. Every other page keeps a balanced header. */
+.site-header__inner:has(.updates-badge) .header-actions {
   margin-right: clamp(130px, 18vh, 200px);
 }
 
