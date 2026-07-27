@@ -1,0 +1,59 @@
+      <div class="header-actions">
+        <button type="button" class="btn btn-sm header-actions__signin">Sign In</button>
+        <button type="button" class="btn btn-sm header-actions__signup">Sign Up</button>
+        <a href="account.html" class="btn btn-sm header-actions__account"__ACTIVE_ACCOUNT__ hidden>Account</a>
+      </div>
+      <script>
+        (function () {
+          try {
+            if (localStorage.getItem("tb_signed_in_hint") === "1") {
+              var signInBtn = document.querySelector(".header-actions__signin");
+              var signUpBtn = document.querySelector(".header-actions__signup");
+              if (signInBtn && signUpBtn) {
+                signUpBtn.style.display = "none";
+                signInBtn.textContent = "Sign Out";
+                signInBtn.classList.add("header-actions__signin--signed-in");
+              }
+              var accountLink = document.querySelector(".header-actions__account");
+              if (accountLink) {
+                accountLink.hidden = false;
+                var profile = null;
+                try {
+                  var rawProfile = localStorage.getItem("tb_profile_hint");
+                  profile = rawProfile ? JSON.parse(rawProfile) : null;
+                } catch (e2) {}
+                var firstName = (profile && profile.firstName) || "";
+                var lastName = (profile && profile.lastName) || "";
+                var photoURL = (profile && profile.photoURL) || "";
+                var email = (profile && profile.email) || "";
+                var initA = firstName.trim().charAt(0);
+                var initB = lastName.trim().charAt(0);
+                var initials = (initA || initB) ? (initA + initB).toUpperCase() : (email || "?").trim().charAt(0).toUpperCase();
+                var displayName = firstName || "Account";
+                accountLink.textContent = "";
+                var avatar = document.createElement("span");
+                avatar.className = "header-actions__avatar";
+                if (photoURL) {
+                  var img = document.createElement("img");
+                  img.src = photoURL;
+                  img.alt = "";
+                  avatar.appendChild(img);
+                } else {
+                  var initialsEl = document.createElement("span");
+                  initialsEl.className = "header-actions__avatar-initials";
+                  initialsEl.textContent = initials;
+                  avatar.appendChild(initialsEl);
+                }
+                var nameEl = document.createElement("span");
+                nameEl.className = "header-actions__account-name";
+                nameEl.textContent = displayName;
+                accountLink.appendChild(avatar);
+                accountLink.appendChild(nameEl);
+                accountLink.dataset.tbPhoto = photoURL;
+                accountLink.dataset.tbInitials = initials;
+                accountLink.dataset.tbName = displayName;
+              }
+            }
+          } catch (e) {}
+        })();
+      </script>

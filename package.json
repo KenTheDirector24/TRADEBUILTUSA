@@ -5,6 +5,9 @@
   "engines": {
     "node": "20.x"
   },
+  "scripts": {
+    "build:shared": "node scripts/build-shared.mjs"
+  },
   "dependencies": {
     "@vercel/edge": "^1.1.2",
     "firebase-admin": "^12.6.0",
