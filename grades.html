@@ -271,7 +271,7 @@
         const best = attempts.length ? bestAttempt(attempts) : null;
         const frac = best ? scoreFraction(best.score) : null;
         tr.dataset.status = attempts.length ? "graded" : "not-started";
-        scoreCell.textContent = best ? `${best.score}${frac !== null ? ` (${Math.round(frac * 100)}%)` : ""}` : "—";
+        scoreCell.textContent = best ? `${best.score}${frac !== null ? ` (${Math.round(frac * 100)}% · ${letterGrade(Math.round(frac * 100))})` : ""}` : "—";
         attemptsCell.textContent = attempts.length ? String(attempts.length) : "—";
         dateCell.textContent = attempts.length ? formatDate(attempts[0].at) : "—";
       } else {
