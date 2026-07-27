@@ -1,4 +1,5 @@
 import { firebaseConfig } from "./firebase-config.js";
+import { ANNOUNCEMENTS } from "./announcements-data.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import {
   getAuth,
@@ -409,6 +410,141 @@ function wireAuthGateLinks() {
 }
 
 wireAuthGateLinks();
+
+// Announcements bell — signed-in users only. Read state is tracked per user
+// in Firestore (users/{uid}/meta/announcements -> { readIds: [...] }) so
+// posting an announcement is just adding an entry to announcements-data.js;
+// no admin UI or extra Firestore rules needed (the existing per-uid
+// subcollection rule already covers this doc).
+function buildAnnouncementsBell() {
+  const container = document.querySelector(".header-actions");
+  if (!container) return null;
+
+  const bellBtn = document.createElement("button");
+  bellBtn.type = "button";
+  bellBtn.className = "header-actions__bell";
+  bellBtn.setAttribute("aria-label", "Announcements");
+  bellBtn.hidden = true;
+  bellBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+    <span class="header-actions__bell-badge" hidden></span>
+  `;
+
+  const panel = document.createElement("div");
+  panel.className = "tb-announcements-panel";
+  panel.hidden = true;
+  panel.innerHTML = `
+    <div class="tb-announcements-panel__header">Announcements</div>
+    <div class="tb-announcements-panel__list"></div>
+  `;
+
+  container.appendChild(bellBtn);
+  container.appendChild(panel);
+
+  bellBtn.addEventListener("click", () => {
+    panel.hidden = !panel.hidden;
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!panel.hidden && !panel.contains(e.target) && e.target !== bellBtn) {
+      panel.hidden = true;
+    }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !panel.hidden) panel.hidden = true;
+  });
+
+  return { bellBtn, panel, badge: bellBtn.querySelector(".header-actions__bell-badge") };
+}
+
+async function loadAnnouncementReadIds() {
+  const user = auth.currentUser;
+  if (!user) return [];
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid, "meta", "announcements"));
+    return (snap.exists() && snap.data().readIds) || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+async function markAnnouncementRead(id, badge) {
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    const ref = doc(db, "users", user.uid, "meta", "announcements");
+    const snap = await getDoc(ref);
+    const existing = (snap.exists() && snap.data().readIds) || [];
+    if (existing.includes(id)) return;
+    await setDoc(ref, { readIds: [...existing, id], updatedAt: serverTimestamp() }, { merge: true });
+  } catch (e) {}
+  if (badge) {
+    const remaining = Math.max(0, parseInt(badge.textContent || "0", 10) - 1);
+    if (remaining > 0) {
+      badge.textContent = String(remaining);
+    } else {
+      badge.hidden = true;
+    }
+  }
+}
+
+function renderAnnouncementsList(panel, readIds, badge) {
+  const listEl = panel.querySelector(".tb-announcements-panel__list");
+  listEl.textContent = "";
+
+  if (!ANNOUNCEMENTS.length) {
+    const empty = document.createElement("p");
+    empty.className = "tb-announcements-panel__empty";
+    empty.textContent = "No announcements yet.";
+    listEl.appendChild(empty);
+    return;
+  }
+
+  ANNOUNCEMENTS.forEach((a) => {
+    const isUnread = !readIds.includes(a.id);
+    const item = document.createElement("a");
+    item.className = "tb-announcements-panel__item" + (isUnread ? " is-unread" : "");
+    item.href = a.url;
+    item.addEventListener("click", () => markAnnouncementRead(a.id, badge));
+
+    const title = document.createElement("span");
+    title.className = "tb-announcements-panel__item-title";
+    title.textContent = a.title;
+    const date = document.createElement("span");
+    date.className = "tb-announcements-panel__item-date";
+    date.textContent = a.date;
+
+    item.appendChild(title);
+    item.appendChild(date);
+    listEl.appendChild(item);
+  });
+}
+
+function wireAnnouncementsBell() {
+  const els = buildAnnouncementsBell();
+  if (!els) return;
+  const { bellBtn, panel, badge } = els;
+
+  onAuthStateChanged(auth, (user) => {
+    bellBtn.hidden = !user;
+    if (!user) {
+      panel.hidden = true;
+      badge.hidden = true;
+      return;
+    }
+    loadAnnouncementReadIds().then((readIds) => {
+      renderAnnouncementsList(panel, readIds, badge);
+      const unread = ANNOUNCEMENTS.filter((a) => !readIds.includes(a.id)).length;
+      badge.textContent = unread > 0 ? String(unread) : "";
+      badge.hidden = unread === 0;
+    });
+  });
+}
+
+wireAnnouncementsBell();
 
 // Bridge so classic (non-module) scripts — lesson-parts.js, hotspot.js,
 // quiz.js — can sync progress to Firestore under the signed-in user without
