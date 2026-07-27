@@ -677,7 +677,8 @@ body.is-leaving #main {
   font-weight: 600;
   font-size: var(--text-sm);
   color: var(--color-ink);
-  border-bottom: 1px solid var(--color-paper);
+  background: var(--color-paper);
+  border-bottom: 2px solid var(--color-accent-strong);
 }
 
 .tb-announcements-panel__list {
