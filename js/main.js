@@ -72,6 +72,50 @@
     syncFooterHeight();
   }
 
+  var navToggle = document.getElementById('nav-toggle');
+  var navPanel = document.getElementById('site-header-panel');
+
+  if (navToggle && navPanel) {
+    var closeNavPanel = function () {
+      navToggle.setAttribute('aria-expanded', 'false');
+      navPanel.classList.remove('is-open');
+    };
+
+    navToggle.addEventListener('click', function () {
+      var isOpen = navPanel.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    navPanel.addEventListener('click', function (e) {
+      if (e.target.closest('a')) {
+        closeNavPanel();
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!navPanel.classList.contains('is-open')) {
+        return;
+      }
+      if (navPanel.contains(e.target) || navToggle.contains(e.target)) {
+        return;
+      }
+      closeNavPanel();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && navPanel.classList.contains('is-open')) {
+        closeNavPanel();
+        navToggle.focus();
+      }
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 1099) {
+        closeNavPanel();
+      }
+    });
+  }
+
   var header = document.getElementById('site-header');
   var sentinel = document.getElementById('nav-sentinel');
 
