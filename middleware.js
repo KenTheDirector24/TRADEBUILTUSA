@@ -17,9 +17,8 @@ export const config = {
     "/hvacr-simulations.html",
     "/hvacr-quizzes.html",
     "/hvacr-calculators.html",
-    "/r410a-pt-chart.html",
-    "/r22-pt-chart.html",
-    "/follow-the-build.html",
+    "/resources/pt-charts/r410a-pt-chart.html",
+    "/resources/pt-charts/r22-pt-chart.html",
     "/quizzes/the-refrigeration-cycle.html",
   ],
 };
