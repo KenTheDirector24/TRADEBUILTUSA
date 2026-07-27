@@ -424,6 +424,7 @@ function buildAnnouncementsBell() {
   bellBtn.type = "button";
   bellBtn.className = "header-actions__bell";
   bellBtn.setAttribute("aria-label", "Announcements");
+  bellBtn.setAttribute("aria-expanded", "false");
   bellBtn.hidden = true;
   bellBtn.innerHTML = `
     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -435,7 +436,6 @@ function buildAnnouncementsBell() {
 
   const panel = document.createElement("div");
   panel.className = "tb-announcements-panel";
-  panel.hidden = true;
   panel.innerHTML = `
     <div class="tb-announcements-panel__header">Announcements</div>
     <div class="tb-announcements-panel__list"></div>
@@ -444,20 +444,29 @@ function buildAnnouncementsBell() {
   container.appendChild(bellBtn);
   container.appendChild(panel);
 
+  const setOpen = (open) => {
+    panel.classList.toggle("is-open", open);
+    bellBtn.setAttribute("aria-expanded", String(open));
+  };
+
+  // Clicking the bell's icon/badge makes e.target a child of bellBtn rather
+  // than bellBtn itself, so the outside-click check below must use
+  // .contains() — a strict !== comparison closes the panel on the same
+  // click that opened it.
   bellBtn.addEventListener("click", () => {
-    panel.hidden = !panel.hidden;
+    setOpen(!panel.classList.contains("is-open"));
   });
 
   document.addEventListener("click", (e) => {
-    if (!panel.hidden && !panel.contains(e.target) && e.target !== bellBtn) {
-      panel.hidden = true;
+    if (panel.classList.contains("is-open") && !panel.contains(e.target) && !bellBtn.contains(e.target)) {
+      setOpen(false);
     }
   });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !panel.hidden) panel.hidden = true;
+    if (e.key === "Escape" && panel.classList.contains("is-open")) setOpen(false);
   });
 
-  return { bellBtn, panel, badge: bellBtn.querySelector(".header-actions__bell-badge") };
+  return { bellBtn, panel, badge: bellBtn.querySelector(".header-actions__bell-badge"), setOpen };
 }
 
 async function loadAnnouncementReadIds() {
@@ -526,12 +535,12 @@ function renderAnnouncementsList(panel, readIds, badge) {
 function wireAnnouncementsBell() {
   const els = buildAnnouncementsBell();
   if (!els) return;
-  const { bellBtn, panel, badge } = els;
+  const { bellBtn, panel, badge, setOpen } = els;
 
   onAuthStateChanged(auth, (user) => {
     bellBtn.hidden = !user;
     if (!user) {
-      panel.hidden = true;
+      setOpen(false);
       badge.hidden = true;
       return;
     }

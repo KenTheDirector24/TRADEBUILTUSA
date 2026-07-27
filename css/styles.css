@@ -644,10 +644,31 @@ body.is-leaving #main {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top right;
+  transition: opacity 0.18s var(--ease-premium), transform 0.18s var(--ease-premium), visibility 0s linear 0.18s;
 }
 
-.tb-announcements-panel[hidden] {
-  display: none;
+.tb-announcements-panel.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  transition: opacity 0.18s var(--ease-premium), transform 0.18s var(--ease-premium), visibility 0s linear 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tb-announcements-panel {
+    transition: opacity 0.12s linear, visibility 0s linear 0.12s;
+    transform: none;
+  }
+  .tb-announcements-panel.is-open {
+    transition: opacity 0.12s linear, visibility 0s linear 0s;
+    transform: none;
+  }
 }
 
 .tb-announcements-panel__header {
