@@ -42,11 +42,24 @@
         <button type="button" class="btn btn-sm header-actions__signin">Sign In</button>
         <button type="button" class="btn btn-sm header-actions__signup">Sign Up</button>
         <a href="account.html" class="btn btn-sm header-actions__account" hidden>Account</a>
+        <button type="button" class="header-actions__bell" aria-label="Announcements" aria-expanded="false" hidden>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="header-actions__bell-badge" hidden></span>
+        </button>
+        <div class="tb-announcements-panel">
+          <div class="tb-announcements-panel__header">Announcements</div>
+          <div class="tb-announcements-panel__list"></div>
+        </div>
       </div>
       <script>
         (function () {
           try {
             if (localStorage.getItem("tb_signed_in_hint") === "1") {
+              var bellBtn = document.querySelector(".header-actions__bell");
+              if (bellBtn) bellBtn.hidden = false;
               var signInBtn = document.querySelector(".header-actions__signin");
               var signUpBtn = document.querySelector(".header-actions__signup");
               if (signInBtn && signUpBtn) {

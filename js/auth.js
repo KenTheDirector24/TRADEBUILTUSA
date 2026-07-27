@@ -417,36 +417,15 @@ wireAuthGateLinks();
 // no admin UI or extra Firestore rules needed (the existing per-uid
 // subcollection rule already covers this doc).
 function buildAnnouncementsBell() {
-  const container = document.querySelector(".header-actions");
-  if (!container) return null;
-
-  const bellBtn = document.createElement("button");
-  bellBtn.type = "button";
-  bellBtn.className = "header-actions__bell";
-  bellBtn.setAttribute("aria-label", "Announcements");
-  bellBtn.setAttribute("aria-expanded", "false");
-  // Render from the cached sign-in hint immediately, same as the header's
-  // Sign In/Sign Out buttons, so the bell doesn't pop in (and shift the
-  // rest of header-actions) a beat after everything else once Firebase
-  // actually resolves. onAuthStateChanged below corrects this if it's wrong.
-  bellBtn.hidden = localStorage.getItem(SIGNED_IN_HINT_KEY) !== "1";
-  bellBtn.innerHTML = `
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
-      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-    </svg>
-    <span class="header-actions__bell-badge" hidden></span>
-  `;
-
-  const panel = document.createElement("div");
-  panel.className = "tb-announcements-panel";
-  panel.innerHTML = `
-    <div class="tb-announcements-panel__header">Announcements</div>
-    <div class="tb-announcements-panel__list"></div>
-  `;
-
-  container.appendChild(bellBtn);
-  container.appendChild(panel);
+  // The bell and panel are static markup in partials/header-actions.html
+  // (kept in sync via `npm run build:shared`), not built here, so the
+  // inline bootstrap script in that partial can unhide the bell from the
+  // cached sign-in hint at parse time — the same synchronous moment the
+  // Sign In/Sign Out buttons render — instead of a beat later once this
+  // module script runs, which was causing the header to visibly shift.
+  const bellBtn = document.querySelector(".header-actions__bell");
+  const panel = document.querySelector(".tb-announcements-panel");
+  if (!bellBtn || !panel) return null;
 
   const setOpen = (open) => {
     panel.classList.toggle("is-open", open);
