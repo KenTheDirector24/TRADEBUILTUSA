@@ -11,6 +11,7 @@ export const config = {
     "/hvacr-codex.html",
     "/hvacr-fundamentals.html",
     "/hvacr-fundamentals-tools.html",
+    "/hvacr-fundamentals-tools-tape-measures.html",
     "/hvacr-installation.html",
     "/hvacr-maintenance.html",
     "/hvacr-service.html",
