@@ -2927,6 +2927,11 @@ body.is-leaving .updates-badge {
   margin: 0 0 var(--space-4);
 }
 
+.hotspot:has(.hotspot__views) > .hotspot__heading,
+.hotspot:has(.hotspot__views) > .hotspot__intro {
+  margin-left: calc(min(290px, 38%) + var(--space-8));
+}
+
 .lesson-block__intro--justify {
   text-align: justify;
   text-align-last: center;
@@ -3062,6 +3067,19 @@ body.is-leaving .updates-badge {
   background: var(--color-success);
 }
 
+@keyframes hotspot-marker-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+.hotspot__marker.is-next .hotspot__marker-badge {
+  animation: hotspot-marker-bounce 1s ease-in-out infinite;
+}
+
 .hotspot__panel {
   position: relative;
   flex: 1 1 auto;
@@ -3154,39 +3172,9 @@ body.is-leaving .updates-badge {
   .hotspot__figure {
     transition: none;
   }
-}
-
-.hotspot__panel-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
-  max-width: 320px;
-  margin: 0 auto;
-  text-align: center;
-  color: var(--color-slate);
-}
-
-.hotspot__panel-empty[hidden] {
-  display: none;
-}
-
-.hotspot__panel-empty p {
-  margin: 0;
-}
-
-.hotspot__panel-empty-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-full);
-  border: 2px dashed var(--color-line);
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: var(--text-base);
-  color: var(--color-slate);
+  .hotspot__marker.is-next .hotspot__marker-badge {
+    animation: none;
+  }
 }
 
 .hotspot__panel-head {
@@ -3420,6 +3408,11 @@ body.is-leaving .updates-badge {
 
   .hotspot__thumb-connector {
     flex-basis: 14px;
+  }
+
+  .hotspot:has(.hotspot__views) > .hotspot__heading,
+  .hotspot:has(.hotspot__views) > .hotspot__intro {
+    margin-left: 0;
   }
 }
 
@@ -4109,6 +4102,11 @@ body.is-lesson-active .lesson-part[hidden] {
 
 @media (max-height: 760px) and (min-width: 641px) {
   .hotspot__thumbs {
+    margin-left: calc(min(200px, 34%) + var(--space-6));
+  }
+
+  .hotspot:has(.hotspot__views) > .hotspot__heading,
+  .hotspot:has(.hotspot__views) > .hotspot__intro {
     margin-left: calc(min(200px, 34%) + var(--space-6));
   }
 }

@@ -7,8 +7,6 @@
 
   document.querySelectorAll('[data-hotspot]').forEach(function (root, rootIndex) {
     var markers = root.querySelectorAll('.hotspot__marker');
-    var hint = root.querySelector('[data-hotspot-hint]');
-    var content = root.querySelector('[data-hotspot-content]');
     var number = root.querySelector('[data-hotspot-number]');
     var title = root.querySelector('[data-hotspot-title]');
     var body = root.querySelector('[data-hotspot-body]');
@@ -77,14 +75,14 @@
 
     var updateProgressText = function () {
       if (total && found.size >= total) {
-        progress.textContent = total + '/' + total + ' found';
+        progress.textContent = total + '/' + total + ' inspected';
         progress.classList.add('is-complete');
         if (root.getAttribute('data-hotspot-complete') !== 'true') {
           root.setAttribute('data-hotspot-complete', 'true');
           root.dispatchEvent(new CustomEvent('hotspot:complete', { bubbles: true }));
         }
       } else {
-        progress.textContent = found.size + '/' + total + ' found';
+        progress.textContent = found.size + '/' + total + ' inspected';
       }
     };
 
@@ -96,9 +94,15 @@
 
     var updateLocks = function () {
       var allPreviousFound = true;
+      var nextMarked = false;
       markersInOrder.forEach(function (m) {
         var isFound = found.has(m.getAttribute('data-hotspot-id'));
         m.disabled = !allPreviousFound;
+        var isNext = !isFound && allPreviousFound && !nextMarked;
+        m.classList.toggle('is-next', isNext);
+        if (isNext) {
+          nextMarked = true;
+        }
         if (!isFound) {
           allPreviousFound = false;
         }
@@ -107,13 +111,29 @@
 
     updateLocks();
 
-    var resetPanel = function () {
+    var showMarkerInfo = function (marker) {
       markers.forEach(function (m) {
-        m.setAttribute('aria-pressed', 'false');
+        m.setAttribute('aria-pressed', m === marker ? 'true' : 'false');
       });
-      hint.hidden = false;
-      content.hidden = true;
+      number.textContent = String(parseInt(marker.getAttribute('data-hotspot-id'), 10));
+      title.textContent = marker.getAttribute('data-title');
+      body.textContent = marker.getAttribute('data-body');
     };
+
+    var resetPanel = function () {
+      var view = Array.prototype.filter.call(views, function (v) {
+        return !v.hidden;
+      })[0];
+      var viewMarkers = Array.prototype.slice.call(view ? view.querySelectorAll('.hotspot__marker') : markers);
+      viewMarkers.sort(function (a, b) {
+        return parseInt(a.getAttribute('data-hotspot-id'), 10) - parseInt(b.getAttribute('data-hotspot-id'), 10);
+      });
+      if (viewMarkers[0]) {
+        showMarkerInfo(viewMarkers[0]);
+      }
+    };
+
+    resetPanel();
 
     markers.forEach(function (marker) {
       var badge = marker.querySelector('.hotspot__marker-badge');
@@ -130,16 +150,7 @@
       }
 
       marker.addEventListener('click', function () {
-        markers.forEach(function (m) {
-          m.setAttribute('aria-pressed', m === marker ? 'true' : 'false');
-        });
-
-        number.textContent = String(parseInt(marker.getAttribute('data-hotspot-id'), 10));
-        title.textContent = marker.getAttribute('data-title');
-        body.textContent = marker.getAttribute('data-body');
-
-        hint.hidden = true;
-        content.hidden = false;
+        showMarkerInfo(marker);
 
         var id = marker.getAttribute('data-hotspot-id');
         if (!found.has(id)) {
