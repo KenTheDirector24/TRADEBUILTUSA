@@ -2800,6 +2800,63 @@ body.is-leaving .updates-badge {
   max-width: 220px;
 }
 
+.lesson-block__hero {
+  position: relative;
+  margin: var(--space-8) auto var(--space-6);
+  max-width: 380px;
+  transition: transform 0.3s var(--ease-premium);
+}
+
+.lesson-block__hero.is-pixel-hover {
+  transform: scale(1.06);
+}
+
+.lesson-block__hero::before {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  z-index: 0;
+  background: radial-gradient(circle, var(--color-accent-gold) 0%, var(--color-accent-tint) 45%, transparent 72%);
+  filter: blur(28px);
+  opacity: 0.65;
+}
+
+.lesson-block__hero img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: lesson-hero-float 4s ease-in-out infinite;
+}
+
+@keyframes lesson-hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lesson-block__hero img {
+    animation: none;
+  }
+}
+
+.lesson-block__title {
+  position: relative;
+  padding-bottom: var(--space-3);
+}
+
+.lesson-block__title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 2.5rem;
+  height: 2px;
+  background: var(--color-accent-strong);
+}
+
 .lesson-block__figure img {
   display: block;
   width: 100%;
@@ -2858,7 +2915,7 @@ body.is-leaving .updates-badge {
 }
 
 .hotspot__heading {
-  font-size: var(--text-2xl);
+  font-size: var(--text-xl);
   text-align: center;
   margin: 0 0 var(--space-3);
 }
@@ -2866,8 +2923,21 @@ body.is-leaving .updates-badge {
 .hotspot__intro {
   color: var(--color-slate);
   text-align: center;
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   margin: 0 0 var(--space-4);
+}
+
+.lesson-block__intro--justify {
+  text-align: justify;
+  text-align-last: center;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .lesson-block__intro--justify {
+    text-align: left;
+    text-align-last: left;
+  }
 }
 
 .hotspot__stage {
@@ -3068,14 +3138,14 @@ body.is-leaving .updates-badge {
 .hotspot__panel-title {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: var(--text-xl);
+  font-size: var(--text-lg);
   line-height: 1.25;
   margin: 0 0 var(--space-3);
 }
 
 .hotspot__panel-desc {
   color: var(--color-slate);
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   line-height: 1.6;
   margin: 0;
 }
