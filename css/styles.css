@@ -2811,6 +2811,10 @@ body.is-leaving .updates-badge {
   transform: scale(1.06);
 }
 
+.lesson-block__hero--zoom {
+  max-width: 640px;
+}
+
 .lesson-block__hero::before {
   content: "";
   position: absolute;
@@ -2867,6 +2871,7 @@ body.is-leaving .updates-badge {
 
 .lesson-block--wide {
   max-width: 1040px;
+  margin-bottom: 0;
 }
 
 .lesson-block--split {
@@ -3461,6 +3466,173 @@ body.is-leaving .updates-badge {
   .hotspot:has(.hotspot__views) > .hotspot__heading,
   .hotspot:has(.hotspot__views) > .hotspot__intro {
     margin-left: 0;
+  }
+}
+
+/* Tape-reading step diagram */
+.lesson-block__hero--zoom img {
+  animation: none;
+}
+
+.tape-reading__photo.is-pixel-hover {
+  transform: none;
+}
+
+.tape-reading {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.tape-reading__photo {
+  margin: var(--space-2) auto;
+}
+
+.tape-reading__highlight {
+  position: absolute;
+  left: var(--hx);
+  top: var(--hy);
+  width: var(--hw);
+  height: var(--hh);
+  z-index: 2;
+  background: #e01e26;
+  border-radius: 1px;
+  transform: translateX(-50%) scaleY(0.7);
+  transform-origin: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease-premium), transform 0.4s var(--ease-premium);
+}
+
+.tape-reading__highlight.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) scaleY(1);
+  animation: tape-highlight-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes tape-highlight-pulse {
+  0%, 100% {
+    box-shadow: 0 0 3px 0 rgba(224, 30, 38, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 6px 1px rgba(224, 30, 38, 0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tape-reading__highlight {
+    transition: none;
+  }
+  .tape-reading__highlight.is-visible {
+    animation: none;
+  }
+}
+
+.hotspot__panel.tape-reading__panel {
+  text-align: left;
+  padding: var(--space-2) var(--space-6);
+}
+
+.tape-reading__panel .hotspot__progress {
+  left: 50%;
+  right: auto;
+  top: var(--space-2);
+  transform: translateX(-50%);
+}
+
+.tape-reading__panel .hotspot__panel-prev,
+.tape-reading__panel .hotspot__panel-next {
+  position: static;
+}
+
+.tape-reading__nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.tape-reading__ruler-wrap {
+  margin: 28px 0 var(--space-2);
+}
+
+.tape-reading__ruler {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.tape-reading__baseline {
+  stroke: var(--color-line);
+  stroke-width: 2;
+}
+
+.tape-reading__group {
+  color: var(--color-ink);
+}
+
+.tape-reading__group.is-current {
+  color: var(--color-accent-strong);
+}
+
+.tape-reading__mark {
+  opacity: 0;
+  transform: scaleY(0.4);
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: opacity 0.35s var(--ease-premium), transform 0.35s var(--ease-premium), color 0.35s var(--ease-premium);
+}
+
+.tape-reading__group.is-visible .tape-reading__mark {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.tape-reading__mark line {
+  stroke: currentColor;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.tape-reading__mark text {
+  fill: currentColor;
+  font-family: var(--font-heading);
+  text-anchor: middle;
+}
+
+.tape-reading__group[data-tape-reading-group="1"] .tape-reading__mark text {
+  font-size: 42px;
+  font-weight: 700;
+}
+
+.tape-reading__frac {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.tape-reading__frac--sm {
+  font-size: 15px;
+}
+
+.hotspot__panel-prev:disabled,
+.hotspot__panel-next:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.hotspot__panel-prev:disabled:hover,
+.hotspot__panel-next:disabled:hover {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tape-reading__mark {
+    transition: none;
+  }
+  .tape-reading__group {
+    transition: none;
   }
 }
 
