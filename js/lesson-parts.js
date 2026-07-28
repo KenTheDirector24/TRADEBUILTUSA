@@ -294,9 +294,11 @@
   };
 
   // animate: true only for a real, in-session transition out of the intro
-  // hero (i.e. clicking "Start Lesson") — the progress bar, bottom nav, and
-  // hero header fade together instead of popping in/out instantly, so it
-  // matches the smooth slide already used for the part content itself.
+  // hero (i.e. clicking "Start Lesson") — the progress bar and bottom nav
+  // fade in together with the part-1 slide-in, once the hero header has
+  // already finished fading out (handled by animateTo before this runs),
+  // so the whole sequence matches the two-stage exit-then-enter rhythm
+  // used for every other part-to-part transition.
   var syncChrome = function (animate) {
     var active = current > -1;
     var wasActive = document.body.classList.contains('is-lesson-active');
@@ -317,13 +319,6 @@
           el.classList.remove('is-chrome-enter');
         });
       });
-      if (heroHeader) {
-        heroHeader.classList.add('is-leaving');
-        window.setTimeout(function () {
-          heroHeader.hidden = true;
-          heroHeader.classList.remove('is-leaving');
-        }, TRANSITION_MS);
-      }
     } else {
       nav.hidden = !active;
       progress.hidden = !active;
@@ -392,6 +387,13 @@
       window.setTimeout(function () {
         oldPart.hidden = true;
         oldPart.classList.remove(exitClass);
+        finishReveal();
+      }, TRANSITION_MS);
+    } else if (heroHeader && !heroHeader.hidden) {
+      heroHeader.classList.add('is-leaving');
+      window.setTimeout(function () {
+        heroHeader.hidden = true;
+        heroHeader.classList.remove('is-leaving');
         finishReveal();
       }, TRANSITION_MS);
     } else {

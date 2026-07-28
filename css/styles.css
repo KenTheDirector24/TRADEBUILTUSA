@@ -1594,7 +1594,7 @@ body.is-leaving .updates-badge {
 
 .hub__header.is-leaving {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateX(-24px);
 }
 
 .hub__header [data-lesson-start] {
