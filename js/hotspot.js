@@ -161,10 +161,19 @@
       }
     };
 
+    var hintText = hint.querySelector('p');
+
     var resetPanel = function () {
       markers.forEach(function (m) {
         m.setAttribute('aria-pressed', 'false');
       });
+      if (hintText) {
+        var activeView = Array.prototype.filter.call(views, function (v) {
+          return !v.hidden;
+        })[0];
+        var viewIndex = Array.prototype.indexOf.call(views, activeView);
+        hintText.textContent = viewIndex > 0 ? 'Click a number on the tool to continue.' : 'Click a number on the tool to start.';
+      }
       hint.hidden = false;
       content.hidden = true;
     };
