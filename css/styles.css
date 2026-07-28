@@ -3024,6 +3024,7 @@ body.is-leaving .updates-badge {
   font-size: var(--text-base);
   line-height: 1;
   box-shadow: var(--shadow-md);
+  transition: transform 0.3s var(--ease-premium);
 }
 
 .hotspot__marker-check {
@@ -3069,10 +3070,10 @@ body.is-leaving .updates-badge {
 
 @keyframes hotspot-marker-bounce {
   0%, 100% {
-    transform: translateY(0);
+    transform: translateY(-6px);
   }
   50% {
-    transform: translateY(-7px);
+    transform: translateY(-13px);
   }
 }
 
@@ -3175,6 +3176,53 @@ body.is-leaving .updates-badge {
   .hotspot__marker.is-next .hotspot__marker-badge {
     animation: none;
   }
+  .hotspot__panel-content {
+    transition: none;
+  }
+}
+
+.hotspot__panel-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 320px;
+  margin: 0 auto;
+  text-align: center;
+  color: var(--color-slate);
+}
+
+.hotspot__panel-empty[hidden] {
+  display: none;
+}
+
+.hotspot__panel-empty p {
+  margin: 0;
+}
+
+.hotspot__panel-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  border: 2px dashed var(--color-line);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-base);
+  color: var(--color-slate);
+}
+
+.hotspot__panel-content {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.hotspot__panel-content.is-fading {
+  opacity: 0;
+  transform: translateY(6px);
 }
 
 .hotspot__panel-head {

@@ -7,6 +7,8 @@
 
   document.querySelectorAll('[data-hotspot]').forEach(function (root, rootIndex) {
     var markers = root.querySelectorAll('.hotspot__marker');
+    var hint = root.querySelector('[data-hotspot-hint]');
+    var content = root.querySelector('[data-hotspot-content]');
     var number = root.querySelector('[data-hotspot-number]');
     var title = root.querySelector('[data-hotspot-title]');
     var body = root.querySelector('[data-hotspot-body]');
@@ -15,6 +17,7 @@
     var panel = root.querySelector('[data-hotspot-panel]');
 
     var total = markers.length;
+    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     var partKey = root.getAttribute('data-part') || rootIndex;
     var STORAGE_KEY = 'tb:hotspot-progress:' + window.location.pathname + ':' + partKey;
@@ -111,29 +114,60 @@
 
     updateLocks();
 
-    var showMarkerInfo = function (marker) {
-      markers.forEach(function (m) {
-        m.setAttribute('aria-pressed', m === marker ? 'true' : 'false');
-      });
-      number.textContent = String(parseInt(marker.getAttribute('data-hotspot-id'), 10));
-      title.textContent = marker.getAttribute('data-title');
-      body.textContent = marker.getAttribute('data-body');
-    };
+    var contentFadeToken = 0;
 
-    var resetPanel = function () {
-      var view = Array.prototype.filter.call(views, function (v) {
-        return !v.hidden;
-      })[0];
-      var viewMarkers = Array.prototype.slice.call(view ? view.querySelectorAll('.hotspot__marker') : markers);
-      viewMarkers.sort(function (a, b) {
-        return parseInt(a.getAttribute('data-hotspot-id'), 10) - parseInt(b.getAttribute('data-hotspot-id'), 10);
-      });
-      if (viewMarkers[0]) {
-        showMarkerInfo(viewMarkers[0]);
+    var showMarkerInfo = function (marker) {
+      var applyInfo = function () {
+        markers.forEach(function (m) {
+          m.setAttribute('aria-pressed', m === marker ? 'true' : 'false');
+        });
+        number.textContent = String(parseInt(marker.getAttribute('data-hotspot-id'), 10));
+        title.textContent = marker.getAttribute('data-title');
+        body.textContent = marker.getAttribute('data-body');
+      };
+
+      contentFadeToken += 1;
+      var token = contentFadeToken;
+
+      if (reducedMotion) {
+        applyInfo();
+        hint.hidden = true;
+        content.hidden = false;
+        content.classList.remove('is-fading');
+        return;
+      }
+
+      var revealFadedIn = function () {
+        hint.hidden = true;
+        content.hidden = false;
+        content.classList.add('is-fading');
+        void content.offsetWidth;
+        requestAnimationFrame(function () {
+          if (token !== contentFadeToken) return;
+          content.classList.remove('is-fading');
+        });
+      };
+
+      if (!content.hidden) {
+        content.classList.add('is-fading');
+        window.setTimeout(function () {
+          if (token !== contentFadeToken) return;
+          applyInfo();
+          revealFadedIn();
+        }, 180);
+      } else {
+        applyInfo();
+        revealFadedIn();
       }
     };
 
-    resetPanel();
+    var resetPanel = function () {
+      markers.forEach(function (m) {
+        m.setAttribute('aria-pressed', 'false');
+      });
+      hint.hidden = false;
+      content.hidden = true;
+    };
 
     markers.forEach(function (marker) {
       var badge = marker.querySelector('.hotspot__marker-badge');
@@ -154,6 +188,10 @@
 
         var id = marker.getAttribute('data-hotspot-id');
         if (!found.has(id)) {
+          var wasNext = marker.classList.contains('is-next');
+          var bounceBadge = wasNext ? marker.querySelector('.hotspot__marker-badge') : null;
+          var frozenTransform = bounceBadge ? getComputedStyle(bounceBadge).transform : null;
+
           found.add(id);
           marker.classList.add('is-found');
           saveFound();
@@ -162,6 +200,16 @@
           updateThumbNav();
           updateNextButton();
           updateLocks();
+
+          // updateLocks() just removed the bounce animation from this badge,
+          // which would otherwise jump its transform straight to rest. Pin it
+          // at the exact frame it was on, then release it so the badge's own
+          // transition (not the keyframe animation) eases it in smoothly.
+          if (bounceBadge && frozenTransform) {
+            bounceBadge.style.transform = frozenTransform;
+            void bounceBadge.offsetWidth;
+            bounceBadge.style.transform = '';
+          }
         }
       });
     });
@@ -284,8 +332,6 @@
         nextBtn.disabled = !(activeView && hasNext && isViewComplete(activeView));
       }
     };
-
-    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     var switchView = function (target) {
       views.forEach(function (view) {
