@@ -77,18 +77,35 @@
 
     var updateProgressText = function () {
       if (total && found.size >= total) {
-        progress.textContent = 'All ' + total + ' functions found — nice work.';
+        progress.textContent = total + '/' + total + ' found';
         progress.classList.add('is-complete');
         if (root.getAttribute('data-hotspot-complete') !== 'true') {
           root.setAttribute('data-hotspot-complete', 'true');
           root.dispatchEvent(new CustomEvent('hotspot:complete', { bubbles: true }));
         }
       } else {
-        progress.textContent = found.size + ' of ' + total + ' functions found';
+        progress.textContent = found.size + '/' + total + ' found';
       }
     };
 
     updateProgressText();
+
+    var markersInOrder = Array.prototype.slice.call(markers).sort(function (a, b) {
+      return parseInt(a.getAttribute('data-hotspot-id'), 10) - parseInt(b.getAttribute('data-hotspot-id'), 10);
+    });
+
+    var updateLocks = function () {
+      var allPreviousFound = true;
+      markersInOrder.forEach(function (m) {
+        var isFound = found.has(m.getAttribute('data-hotspot-id'));
+        m.disabled = !allPreviousFound;
+        if (!isFound) {
+          allPreviousFound = false;
+        }
+      });
+    };
+
+    updateLocks();
 
     var resetPanel = function () {
       markers.forEach(function (m) {
@@ -117,7 +134,7 @@
           m.setAttribute('aria-pressed', m === marker ? 'true' : 'false');
         });
 
-        number.textContent = 'Function ' + marker.getAttribute('data-hotspot-id');
+        number.textContent = String(parseInt(marker.getAttribute('data-hotspot-id'), 10));
         title.textContent = marker.getAttribute('data-title');
         body.textContent = marker.getAttribute('data-body');
 
@@ -133,6 +150,7 @@
           updateThumbComplete(marker.closest('[data-hotspot-view]'));
           updateThumbNav();
           updateNextButton();
+          updateLocks();
         }
       });
     });

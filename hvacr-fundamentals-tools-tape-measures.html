@@ -217,10 +217,15 @@
             </div>
 
             <div class="hotspot__panel" data-hotspot-panel aria-live="polite">
-              <p class="hotspot__panel-hint" data-hotspot-hint>Nothing selected yet — click a number on the tool to start.</p>
+              <div class="hotspot__panel-empty" data-hotspot-hint>
+                <span class="hotspot__panel-empty-icon" aria-hidden="true">?</span>
+                <p>Nothing selected yet — click a number on the tool to start.</p>
+              </div>
               <div class="hotspot__panel-content" data-hotspot-content hidden>
-                <p class="hotspot__panel-kicker" data-hotspot-number></p>
-                <h3 class="hotspot__panel-title" data-hotspot-title></h3>
+                <div class="hotspot__panel-head">
+                  <span class="hotspot__panel-badge" data-hotspot-number aria-hidden="true"></span>
+                  <h3 class="hotspot__panel-title" data-hotspot-title></h3>
+                </div>
                 <p class="hotspot__panel-desc" data-hotspot-body></p>
               </div>
             </div>
