@@ -3670,15 +3670,6 @@ body.is-leaving .updates-badge {
   margin-bottom: 0;
 }
 
-.hub:has(.hub__header [data-lesson-start]) .hub__header.is-leaving {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  flex: none;
-  z-index: 2;
-}
-
 .lesson-part {
   display: none;
 }
