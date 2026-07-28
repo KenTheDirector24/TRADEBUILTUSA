@@ -2969,8 +2969,6 @@ body.is-leaving .updates-badge {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-md);
 }
 
 .hotspot__marker {
@@ -3206,6 +3204,10 @@ body.is-leaving .updates-badge {
   transform: none;
 }
 
+.hotspot__panel:has(.hotspot__panel-next) {
+  padding-bottom: 4.5rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hotspot__panel-next,
   .hotspot__panel-prev {
@@ -3222,10 +3224,6 @@ body.is-leaving .updates-badge {
   .hotspot__panel-prev {
     left: var(--space-5);
     bottom: var(--space-4);
-  }
-
-  .hotspot__panel:has(.hotspot__panel-next) {
-    padding-bottom: 4.5rem;
   }
 }
 
