@@ -36,6 +36,16 @@
   var total = STEPS.length;
   var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  var gateRoot = root.closest('[data-gate]');
+
+  var markGateComplete = function () {
+    if (!gateRoot || gateRoot.getAttribute('data-gate-complete') === 'true') {
+      return;
+    }
+    gateRoot.setAttribute('data-gate-complete', 'true');
+    gateRoot.dispatchEvent(new CustomEvent('gate:complete', { bubbles: true }));
+  };
+
   var groups = root.querySelectorAll('[data-tape-reading-group]');
   var highlights = root.querySelectorAll('[data-tape-reading-highlight]');
   var badge = root.querySelector('[data-tape-reading-number]');
@@ -77,6 +87,9 @@
       h.classList.toggle('is-visible', n === current);
     });
     renderControls();
+    if (current >= total) {
+      markGateComplete();
+    }
   };
 
   var goTo = function (next) {

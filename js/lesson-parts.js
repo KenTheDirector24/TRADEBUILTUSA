@@ -197,13 +197,16 @@
   }
 
   var isPartComplete = function (part) {
-    var gated = Array.prototype.slice.call(part.querySelectorAll('[data-hotspot], [data-quiz-question]'));
-    if (part.hasAttribute('data-hotspot') || part.hasAttribute('data-quiz-question')) {
+    var gated = Array.prototype.slice.call(part.querySelectorAll('[data-hotspot], [data-quiz-question], [data-gate]'));
+    if (part.hasAttribute('data-hotspot') || part.hasAttribute('data-quiz-question') || part.hasAttribute('data-gate')) {
       gated.push(part);
     }
     return gated.every(function (el) {
       if (el.hasAttribute('data-quiz-question')) {
         return el.getAttribute('data-quiz-complete') === 'true';
+      }
+      if (el.hasAttribute('data-gate')) {
+        return el.getAttribute('data-gate-complete') === 'true';
       }
       return el.getAttribute('data-hotspot-complete') === 'true';
     });
@@ -408,6 +411,7 @@
 
   document.addEventListener('hotspot:complete', updateNav);
   document.addEventListener('quiz:answered', updateNav);
+  document.addEventListener('gate:complete', updateNav);
 
   if (startBtn) {
     startBtn.addEventListener('click', function () {
