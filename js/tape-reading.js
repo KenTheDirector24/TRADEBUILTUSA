@@ -12,24 +12,24 @@
 
   var STEPS = [
     {
-      title: 'Start with the Whole Inches',
-      body: 'The large numbers mark each full inch. They’re the tallest lines on the tape — use them to get close before reading anything smaller.'
+      title: 'Inches',
+      body: 'Whole inches are the primary measurement marks on a tape measure. They are shown by the longest lines and numbered 1, 2, 3, 4…'
     },
     {
-      title: 'Find the Half-Inch',
-      body: 'The next longest line, exactly between two whole numbers, marks 1/2 inch — splitting the inch evenly in two.'
+      title: '1/2 Inch',
+      body: 'The 1/2 mark divides 1 inch into two equal parts. It is the longest line between two inch marks.'
     },
     {
-      title: 'Break It Into Quarters',
-      body: 'Shorter lines on either side of the half-inch mark 1/4 and 3/4 inch, dividing the inch into four equal parts.'
+      title: '1/4 Inch',
+      body: 'The 1/4 and 3/4 marks divide 1 inch into 4 equal parts. They are shorter than the 1/2 mark.'
     },
     {
-      title: 'Read Down to the Eighth',
-      body: 'The shortest labeled lines mark every 1/8 inch — 1/8, 3/8, 5/8, and 7/8 — the finest measurement most trade work calls for.'
+      title: '1/8 Inch',
+      body: 'The 1/8, 3/8, 5/8, and 7/8 marks divide 1 inch into 8 equal parts. They provide more precise measurements.'
     },
     {
-      title: 'Read Down to the Sixteenth',
-      body: 'The smallest, unlabeled lines split each eighth in half again, marking every 1/16 inch — the finest increment printed on most tapes.'
+      title: '1/16 Inch',
+      body: 'The 1/16 marks divide 1 inch into 16 equal parts. These are the shortest lines and are used for the most accurate measurements on a standard tape measure.'
     }
   ];
 
@@ -54,9 +54,11 @@
   var renderControls = function () {
     prevBtn.disabled = current <= 1;
     var isLast = current >= total;
-    nextBtn.innerHTML = isLast
-      ? RESTART_ICON + '<span>Start Over</span>'
-      : '<span>Next</span>' + NEXT_ICON;
+    if (isLast) {
+      nextBtn.innerHTML = RESTART_ICON + '<span>Start Over</span>';
+    } else {
+      nextBtn.innerHTML = '<span>Next: ' + STEPS[current].title + '</span>' + NEXT_ICON;
+    }
     counter.textContent = 'Step ' + current + ' of ' + total;
   };
 

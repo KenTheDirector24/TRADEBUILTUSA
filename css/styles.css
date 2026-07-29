@@ -3479,12 +3479,16 @@ body.is-leaving .updates-badge {
 }
 
 .tape-reading {
-  max-width: 480px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
 .tape-reading__photo {
-  margin: var(--space-2) auto;
+  margin: 0 auto;
+}
+
+.lesson-block--wide > .hotspot__intro {
+  margin-bottom: var(--space-1);
 }
 
 .tape-reading__highlight {
@@ -3529,7 +3533,7 @@ body.is-leaving .updates-badge {
 
 .hotspot__panel.tape-reading__panel {
   text-align: left;
-  padding: var(--space-2) var(--space-6);
+  padding: var(--space-2) var(--space-6) var(--space-3);
 }
 
 .tape-reading__panel .hotspot__progress {
@@ -3549,11 +3553,11 @@ body.is-leaving .updates-badge {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  margin-top: var(--space-4);
+  margin-top: var(--space-2);
 }
 
 .tape-reading__ruler-wrap {
-  margin: 28px 0 var(--space-2);
+  margin: 24px 0 0;
 }
 
 .tape-reading__ruler {
@@ -3611,7 +3615,12 @@ body.is-leaving .updates-badge {
 }
 
 .tape-reading__frac--sm {
-  font-size: 15px;
+  font-size: 18px;
+}
+
+.tape-reading__frac--xs {
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .hotspot__panel-prev:disabled,
