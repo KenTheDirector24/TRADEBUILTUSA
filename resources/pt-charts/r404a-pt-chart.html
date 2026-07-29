@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TradeBuilt | R-404A Pressure-Temperature Chart</title>
+  <meta name="description" content="TRADEBUILT: R-404A saturation pressure-temperature reference chart, printable on a single page.">
+  <meta name="theme-color" content="#14181F">
+
+  <meta property="og:title" content="TRADEBUILT: R-404A Pressure-Temperature Chart">
+  <meta property="og:description" content="R-404A saturation pressure-temperature reference chart, printable on a single page.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="TRADEBUILT: R-404A Pressure-Temperature Chart">
+  <meta name="twitter:description" content="R-404A saturation pressure-temperature reference chart, printable on a single page.">
+
+  <link rel="icon" type="image/x-icon" href="../../assets/img/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/img/favicon-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="../../assets/img/favicon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../assets/img/favicon-180.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../css/styles.css">
+
+  <style>
+    .pt-hub .container {
+      max-width: 1180px;
+    }
+
+    .pt-card {
+      position: relative;
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      margin-top: var(--space-2);
+    }
+
+    .pt-card__brand {
+      height: 92px;
+      width: auto;
+      margin-left: auto;
+      flex: none;
+    }
+
+    .pt-print-head {
+      display: none;
+    }
+
+    .pt-card__head {
+      background: var(--color-navy);
+      color: #fff;
+      padding: var(--space-2) var(--space-6);
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    .pt-card__head::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--color-accent), var(--color-accent-gold));
+    }
+
+    .pt-card__title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: var(--text-xl);
+      line-height: 1.1;
+      margin: 0;
+      color: #fff;
+      max-width: 70%;
+    }
+
+    .pt-r404a-color {
+      color: #FF6B1A;
+    }
+
+    .pt-card__sub {
+      font-size: var(--text-sm);
+      color: rgba(255, 255, 255, 0.72);
+      margin: 0;
+      max-width: 62ch;
+    }
+
+    .pt-card__body {
+      padding: var(--space-4) var(--space-6) var(--space-6);
+    }
+
+    .pt-th-dot {
+      display: inline-block;
+      width: 0.6em;
+      height: 0.6em;
+      border-radius: 50%;
+      margin-right: 0.4em;
+      vertical-align: middle;
+    }
+
+    .pt-th-dot.liq {
+      background: #E0342C;
+    }
+
+    .pt-th-dot.vap {
+      background: #2E6BE6;
+    }
+
+    .pt-th-subtype {
+      display: block;
+      margin-top: 0.15em;
+      margin-left: 1em;
+      font-size: 0.6rem;
+      font-weight: 400;
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.55);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    @media print {
+      .pt-th-subtype {
+        display: none;
+      }
+    }
+
+    .pt-table-wrap {
+      border: 1px solid var(--color-line);
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+    }
+
+    .pt-datatable {
+      width: 100%;
+      min-width: 700px;
+      border-collapse: collapse;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pt-datatable thead th {
+      background: var(--color-navy);
+      color: #fff;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-align: center;
+      border-right: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .pt-datatable thead tr:first-child th {
+      font-size: var(--text-xs);
+      padding: 0.4em 0.4em;
+    }
+
+    .pt-datatable thead th.pt-psig-hd {
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+
+    .pt-datatable thead tr:last-child th {
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.75);
+      padding: 0.2em 0.4em 0.35em;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .pt-datatable thead th:last-child {
+      border-right: none;
+    }
+
+    .pt-datatable thead th.grp-start {
+      border-left: 3px solid var(--color-accent-gold);
+    }
+
+    .pt-datatable tbody td {
+      text-align: center;
+      padding: 0.24em 0.4em;
+      font-size: 0.78rem;
+      color: var(--color-ink);
+      border-bottom: 1px solid rgba(150, 140, 120, 0.18);
+      border-right: 1px solid rgba(150, 140, 120, 0.12);
+    }
+
+    .pt-datatable tbody td:last-child {
+      border-right: none;
+    }
+
+    .pt-datatable tbody td.grp-start {
+      border-left: 3px solid var(--color-line);
+    }
+
+    .pt-datatable tbody td.pt-f {
+      color: var(--color-ink);
+      font-weight: 700;
+      background: #fff;
+    }
+
+    .pt-datatable tbody td.pt-liq,
+    .pt-datatable tbody td.pt-vap {
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.1s ease;
+    }
+
+    .pt-datatable tbody td.pt-liq {
+      background: rgba(224, 52, 44, 0.12);
+    }
+
+    .pt-datatable tbody td.pt-vap {
+      background: rgba(46, 107, 230, 0.12);
+    }
+
+    .pt-datatable tbody td.pt-liq.is-hover-active {
+      background: rgba(224, 52, 44, 0.38);
+      outline: 2px solid #E0342C;
+      outline-offset: -2px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pt-datatable tbody td.pt-vap.is-hover-active {
+      background: rgba(46, 107, 230, 0.38);
+      outline: 2px solid #2E6BE6;
+      outline-offset: -2px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pt-datatable tbody td.pt-f.is-hover-active {
+      background: var(--color-accent-tint);
+      font-weight: 800;
+    }
+
+    .pt-hover-arrow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 200;
+      overflow: visible;
+    }
+
+    .pt-hover-arrow path {
+      fill: none;
+      stroke-width: 2.5px;
+      stroke-linecap: round;
+      opacity: 0;
+      transition: opacity 0.12s ease;
+    }
+
+    .pt-datatable tbody td .pt-cell-text {
+      display: inline-block;
+      filter: blur(0);
+      transition: filter 0.15s ease;
+    }
+
+    .pt-datatable tbody td.is-crossed-active .pt-cell-text {
+      filter: blur(2.5px);
+      opacity: 0.7;
+    }
+
+    .pt-hover-arrow path.is-visible {
+      opacity: 1;
+    }
+
+    @media print {
+      .pt-hover-arrow {
+        display: none !important;
+      }
+    }
+
+    .pt-datatable tbody tr:nth-child(even) {
+      background: var(--color-paper);
+    }
+
+    .pt-datatable tbody tr:nth-child(odd) {
+      background: var(--color-surface);
+    }
+
+    .pt-print-legal {
+      display: none;
+    }
+
+    .pt-card__foot {
+      border-top: 1px solid rgba(150, 140, 120, 0.35);
+      padding: var(--space-4) var(--space-6) var(--space-5);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--space-3);
+      background: var(--color-paper);
+    }
+
+    .pt-actions {
+      display: flex;
+      gap: var(--space-2);
+    }
+
+    @media (max-width: 860px) {
+      .pt-card__title {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .pt-datatable thead th,
+      .pt-datatable tbody td {
+        padding: 0.4em 0.35em;
+        font-size: var(--text-sm);
+      }
+    }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+
+      .nav-sentinel,
+      .site-header,
+      .site-footer,
+      .back-link,
+      .pt-actions,
+      .updates-badge,
+      .hub__bg,
+      .pt-card__foot,
+      .pt-card__head {
+        display: none !important;
+      }
+
+      html,
+      body,
+      #main {
+        background: #fff !important;
+        opacity: 1 !important;
+      }
+
+      body {
+        padding-bottom: 0;
+      }
+
+      .pt-hub {
+        padding: 0;
+        background: #fff;
+      }
+
+      .pt-hub .container {
+        padding: 0;
+        max-width: none;
+        background: #fff;
+      }
+
+      .pt-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+      }
+
+      .pt-print-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 11px 20px;
+        background: var(--color-navy);
+        position: relative;
+      }
+
+      .pt-print-head::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--color-accent), var(--color-accent-gold));
+      }
+
+      .pt-print-head__brand {
+        height: 42px;
+        width: auto;
+      }
+
+      .pt-print-head__title {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: #fff;
+      }
+
+      .pt-table-wrap {
+        overflow-x: visible;
+      }
+
+      .pt-datatable {
+        min-width: 0;
+        width: 100%;
+        table-layout: fixed;
+      }
+
+      .pt-datatable thead tr:first-child th {
+        font-size: 0.6rem;
+        padding: 0.17em 0.28em;
+      }
+
+      .pt-datatable thead tr:last-child th {
+        font-size: 0.48rem;
+        padding: 0.11em 0.28em 0.15em;
+      }
+
+      .pt-datatable tbody td {
+        font-size: 0.6rem;
+        padding: 0.05em 0.28em;
+      }
+
+      .pt-print-legal {
+        display: block;
+        padding: 2px 20px 0;
+        margin-top: 1px;
+        border-top: 1px solid #ccc;
+        font-size: 0.5rem;
+        line-height: 1.2;
+        color: #555;
+        text-align: center;
+      }
+
+      .pt-print-legal p {
+        margin: 0;
+      }
+
+      .pt-print-legal__copyright {
+        margin-top: 0 !important;
+      }
+
+      .pt-print-legal__veteran {
+        white-space: nowrap;
+      }
+
+      .pt-print-legal__flag {
+        display: inline-block;
+        width: 1.1em;
+        height: auto;
+        vertical-align: middle;
+        margin-left: 0.3em;
+        margin-top: -0.1em;
+        border-radius: 1px;
+      }
+
+      @page {
+        size: letter portrait;
+        margin: 0.25in;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-sentinel" id="nav-sentinel" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header" id="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="../../index.html">
+        <img src="../../assets/img/tradebuilt-logo.webp" alt="TradeBuilt" width="2172" height="724">
+        <span class="logo__tagline">Skilled Trades Learning Platform</span>
+      </a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-header-panel" aria-label="Toggle menu">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </button>
+      <div class="site-header__panel" id="site-header-panel">
+      <!-- TB:NAV active="resources" -->
+      <nav class="site-nav" aria-label="Primary">
+        <a href="../../index.html">Home</a>
+        <a href="../../hvacr.html">HVAC/R</a>
+        <a href="../resources.html" aria-current="page">Resources</a>
+        <a href="../../grades.html">Grades</a>
+        <a href="../../achievements.html" class="js-auth-gate">Achievements</a>
+        <a href="../../shop.html">Shop</a>
+      </nav>
+<!-- /TB:NAV -->
+      <!-- TB:HEADER-ACTIONS -->
+      <div class="header-actions">
+        <button type="button" class="btn btn-sm header-actions__signin">Sign In</button>
+        <button type="button" class="btn btn-sm header-actions__signup">Sign Up</button>
+        <a href="../../account.html" class="btn btn-sm header-actions__account" hidden>Account</a>
+        <button type="button" class="header-actions__bell" aria-label="Announcements" aria-expanded="false" hidden>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="header-actions__bell-badge" hidden></span>
+        </button>
+        <div class="tb-announcements-panel">
+          <div class="tb-announcements-panel__header">Announcements</div>
+          <div class="tb-announcements-panel__list"></div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          try {
+            if (localStorage.getItem("tb_signed_in_hint") === "1") {
+              var bellBtn = document.querySelector(".header-actions__bell");
+              if (bellBtn) bellBtn.hidden = false;
+              var signInBtn = document.querySelector(".header-actions__signin");
+              var signUpBtn = document.querySelector(".header-actions__signup");
+              if (signInBtn && signUpBtn) {
+                signUpBtn.style.display = "none";
+                signInBtn.textContent = "Sign Out";
+                signInBtn.classList.add("header-actions__signin--signed-in");
+              }
+              var accountLink = document.querySelector(".header-actions__account");
+              if (accountLink) {
+                accountLink.hidden = false;
+                var profile = null;
+                try {
+                  var rawProfile = localStorage.getItem("tb_profile_hint");
+                  profile = rawProfile ? JSON.parse(rawProfile) : null;
+                } catch (e2) {}
+                var firstName = (profile && profile.firstName) || "";
+                var lastName = (profile && profile.lastName) || "";
+                var photoURL = (profile && profile.photoURL) || "";
+                var email = (profile && profile.email) || "";
+                var initA = firstName.trim().charAt(0);
+                var initB = lastName.trim().charAt(0);
+                var initials = (initA || initB) ? (initA + initB).toUpperCase() : (email || "?").trim().charAt(0).toUpperCase();
+                var displayName = firstName || "Account";
+                accountLink.textContent = "";
+                var avatar = document.createElement("span");
+                avatar.className = "header-actions__avatar";
+                if (photoURL) {
+                  var img = document.createElement("img");
+                  img.src = photoURL;
+                  img.alt = "";
+                  avatar.appendChild(img);
+                } else {
+                  var initialsEl = document.createElement("span");
+                  initialsEl.className = "header-actions__avatar-initials";
+                  initialsEl.textContent = initials;
+                  avatar.appendChild(initialsEl);
+                }
+                var nameEl = document.createElement("span");
+                nameEl.className = "header-actions__account-name";
+                nameEl.textContent = displayName;
+                accountLink.appendChild(avatar);
+                accountLink.appendChild(nameEl);
+                accountLink.dataset.tbPhoto = photoURL;
+                accountLink.dataset.tbInitials = initials;
+                accountLink.dataset.tbName = displayName;
+              }
+            }
+          } catch (e) {}
+        })();
+      </script>
+<!-- /TB:HEADER-ACTIONS -->
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hub pt-hub" id="r404a-pt-chart" aria-labelledby="pt-chart-heading">
+      <div class="hub__bg" aria-hidden="true"></div>
+      <div class="container">
+        <a class="back-link" href="../resources.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back to Resources
+        </a>
+        <article class="pt-card">
+          <div class="pt-print-head">
+            <span class="pt-print-head__title"><span class="pt-r404a-color">R-404A</span> PT Chart</span>
+            <img class="pt-print-head__brand" src="../../assets/img/tradebuilt-logo.webp" alt="TradeBuilt" width="2172" height="724">
+          </div>
+
+          <div class="pt-card__head">
+            <h1 id="pt-chart-heading" class="pt-card__title"><span class="pt-r404a-color">R-404A</span> Pressure/Temperature Chart</h1>
+            <img class="pt-card__brand" src="../../assets/img/tradebuilt-logo.webp" alt="TradeBuilt" width="2172" height="724">
+          </div>
+
+          <div class="pt-card__body">
+            <div class="pt-table-wrap">
+              <table class="pt-datatable">
+                <thead>
+                  <tr>
+                    <th rowspan="2">&deg;F</th><th class="pt-psig-hd" colspan="2">Pressure (PSIG)</th>
+                    <th class="grp-start" rowspan="2">&deg;F</th><th class="pt-psig-hd" colspan="2">Pressure (PSIG)</th>
+                    <th class="grp-start" rowspan="2">&deg;F</th><th class="pt-psig-hd" colspan="2">Pressure (PSIG)</th>
+                    <th class="grp-start" rowspan="2">&deg;F</th><th class="pt-psig-hd" colspan="2">Pressure (PSIG)</th>
+                  </tr>
+                  <tr>
+                    <th><i class="pt-th-dot liq"></i>Liquid<span class="pt-th-subtype">Bubble Point</span></th><th><i class="pt-th-dot vap"></i>Vapor<span class="pt-th-subtype">Dew Point</span></th>
+                    <th><i class="pt-th-dot liq"></i>Liquid<span class="pt-th-subtype">Bubble Point</span></th><th><i class="pt-th-dot vap"></i>Vapor<span class="pt-th-subtype">Dew Point</span></th>
+                    <th><i class="pt-th-dot liq"></i>Liquid<span class="pt-th-subtype">Bubble Point</span></th><th><i class="pt-th-dot vap"></i>Vapor<span class="pt-th-subtype">Dew Point</span></th>
+                    <th><i class="pt-th-dot liq"></i>Liquid<span class="pt-th-subtype">Bubble Point</span></th><th><i class="pt-th-dot vap"></i>Vapor<span class="pt-th-subtype">Dew Point</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td class="pt-f">&minus;49&deg;</td><td class="pt-liq">0.9</td><td class="pt-vap">0.3</td><td class="pt-f grp-start">1&deg;</td><td class="pt-liq">34.7</td><td class="pt-vap">33.6</td><td class="pt-f grp-start">51&deg;</td><td class="pt-liq">107.2</td><td class="pt-vap">105.6</td><td class="pt-f grp-start">101&deg;</td><td class="pt-liq">240.2</td><td class="pt-vap">238.1</td></tr>
+                  <tr><td class="pt-f">&minus;48&deg;</td><td class="pt-liq">1.3</td><td class="pt-vap">0.7</td><td class="pt-f grp-start">2&deg;</td><td class="pt-liq">35.7</td><td class="pt-vap">34.6</td><td class="pt-f grp-start">52&deg;</td><td class="pt-liq">109.2</td><td class="pt-vap">107.5</td><td class="pt-f grp-start">102&deg;</td><td class="pt-liq">243.6</td><td class="pt-vap">241.5</td></tr>
+                  <tr><td class="pt-f">&minus;47&deg;</td><td class="pt-liq">1.7</td><td class="pt-vap">1.2</td><td class="pt-f grp-start">3&deg;</td><td class="pt-liq">36.7</td><td class="pt-vap">35.6</td><td class="pt-f grp-start">53&deg;</td><td class="pt-liq">111.2</td><td class="pt-vap">109.5</td><td class="pt-f grp-start">103&deg;</td><td class="pt-liq">247.1</td><td class="pt-vap">245</td></tr>
+                  <tr><td class="pt-f">&minus;46&deg;</td><td class="pt-liq">2.1</td><td class="pt-vap">1.6</td><td class="pt-f grp-start">4&deg;</td><td class="pt-liq">37.7</td><td class="pt-vap">36.6</td><td class="pt-f grp-start">54&deg;</td><td class="pt-liq">113.3</td><td class="pt-vap">111.6</td><td class="pt-f grp-start">104&deg;</td><td class="pt-liq">250.7</td><td class="pt-vap">248.5</td></tr>
+                  <tr><td class="pt-f">&minus;45&deg;</td><td class="pt-liq">2.6</td><td class="pt-vap">2</td><td class="pt-f grp-start">5&deg;</td><td class="pt-liq">38.8</td><td class="pt-vap">37.7</td><td class="pt-f grp-start">55&deg;</td><td class="pt-liq">115.3</td><td class="pt-vap">113.6</td><td class="pt-f grp-start">105&deg;</td><td class="pt-liq">254.2</td><td class="pt-vap">252.1</td></tr>
+                  <tr><td class="pt-f">&minus;44&deg;</td><td class="pt-liq">3</td><td class="pt-vap">2.4</td><td class="pt-f grp-start">6&deg;</td><td class="pt-liq">39.8</td><td class="pt-vap">38.7</td><td class="pt-f grp-start">56&deg;</td><td class="pt-liq">117.4</td><td class="pt-vap">115.7</td><td class="pt-f grp-start">106&deg;</td><td class="pt-liq">257.8</td><td class="pt-vap">255.7</td></tr>
+                  <tr><td class="pt-f">&minus;43&deg;</td><td class="pt-liq">3.5</td><td class="pt-vap">2.9</td><td class="pt-f grp-start">7&deg;</td><td class="pt-liq">40.9</td><td class="pt-vap">39.8</td><td class="pt-f grp-start">57&deg;</td><td class="pt-liq">119.5</td><td class="pt-vap">117.8</td><td class="pt-f grp-start">107&deg;</td><td class="pt-liq">261.4</td><td class="pt-vap">259.3</td></tr>
+                  <tr><td class="pt-f">&minus;42&deg;</td><td class="pt-liq">4</td><td class="pt-vap">3.4</td><td class="pt-f grp-start">8&deg;</td><td class="pt-liq">42</td><td class="pt-vap">40.9</td><td class="pt-f grp-start">58&deg;</td><td class="pt-liq">121.7</td><td class="pt-vap">119.9</td><td class="pt-f grp-start">108&deg;</td><td class="pt-liq">265.1</td><td class="pt-vap">263</td></tr>
+                  <tr><td class="pt-f">&minus;41&deg;</td><td class="pt-liq">4.4</td><td class="pt-vap">3.8</td><td class="pt-f grp-start">9&deg;</td><td class="pt-liq">43.1</td><td class="pt-vap">42</td><td class="pt-f grp-start">59&deg;</td><td class="pt-liq">123.8</td><td class="pt-vap">122.1</td><td class="pt-f grp-start">109&deg;</td><td class="pt-liq">268.8</td><td class="pt-vap">266.7</td></tr>
+                  <tr><td class="pt-f">&minus;40&deg;</td><td class="pt-liq">4.9</td><td class="pt-vap">4.3</td><td class="pt-f grp-start">10&deg;</td><td class="pt-liq">44.3</td><td class="pt-vap">43.1</td><td class="pt-f grp-start">60&deg;</td><td class="pt-liq">126</td><td class="pt-vap">124.2</td><td class="pt-f grp-start">110&deg;</td><td class="pt-liq">272.6</td><td class="pt-vap">270.4</td></tr>
+                  <tr><td class="pt-f">&minus;39&deg;</td><td class="pt-liq">5.4</td><td class="pt-vap">4.8</td><td class="pt-f grp-start">11&deg;</td><td class="pt-liq">45.4</td><td class="pt-vap">44.3</td><td class="pt-f grp-start">61&deg;</td><td class="pt-liq">128.2</td><td class="pt-vap">126.4</td><td class="pt-f grp-start">111&deg;</td><td class="pt-liq">276.3</td><td class="pt-vap">274.2</td></tr>
+                  <tr><td class="pt-f">&minus;38&deg;</td><td class="pt-liq">5.9</td><td class="pt-vap">5.3</td><td class="pt-f grp-start">12&deg;</td><td class="pt-liq">46.6</td><td class="pt-vap">45.4</td><td class="pt-f grp-start">62&deg;</td><td class="pt-liq">130.4</td><td class="pt-vap">128.7</td><td class="pt-f grp-start">112&deg;</td><td class="pt-liq">280.2</td><td class="pt-vap">278</td></tr>
+                  <tr><td class="pt-f">&minus;37&deg;</td><td class="pt-liq">6.4</td><td class="pt-vap">5.8</td><td class="pt-f grp-start">13&deg;</td><td class="pt-liq">47.8</td><td class="pt-vap">46.6</td><td class="pt-f grp-start">63&deg;</td><td class="pt-liq">132.7</td><td class="pt-vap">130.9</td><td class="pt-f grp-start">113&deg;</td><td class="pt-liq">284</td><td class="pt-vap">281.9</td></tr>
+                  <tr><td class="pt-f">&minus;36&deg;</td><td class="pt-liq">7</td><td class="pt-vap">6.3</td><td class="pt-f grp-start">14&deg;</td><td class="pt-liq">49</td><td class="pt-vap">47.8</td><td class="pt-f grp-start">64&deg;</td><td class="pt-liq">135</td><td class="pt-vap">133.2</td><td class="pt-f grp-start">114&deg;</td><td class="pt-liq">287.9</td><td class="pt-vap">285.8</td></tr>
+                  <tr><td class="pt-f">&minus;35&deg;</td><td class="pt-liq">7.5</td><td class="pt-vap">6.8</td><td class="pt-f grp-start">15&deg;</td><td class="pt-liq">50.2</td><td class="pt-vap">49</td><td class="pt-f grp-start">65&deg;</td><td class="pt-liq">137.3</td><td class="pt-vap">135.5</td><td class="pt-f grp-start">115&deg;</td><td class="pt-liq">291.8</td><td class="pt-vap">289.7</td></tr>
+                  <tr><td class="pt-f">&minus;34&deg;</td><td class="pt-liq">8</td><td class="pt-vap">7.4</td><td class="pt-f grp-start">16&deg;</td><td class="pt-liq">51.5</td><td class="pt-vap">50.2</td><td class="pt-f grp-start">66&deg;</td><td class="pt-liq">139.7</td><td class="pt-vap">137.8</td><td class="pt-f grp-start">116&deg;</td><td class="pt-liq">295.8</td><td class="pt-vap">293.7</td></tr>
+                  <tr><td class="pt-f">&minus;33&deg;</td><td class="pt-liq">8.6</td><td class="pt-vap">7.9</td><td class="pt-f grp-start">17&deg;</td><td class="pt-liq">52.7</td><td class="pt-vap">51.5</td><td class="pt-f grp-start">67&deg;</td><td class="pt-liq">142</td><td class="pt-vap">140.2</td><td class="pt-f grp-start">117&deg;</td><td class="pt-liq">299.8</td><td class="pt-vap">297.7</td></tr>
+                  <tr><td class="pt-f">&minus;32&deg;</td><td class="pt-liq">9.2</td><td class="pt-vap">8.5</td><td class="pt-f grp-start">18&deg;</td><td class="pt-liq">54</td><td class="pt-vap">52.7</td><td class="pt-f grp-start">68&deg;</td><td class="pt-liq">144.4</td><td class="pt-vap">142.6</td><td class="pt-f grp-start">118&deg;</td><td class="pt-liq">303.9</td><td class="pt-vap">301.7</td></tr>
+                  <tr><td class="pt-f">&minus;31&deg;</td><td class="pt-liq">9.7</td><td class="pt-vap">9</td><td class="pt-f grp-start">19&deg;</td><td class="pt-liq">55.3</td><td class="pt-vap">54</td><td class="pt-f grp-start">69&deg;</td><td class="pt-liq">146.9</td><td class="pt-vap">145</td><td class="pt-f grp-start">119&deg;</td><td class="pt-liq">308</td><td class="pt-vap">305.8</td></tr>
+                  <tr><td class="pt-f">&minus;30&deg;</td><td class="pt-liq">10.3</td><td class="pt-vap">9.6</td><td class="pt-f grp-start">20&deg;</td><td class="pt-liq">56.6</td><td class="pt-vap">55.3</td><td class="pt-f grp-start">70&deg;</td><td class="pt-liq">149.3</td><td class="pt-vap">147.4</td><td class="pt-f grp-start">120&deg;</td><td class="pt-liq">312.1</td><td class="pt-vap">309.9</td></tr>
+                  <tr><td class="pt-f">&minus;29&deg;</td><td class="pt-liq">10.9</td><td class="pt-vap">10.2</td><td class="pt-f grp-start">21&deg;</td><td class="pt-liq">57.9</td><td class="pt-vap">56.6</td><td class="pt-f grp-start">71&deg;</td><td class="pt-liq">151.8</td><td class="pt-vap">149.9</td><td class="pt-f grp-start">121&deg;</td><td class="pt-liq">316.3</td><td class="pt-vap">314.1</td></tr>
+                  <tr><td class="pt-f">&minus;28&deg;</td><td class="pt-liq">11.5</td><td class="pt-vap">10.8</td><td class="pt-f grp-start">22&deg;</td><td class="pt-liq">59.3</td><td class="pt-vap">57.9</td><td class="pt-f grp-start">72&deg;</td><td class="pt-liq">154.3</td><td class="pt-vap">152.4</td><td class="pt-f grp-start">122&deg;</td><td class="pt-liq">320.5</td><td class="pt-vap">318.3</td></tr>
+                  <tr><td class="pt-f">&minus;27&deg;</td><td class="pt-liq">12.2</td><td class="pt-vap">11.4</td><td class="pt-f grp-start">23&deg;</td><td class="pt-liq">60.6</td><td class="pt-vap">59.3</td><td class="pt-f grp-start">73&deg;</td><td class="pt-liq">156.8</td><td class="pt-vap">154.9</td><td class="pt-f grp-start">123&deg;</td><td class="pt-liq">324.7</td><td class="pt-vap">322.6</td></tr>
+                  <tr><td class="pt-f">&minus;26&deg;</td><td class="pt-liq">12.8</td><td class="pt-vap">12</td><td class="pt-f grp-start">24&deg;</td><td class="pt-liq">62</td><td class="pt-vap">60.7</td><td class="pt-f grp-start">74&deg;</td><td class="pt-liq">159.4</td><td class="pt-vap">157.5</td><td class="pt-f grp-start">124&deg;</td><td class="pt-liq">329</td><td class="pt-vap">326.9</td></tr>
+                  <tr><td class="pt-f">&minus;25&deg;</td><td class="pt-liq">13.4</td><td class="pt-vap">12.7</td><td class="pt-f grp-start">25&deg;</td><td class="pt-liq">63.4</td><td class="pt-vap">62.1</td><td class="pt-f grp-start">75&deg;</td><td class="pt-liq">162</td><td class="pt-vap">160.1</td><td class="pt-f grp-start">125&deg;</td><td class="pt-liq">333.4</td><td class="pt-vap">331.2</td></tr>
+                  <tr><td class="pt-f">&minus;24&deg;</td><td class="pt-liq">14.1</td><td class="pt-vap">13.3</td><td class="pt-f grp-start">26&deg;</td><td class="pt-liq">64.8</td><td class="pt-vap">63.5</td><td class="pt-f grp-start">76&deg;</td><td class="pt-liq">164.6</td><td class="pt-vap">162.7</td><td class="pt-f grp-start">126&deg;</td><td class="pt-liq">337.7</td><td class="pt-vap">335.6</td></tr>
+                  <tr><td class="pt-f">&minus;23&deg;</td><td class="pt-liq">14.8</td><td class="pt-vap">14</td><td class="pt-f grp-start">27&deg;</td><td class="pt-liq">66.3</td><td class="pt-vap">64.9</td><td class="pt-f grp-start">77&deg;</td><td class="pt-liq">167.3</td><td class="pt-vap">165.3</td><td class="pt-f grp-start">127&deg;</td><td class="pt-liq">342.2</td><td class="pt-vap">340</td></tr>
+                  <tr><td class="pt-f">&minus;22&deg;</td><td class="pt-liq">15.4</td><td class="pt-vap">14.6</td><td class="pt-f grp-start">28&deg;</td><td class="pt-liq">67.8</td><td class="pt-vap">66.4</td><td class="pt-f grp-start">78&deg;</td><td class="pt-liq">169.9</td><td class="pt-vap">168</td><td class="pt-f grp-start">128&deg;</td><td class="pt-liq">346.6</td><td class="pt-vap">344.5</td></tr>
+                  <tr><td class="pt-f">&minus;21&deg;</td><td class="pt-liq">16.1</td><td class="pt-vap">15.3</td><td class="pt-f grp-start">29&deg;</td><td class="pt-liq">69.2</td><td class="pt-vap">67.8</td><td class="pt-f grp-start">79&deg;</td><td class="pt-liq">172.7</td><td class="pt-vap">170.7</td><td class="pt-f grp-start">129&deg;</td><td class="pt-liq">351.1</td><td class="pt-vap">349</td></tr>
+                  <tr><td class="pt-f">&minus;20&deg;</td><td class="pt-liq">16.8</td><td class="pt-vap">16</td><td class="pt-f grp-start">30&deg;</td><td class="pt-liq">70.7</td><td class="pt-vap">69.3</td><td class="pt-f grp-start">80&deg;</td><td class="pt-liq">175.4</td><td class="pt-vap">173.4</td><td class="pt-f grp-start">130&deg;</td><td class="pt-liq">355.7</td><td class="pt-vap">353.6</td></tr>
+                  <tr><td class="pt-f">&minus;19&deg;</td><td class="pt-liq">17.5</td><td class="pt-vap">16.7</td><td class="pt-f grp-start">31&deg;</td><td class="pt-liq">72.3</td><td class="pt-vap">70.8</td><td class="pt-f grp-start">81&deg;</td><td class="pt-liq">178.2</td><td class="pt-vap">176.2</td><td class="pt-f grp-start">131&deg;</td><td class="pt-liq">360.3</td><td class="pt-vap">358.2</td></tr>
+                  <tr><td class="pt-f">&minus;18&deg;</td><td class="pt-liq">18.3</td><td class="pt-vap">17.4</td><td class="pt-f grp-start">32&deg;</td><td class="pt-liq">73.8</td><td class="pt-vap">72.4</td><td class="pt-f grp-start">82&deg;</td><td class="pt-liq">181</td><td class="pt-vap">179</td><td class="pt-f grp-start">132&deg;</td><td class="pt-liq">364.9</td><td class="pt-vap">362.8</td></tr>
+                  <tr><td class="pt-f">&minus;17&deg;</td><td class="pt-liq">19</td><td class="pt-vap">18.2</td><td class="pt-f grp-start">33&deg;</td><td class="pt-liq">75.4</td><td class="pt-vap">73.9</td><td class="pt-f grp-start">83&deg;</td><td class="pt-liq">183.8</td><td class="pt-vap">181.8</td><td class="pt-f grp-start">133&deg;</td><td class="pt-liq">369.6</td><td class="pt-vap">367.5</td></tr>
+                  <tr><td class="pt-f">&minus;16&deg;</td><td class="pt-liq">19.8</td><td class="pt-vap">18.9</td><td class="pt-f grp-start">34&deg;</td><td class="pt-liq">77</td><td class="pt-vap">75.5</td><td class="pt-f grp-start">84&deg;</td><td class="pt-liq">186.7</td><td class="pt-vap">184.7</td><td class="pt-f grp-start">134&deg;</td><td class="pt-liq">374.3</td><td class="pt-vap">372.3</td></tr>
+                  <tr><td class="pt-f">&minus;15&deg;</td><td class="pt-liq">20.5</td><td class="pt-vap">19.7</td><td class="pt-f grp-start">35&deg;</td><td class="pt-liq">78.6</td><td class="pt-vap">77.1</td><td class="pt-f grp-start">85&deg;</td><td class="pt-liq">189.5</td><td class="pt-vap">187.5</td><td class="pt-f grp-start">135&deg;</td><td class="pt-liq">379.1</td><td class="pt-vap">377.1</td></tr>
+                  <tr><td class="pt-f">&minus;14&deg;</td><td class="pt-liq">21.3</td><td class="pt-vap">20.4</td><td class="pt-f grp-start">36&deg;</td><td class="pt-liq">80.2</td><td class="pt-vap">78.7</td><td class="pt-f grp-start">86&deg;</td><td class="pt-liq">192.5</td><td class="pt-vap">190.5</td><td class="pt-f grp-start">136&deg;</td><td class="pt-liq">384</td><td class="pt-vap">381.9</td></tr>
+                  <tr><td class="pt-f">&minus;13&deg;</td><td class="pt-liq">22.1</td><td class="pt-vap">21.2</td><td class="pt-f grp-start">37&deg;</td><td class="pt-liq">81.8</td><td class="pt-vap">80.3</td><td class="pt-f grp-start">87&deg;</td><td class="pt-liq">195.4</td><td class="pt-vap">193.4</td><td class="pt-f grp-start">137&deg;</td><td class="pt-liq">388.8</td><td class="pt-vap">386.8</td></tr>
+                  <tr><td class="pt-f">&minus;12&deg;</td><td class="pt-liq">22.9</td><td class="pt-vap">22</td><td class="pt-f grp-start">38&deg;</td><td class="pt-liq">83.5</td><td class="pt-vap">82</td><td class="pt-f grp-start">88&deg;</td><td class="pt-liq">198.4</td><td class="pt-vap">196.4</td><td class="pt-f grp-start">138&deg;</td><td class="pt-liq">393.7</td><td class="pt-vap">391.7</td></tr>
+                  <tr><td class="pt-f">&minus;11&deg;</td><td class="pt-liq">23.7</td><td class="pt-vap">22.8</td><td class="pt-f grp-start">39&deg;</td><td class="pt-liq">85.2</td><td class="pt-vap">83.7</td><td class="pt-f grp-start">89&deg;</td><td class="pt-liq">201.4</td><td class="pt-vap">199.4</td><td class="pt-f grp-start">139&deg;</td><td class="pt-liq">398.7</td><td class="pt-vap">396.7</td></tr>
+                  <tr><td class="pt-f">&minus;10&deg;</td><td class="pt-liq">24.6</td><td class="pt-vap">23.6</td><td class="pt-f grp-start">40&deg;</td><td class="pt-liq">86.9</td><td class="pt-vap">85.4</td><td class="pt-f grp-start">90&deg;</td><td class="pt-liq">204.5</td><td class="pt-vap">202.4</td><td class="pt-f grp-start">140&deg;</td><td class="pt-liq">403.7</td><td class="pt-vap">401.7</td></tr>
+                  <tr><td class="pt-f">&minus;9&deg;</td><td class="pt-liq">25.4</td><td class="pt-vap">24.5</td><td class="pt-f grp-start">41&deg;</td><td class="pt-liq">88.6</td><td class="pt-vap">87.1</td><td class="pt-f grp-start">91&deg;</td><td class="pt-liq">207.6</td><td class="pt-vap">205.5</td><td class="pt-f grp-start">141&deg;</td><td class="pt-liq">408.8</td><td class="pt-vap">406.8</td></tr>
+                  <tr><td class="pt-f">&minus;8&deg;</td><td class="pt-liq">26.3</td><td class="pt-vap">25.3</td><td class="pt-f grp-start">42&deg;</td><td class="pt-liq">90.4</td><td class="pt-vap">88.8</td><td class="pt-f grp-start">92&deg;</td><td class="pt-liq">210.7</td><td class="pt-vap">208.6</td><td class="pt-f grp-start">142&deg;</td><td class="pt-liq">413.9</td><td class="pt-vap">412</td></tr>
+                  <tr><td class="pt-f">&minus;7&deg;</td><td class="pt-liq">27.1</td><td class="pt-vap">26.2</td><td class="pt-f grp-start">43&deg;</td><td class="pt-liq">92.2</td><td class="pt-vap">90.6</td><td class="pt-f grp-start">93&deg;</td><td class="pt-liq">213.8</td><td class="pt-vap">211.8</td><td class="pt-f grp-start">143&deg;</td><td class="pt-liq">419.1</td><td class="pt-vap">417.1</td></tr>
+                  <tr><td class="pt-f">&minus;6&deg;</td><td class="pt-liq">28</td><td class="pt-vap">27</td><td class="pt-f grp-start">44&deg;</td><td class="pt-liq">94</td><td class="pt-vap">92.4</td><td class="pt-f grp-start">94&deg;</td><td class="pt-liq">217</td><td class="pt-vap">214.9</td><td class="pt-f grp-start">144&deg;</td><td class="pt-liq">424.3</td><td class="pt-vap">422.4</td></tr>
+                  <tr><td class="pt-f">&minus;5&deg;</td><td class="pt-liq">28.9</td><td class="pt-vap">27.9</td><td class="pt-f grp-start">45&deg;</td><td class="pt-liq">95.8</td><td class="pt-vap">94.2</td><td class="pt-f grp-start">95&deg;</td><td class="pt-liq">220.2</td><td class="pt-vap">218.1</td><td class="pt-f grp-start">145&deg;</td><td class="pt-liq">429.6</td><td class="pt-vap">427.7</td></tr>
+                  <tr><td class="pt-f">&minus;4&deg;</td><td class="pt-liq">29.8</td><td class="pt-vap">28.8</td><td class="pt-f grp-start">46&deg;</td><td class="pt-liq">97.6</td><td class="pt-vap">96</td><td class="pt-f grp-start">96&deg;</td><td class="pt-liq">223.5</td><td class="pt-vap">221.4</td><td class="pt-f grp-start">146&deg;</td><td class="pt-liq">434.9</td><td class="pt-vap">433</td></tr>
+                  <tr><td class="pt-f">&minus;3&deg;</td><td class="pt-liq">30.8</td><td class="pt-vap">29.8</td><td class="pt-f grp-start">47&deg;</td><td class="pt-liq">99.5</td><td class="pt-vap">97.9</td><td class="pt-f grp-start">97&deg;</td><td class="pt-liq">226.7</td><td class="pt-vap">224.6</td><td class="pt-f grp-start">147&deg;</td><td class="pt-liq">440.3</td><td class="pt-vap">438.4</td></tr>
+                  <tr><td class="pt-f">&minus;2&deg;</td><td class="pt-liq">31.7</td><td class="pt-vap">30.7</td><td class="pt-f grp-start">48&deg;</td><td class="pt-liq">101.4</td><td class="pt-vap">99.8</td><td class="pt-f grp-start">98&deg;</td><td class="pt-liq">230</td><td class="pt-vap">228</td><td class="pt-f grp-start">148&deg;</td><td class="pt-liq">445.7</td><td class="pt-vap">443.9</td></tr>
+                  <tr><td class="pt-f">&minus;1&deg;</td><td class="pt-liq">32.7</td><td class="pt-vap">31.6</td><td class="pt-f grp-start">49&deg;</td><td class="pt-liq">103.3</td><td class="pt-vap">101.7</td><td class="pt-f grp-start">99&deg;</td><td class="pt-liq">233.4</td><td class="pt-vap">231.3</td><td class="pt-f grp-start">149&deg;</td><td class="pt-liq">451.2</td><td class="pt-vap">449.4</td></tr>
+                  <tr><td class="pt-f">0&deg;</td><td class="pt-liq">33.7</td><td class="pt-vap">32.6</td><td class="pt-f grp-start">50&deg;</td><td class="pt-liq">105.3</td><td class="pt-vap">103.6</td><td class="pt-f grp-start">100&deg;</td><td class="pt-liq">236.8</td><td class="pt-vap">234.7</td><td class="pt-f grp-start">150&deg;</td><td class="pt-liq">456.8</td><td class="pt-vap">455</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pt-print-legal">
+              <p class="pt-print-legal__copyright">&copy; 2026 TradeBuilt USA. All rights reserved. &middot; <span class="pt-print-legal__veteran">Veteran Owned and Operated<svg class="pt-print-legal__flag" viewBox="0 0 7410 3900" role="img" aria-label="US flag"><rect width="7410" height="3900" fill="#b22234"/><g fill="#fff"><rect y="300" width="7410" height="300"/><rect y="900" width="7410" height="300"/><rect y="1500" width="7410" height="300"/><rect y="2100" width="7410" height="300"/><rect y="2700" width="7410" height="300"/><rect y="3300" width="7410" height="300"/></g><rect width="2964" height="2100" fill="#3c3b6e"/></svg></span></p>
+            </div>
+          </div>
+
+          <div class="pt-card__foot">
+            <div class="pt-actions">
+              <button type="button" class="btn btn-primary btn-sm" onclick="printPTChart()">Print / Save as PDF</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- TB:FOOTER -->
+  <footer class="site-footer">
+    <div class="site-footer__legal">
+      <p>&copy; 2026 TradeBuilt USA. All rights reserved. &middot; <span class="site-footer__veteran">Veteran Owned and Operated<svg class="site-footer__flag" viewBox="0 0 7410 3900" role="img" aria-label="US flag"><rect width="7410" height="3900" fill="#b22234"/><g fill="#fff"><rect y="300" width="7410" height="300"/><rect y="900" width="7410" height="300"/><rect y="1500" width="7410" height="300"/><rect y="2100" width="7410" height="300"/><rect y="2700" width="7410" height="300"/><rect y="3300" width="7410" height="300"/></g><rect width="2964" height="2100" fill="#3c3b6e"/></svg></span></p>
+    </div>
+  </footer>
+<!-- /TB:FOOTER -->
+
+  <script src="../../js/main.js"></script>
+  <script type="module" src="../../js/auth.js"></script>
+  <script>
+    function printPTChart() {
+      var originalTitle = document.title;
+      document.title = "TradeBuilt R-404A PT Chart";
+      var restore = function () {
+        document.title = originalTitle;
+        window.removeEventListener("afterprint", restore);
+      };
+      window.addEventListener("afterprint", restore);
+      window.print();
+    }
+  </script>
+  <script>
+    (function () {
+      var table = document.querySelector(".pt-datatable");
+      if (!table) return;
+
+      table.querySelectorAll("tbody td.pt-f, tbody td.pt-liq, tbody td.pt-vap").forEach(function (td) {
+        var span = document.createElement("span");
+        span.className = "pt-cell-text";
+        span.textContent = td.textContent;
+        td.textContent = "";
+        td.appendChild(span);
+      });
+
+      var LIQ_COLOR = "#E0342C";
+      var VAP_COLOR = "#2E6BE6";
+      var svgNS = "http://www.w3.org/2000/svg";
+
+      var svg = document.createElementNS(svgNS, "svg");
+      svg.setAttribute("class", "pt-hover-arrow");
+
+      var defs = document.createElementNS(svgNS, "defs");
+      [["pt-arrow-head-liq", LIQ_COLOR], ["pt-arrow-head-vap", VAP_COLOR]].forEach(function (entry) {
+        var marker = document.createElementNS(svgNS, "marker");
+        marker.setAttribute("id", entry[0]);
+        marker.setAttribute("viewBox", "0 0 10 10");
+        marker.setAttribute("refX", "8");
+        marker.setAttribute("refY", "5");
+        marker.setAttribute("markerWidth", "9");
+        marker.setAttribute("markerHeight", "9");
+        marker.setAttribute("orient", "auto-start-reverse");
+        var arrowPath = document.createElementNS(svgNS, "path");
+        arrowPath.setAttribute("d", "M0,0 L10,5 L0,10 Z");
+        arrowPath.setAttribute("fill", entry[1]);
+        marker.appendChild(arrowPath);
+        defs.appendChild(marker);
+      });
+      svg.appendChild(defs);
+
+      var path = document.createElementNS(svgNS, "path");
+      svg.appendChild(path);
+      document.body.appendChild(svg);
+
+      var activeCell = null;
+      var activeTempCell = null;
+      var activeCrossedCells = [];
+
+      function findTempCell(cell) {
+        var el = cell.previousElementSibling;
+        while (el) {
+          if (el.classList.contains("pt-f")) return el;
+          el = el.previousElementSibling;
+        }
+        return null;
+      }
+
+      function findCrossedCells(cell, tempCell) {
+        var crossed = [];
+        var el = cell.previousElementSibling;
+        while (el && el !== tempCell) {
+          crossed.push(el);
+          el = el.previousElementSibling;
+        }
+        return crossed;
+      }
+
+      function textRect(el) {
+        var target = el.querySelector(".pt-cell-text") || el;
+        var range = document.createRange();
+        range.selectNodeContents(target);
+        return range.getBoundingClientRect();
+      }
+
+      var START_GAP = 9;
+      var END_GAP = 4;
+
+      function drawArrow(cell, tempCell) {
+        var cellText = textRect(cell);
+        var tempText = textRect(tempCell);
+
+        var y = cellText.top + cellText.height / 2;
+        var x1 = cellText.left - START_GAP;
+        var x2 = tempText.right + END_GAP;
+
+        path.setAttribute("d", "M " + x1 + " " + y + " L " + x2 + " " + y);
+      }
+
+      function showArrowFor(cell) {
+        var tempCell = findTempCell(cell);
+        if (!tempCell) return;
+        var isLiquid = cell.classList.contains("pt-liq");
+
+        if (activeCell) activeCell.classList.remove("is-hover-active");
+        if (activeTempCell) activeTempCell.classList.remove("is-hover-active");
+        activeCrossedCells.forEach(function (c) {
+          c.classList.remove("is-crossed-active");
+        });
+
+        activeCell = cell;
+        activeTempCell = tempCell;
+        cell.classList.add("is-hover-active");
+        tempCell.classList.add("is-hover-active");
+
+        activeCrossedCells = findCrossedCells(cell, tempCell);
+        activeCrossedCells.forEach(function (c) {
+          c.classList.add("is-crossed-active");
+        });
+
+        path.setAttribute("stroke", isLiquid ? LIQ_COLOR : VAP_COLOR);
+        path.setAttribute("marker-end", "url(#" + (isLiquid ? "pt-arrow-head-liq" : "pt-arrow-head-vap") + ")");
+
+        drawArrow(cell, tempCell);
+        path.classList.add("is-visible");
+      }
+
+      function hideArrow() {
+        if (activeCell) activeCell.classList.remove("is-hover-active");
+        if (activeTempCell) activeTempCell.classList.remove("is-hover-active");
+        activeCrossedCells.forEach(function (c) {
+          c.classList.remove("is-crossed-active");
+        });
+        activeCell = null;
+        activeTempCell = null;
+        activeCrossedCells = [];
+        path.classList.remove("is-visible");
+      }
+
+      table.addEventListener("mouseover", function (e) {
+        var cell = e.target.closest("td.pt-liq, td.pt-vap");
+        if (!cell || cell === activeCell) return;
+        showArrowFor(cell);
+      });
+
+      table.addEventListener("mouseout", function (e) {
+        var cell = e.target.closest("td.pt-liq, td.pt-vap");
+        if (!cell) return;
+        var to = e.relatedTarget;
+        if (to && cell.contains(to)) return;
+        hideArrow();
+      });
+
+      table.addEventListener(
+        "touchstart",
+        function (e) {
+          var cell = e.target.closest("td.pt-liq, td.pt-vap");
+          if (!cell) return;
+          if (cell === activeCell) {
+            hideArrow();
+            return;
+          }
+          showArrowFor(cell);
+        },
+        { passive: true }
+      );
+
+      document.addEventListener(
+        "touchstart",
+        function (e) {
+          if (activeCell && !activeCell.contains(e.target) && !table.contains(e.target)) hideArrow();
+        },
+        { passive: true }
+      );
+
+      window.addEventListener(
+        "scroll",
+        function () {
+          if (activeCell && activeTempCell) drawArrow(activeCell, activeTempCell);
+        },
+        { passive: true }
+      );
+    })();
+  </script>
+</body>
+</html>
