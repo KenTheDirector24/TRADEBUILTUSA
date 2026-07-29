@@ -6,6 +6,7 @@
   <title>TradeBuilt | R-22 Pressure-Temperature Chart</title>
   <meta name="description" content="TRADEBUILT: R-22 saturation pressure-temperature reference chart, printable on a single page.">
   <meta name="theme-color" content="#14181F">
+  <meta name="color-scheme" content="light only">
 
   <meta property="og:title" content="TRADEBUILT: R-22 Pressure-Temperature Chart">
   <meta property="og:description" content="R-22 saturation pressure-temperature reference chart, printable on a single page.">
@@ -171,26 +172,26 @@
     }
 
     .pt-datatable tbody td.pt-psig {
-      background: rgba(139, 195, 74, 0.16);
+      background: rgba(168, 217, 138, 0.22);
     }
 
     .pt-datatable tbody td.pt-vac {
-      background: rgba(224, 52, 44, 0.1);
+      background: rgba(168, 217, 138, 0.14);
       color: #C0392B;
       font-style: italic;
     }
 
     .pt-datatable tbody td.pt-psig.is-hover-active {
-      background: rgba(139, 195, 74, 0.42);
-      outline: 2px solid #6B9E32;
+      background: rgba(168, 217, 138, 0.5);
+      outline: 2px solid #5C8A3F;
       outline-offset: -2px;
       position: relative;
       z-index: 2;
     }
 
     .pt-datatable tbody td.pt-vac.is-hover-active {
-      background: rgba(224, 52, 44, 0.32);
-      outline: 2px solid #C0392B;
+      background: rgba(168, 217, 138, 0.4);
+      outline: 2px solid #5C8A3F;
       outline-offset: -2px;
       position: relative;
       z-index: 2;
@@ -662,8 +663,8 @@
         td.appendChild(span);
       });
 
-      var PSIG_COLOR = "#6B9E32";
-      var VAC_COLOR = "#C0392B";
+      var PSIG_COLOR = "#5C8A3F";
+      var VAC_COLOR = "#5C8A3F";
       var svgNS = "http://www.w3.org/2000/svg";
 
       var svg = document.createElementNS(svgNS, "svg");
