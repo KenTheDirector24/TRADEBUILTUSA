@@ -14,7 +14,7 @@ const navTemplate = readFileSync(path.join(partialsDir, "nav.html"), "utf8");
 const headerActionsTemplate = readFileSync(path.join(partialsDir, "header-actions.html"), "utf8");
 const footerTemplate = readFileSync(path.join(partialsDir, "footer.html"), "utf8");
 
-const NAV_KEYS = ["home", "hvacr", "resources", "grades", "achievements", "shop"];
+const NAV_KEYS = ["home", "hvacr", "resources", "grades", "achievements"];
 const RESOURCES_PLACEHOLDER = "__RESOURCES_HREF__";
 
 // Local partial links are bare filenames (e.g. href="hvacr.html"); pages that
