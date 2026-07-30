@@ -248,14 +248,27 @@
       cursor: pointer;
       transition: background 0.1s ease;
       font-style: italic;
-      background: rgba(150, 140, 120, 0.12);
-      color: #6b6b6b;
     }
 
-    .pt-datatable tbody td.pt-liq-vac.is-hover-active,
+    .pt-datatable tbody td.pt-liq-vac {
+      background: rgba(224, 52, 44, 0.12);
+    }
+
+    .pt-datatable tbody td.pt-vap-vac {
+      background: rgba(46, 107, 230, 0.12);
+    }
+
+    .pt-datatable tbody td.pt-liq-vac.is-hover-active {
+      background: rgba(224, 52, 44, 0.38);
+      outline: 2px solid #E0342C;
+      outline-offset: -2px;
+      position: relative;
+      z-index: 2;
+    }
+
     .pt-datatable tbody td.pt-vap-vac.is-hover-active {
-      background: rgba(150, 140, 120, 0.35);
-      outline: 2px solid #6b6b6b;
+      background: rgba(46, 107, 230, 0.38);
+      outline: 2px solid #2E6BE6;
       outline-offset: -2px;
       position: relative;
       z-index: 2;
